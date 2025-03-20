@@ -1,6 +1,5 @@
 package geometries;
 
-import static java.lang.Double.*;
 import java.util.List;
 import static primitives.Util.*;
 import primitives.*;
