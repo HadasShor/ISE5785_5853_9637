@@ -22,8 +22,8 @@ public class sphere extends RadialGeometry{
     /**
      * Constructs a `Sphere` with the specified center point and radius.
      *
-     * @param center the center point of the sphere
-     * @param radius the radius of the sphere
+     * @param _center the center point of the sphere
+     * @param _radius the radius of the sphere
      */
     public sphere(Point _center, double _radius) {
         super(_radius);
