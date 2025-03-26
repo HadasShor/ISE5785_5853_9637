@@ -50,7 +50,7 @@ public class Polygon extends Geometry {
       plane         = new Plane(vertices[0], vertices[1], vertices[2]);
       if (size == 3) return; // no need for more tests for a Triangle
 
-      Vector  n        = plane.getNormal(vertices[0]);
+      Vector  n        = plane.getNormal(null);
       // Subtracting any subsequent points will throw an IllegalArgumentException
       // because of Zero Vector if they are in the same point
       Vector  edge1    = vertices[size - 1].subtract(vertices[size - 2]);

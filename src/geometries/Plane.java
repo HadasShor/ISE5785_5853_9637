@@ -9,19 +9,23 @@ import primitives.Vector;
  */
 public class Plane extends Geometry {
 
-    /** A point on the plane. */
-    protected final Point point;
-    /** The normal vector to the plane. */
+    /**
+     * A point on the plane.
+     */
+    protected final Point q;
+    /**
+     * The normal vector to the plane.
+     */
     protected final Vector normal;
 
     /**
      * Constructs a `Plane` with the specified point and normal vector.
      *
-     * @param point the point on the plane
+     * @param point  the point on the plane
      * @param normal the normal vector to the plane
      */
     public Plane(Point point, Vector normal) {
-        this.point = point;
+        this.q = point;
         this.normal = normal.normalize();
     }
 
@@ -33,9 +37,9 @@ public class Plane extends Geometry {
      * @param point2 the second point on the plane
      * @param point3 the third point on the plane
      */
-    public Plane(Point point1, Point point2,Point point3 ) {
-        normal=null;
-        point=point1;
+    public Plane(Point point1, Point point2, Point point3) {
+        normal = null;
+        q = point1;
     }
 
     /**
@@ -45,7 +49,7 @@ public class Plane extends Geometry {
      * @return the normal vector at the given point
      */
     @Override
-    public Vector getNormal(Point p) {
+    public Vector getNormal(Point dummy) {
         return normal;
     }
 }

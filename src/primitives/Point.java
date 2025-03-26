@@ -40,8 +40,8 @@ public class Point {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        return (o instanceof Point point)
-                && this.xyz.equals(point.xyz);
+        if(!(o instanceof Point point)) return false;
+        return  xyz.equals(point.xyz);
     }
 
 
@@ -55,7 +55,7 @@ public class Point {
     @Override
     public int hashCode()
     {
-        return Objects.hash(xyz);
+        return xyz.hashCode();
     }
 
     /**
@@ -88,9 +88,9 @@ public class Point {
 //        return new Point(xyz.add(vector.xyz));
 //    }
     public Point add(Vector vector) {
-        if (vector == null) {
-            throw new IllegalArgumentException("Vector cannot be null");
-        }
+//        if (vector == null) {
+//            throw new IllegalArgumentException("Vector cannot be null");
+//        }
         return new Point(xyz.add(vector.xyz));
     }
     /**
@@ -103,6 +103,7 @@ public class Point {
         double x2x1 = point.xyz.d1() - xyz.d1();
         double y2y1 = point.xyz.d2() - xyz.d2();
         double z2z1 = point.xyz.d3() - xyz.d3();
+
         return x2x1 * x2x1 + y2y1 * y2y1 + z2z1 * z2z1;
     }
 
