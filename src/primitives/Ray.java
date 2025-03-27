@@ -22,7 +22,14 @@ public class Ray {
         this.head = head;
         this.direction = direction.normalize();
     }
-
+public Vector getNurmalVector()
+{
+    return direction.normalize();
+}
+public Point getPoint()
+{
+    return head;
+}
     /**
      * Checks if this ray is equal to another object.
      *
