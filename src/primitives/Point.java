@@ -98,22 +98,29 @@ public class Point {
      *
      * @param point the point to calculate the distance to
      * @return the squared distance to the point
-     */
+//     */
+//    public double distanceSquared(Point point) {
+//        double x2x1 = point.xyz.d1() - xyz.d1();
+//        double y2y1 = point.xyz.d2() - xyz.d2();
+//        double z2z1 = point.xyz.d3() - xyz.d3();
+//
+//        return x2x1 * x2x1 + y2y1 * y2y1 + z2z1 * z2z1;
+//
+//    }
     public double distanceSquared(Point point) {
         double x2x1 = point.xyz.d1() - xyz.d1();
         double y2y1 = point.xyz.d2() - xyz.d2();
         double z2z1 = point.xyz.d3() - xyz.d3();
-
         return x2x1 * x2x1 + y2y1 * y2y1 + z2z1 * z2z1;
     }
 
     /**
      * Calculates the distance to another point.
      *
-     * @param p1 the point to calculate the distance to
+     * @param point the point to calculate the distance to
      * @return the distance to the point
      */
-    public double distance(Point p1) {
-        return Math.sqrt(distanceSquared(p1));
+    public double distance(Point point) {
+        return Math.sqrt(distanceSquared(point));
     }
 }

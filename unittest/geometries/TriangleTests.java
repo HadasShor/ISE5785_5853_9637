@@ -10,6 +10,7 @@ class TriangleTests {
 
     @Test
     void testGetNormal() {
-        assertEquals(new Vector(1,0,1).normalize(), new Triangle(new Point(1,0,0), new Point(0,1,0), new Point(0,0,1)).getNormal(new Point(0,0,0)), "ERROR: Triangle getNormal() does not work correctly");
+        Vector expectedNormal = new Vector(1, 1, 1).normalize();
+        assertEquals(expectedNormal, new Triangle(new Point(1, 0, 0), new Point(0, 1, 0), new Point(0, 0, 1)).getNormal(new Point(0, 0, 0)), "ERROR: Triangle getNormal() does not work correctly");
     }
 }

@@ -26,10 +26,23 @@ public Vector getNurmalVector()
 {
     return direction.normalize();
 }
-public Point getPoint()
-{
-    return head;
-}
+
+    /**
+     * Getter for the point on the ray at a certain distance from the head
+     *
+     * @param t the distance from the head
+     * @return the point on the ray at the distance t from the head
+     */
+    //public Point getPoint()
+//{
+//    return head;
+//}
+    public Point getPoint(double t) {
+        // if t is zero, return the head point
+        if (Util.isZero(t))
+            return head;
+        return head.add(direction.scale(t));
+    }
     /**
      * Checks if this ray is equal to another object.
      *
