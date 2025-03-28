@@ -22,7 +22,7 @@ public class Ray {
         this.head = head;
         this.direction = direction.normalize();
     }
-public Vector getNurmalVector()
+public Vector getDirection()
 {
     return direction.normalize();
 }
