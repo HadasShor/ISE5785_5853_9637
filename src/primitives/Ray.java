@@ -79,4 +79,9 @@ public Vector getDirection()
                 ", direction=" + direction +
                 '}';
     }
+
+    public Point getPoint() {
+
+            return head;
+    }
 }

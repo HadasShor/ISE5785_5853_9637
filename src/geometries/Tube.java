@@ -1,6 +1,6 @@
 package geometries;
 
-import primitives.Point;
+import primitives.*;
 import primitives.Ray;
 import primitives.Vector;
 
@@ -26,7 +26,7 @@ public class Tube extends RadialGeometry {
     /**
      * Returns the normal vector to the tube at the given point.
      *
-     * @param p the point on the surface of the tube
+     * @param p0 the point on the surface of the tube
      * @return the normal vector at the given point
      */
     @Override
