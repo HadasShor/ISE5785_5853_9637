@@ -5,14 +5,51 @@ import primitives.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the {@link Plane} class.
+ */
 class PlaneTests {
 
-    final private Point point1 = new Point(1, 2, 3);
-    final private Point point2 = new Point(2, 4, 6);
-    final private Point point3 = new Point(3, 6, 9);
-    final private Point point4 = new Point(1, 1, 1);
-    final private Plane plane = new Plane(point1, point2, point4);
+    /**
+     * Default constructor for {@code Plane}.
+     * Initializes the Plane with default values.
+     */
+    public  PlaneTests() {
+        // Default constructor, no initialization or actions
+    }
 
+    /**
+     * A point in 3D space with coordinates (1, 2, 3).
+     */
+    private final Point point1 = new Point(1, 2, 3);
+
+    /**
+     * A point in 3D space with coordinates (2, 4, 6).
+     */
+    private final Point point2 = new Point(2, 4, 6);
+
+    /**
+     * A point in 3D space with coordinates (3, 6, 9).
+     */
+    private final Point point3 = new Point(3, 6, 9);
+
+    /**
+     * A point in 3D space with coordinates (1, 1, 1).
+     */
+    private final Point point4 = new Point(1, 1, 1);
+
+    /**
+     * A plane defined by three non-collinear points: point1, point2, and point4.
+     */
+    private final Plane plane = new Plane(point1, point2, point4);
+
+    /**
+     * Test method for {@link Plane#getNormal(Point)}.
+     *
+     * This test verifies that the normal vector of the plane is calculated correctly.
+     * It compares the computed normal with the expected normal obtained using
+     * the cross product of two vectors in the plane.
+     */
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
@@ -21,6 +58,14 @@ class PlaneTests {
         assertEquals(expectedNormal, plane.getNormal(new Point(8, 2, 3)));
     }
 
+    /**
+     * Test method for {@link Plane#Plane(Point, Point, Point)}.
+     *
+     * This test verifies the correctness of the plane constructor:
+     * - Ensures it throws an exception when two or more points are identical.
+     * - Ensures it throws an exception when the three points are collinear.
+     * - Verifies that a valid plane is created when using three non-collinear points.
+     */
     @Test
     void testConstructor() {
         // =============== Boundary Values Tests ==================

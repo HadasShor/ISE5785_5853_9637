@@ -6,9 +6,10 @@ import primitives.Vector;
 
 /**
  * The `Cylinder` class represents a cylinder in 3D space.
- * It is defined by a ray (axis), a radius, and a height.
+ * It extends the `Tube` class and adds a height parameter.
  */
 public class Cylinder extends Tube {
+
     /** The height of the cylinder. */
     private double height;
 
@@ -27,11 +28,32 @@ public class Cylinder extends Tube {
     /**
      * Returns the normal vector to the cylinder at the given point.
      *
-     * @param p the point on the surface of the cylinder
+     * @param p0 the point on the surface of the cylinder
      * @return the normal vector at the given point
      */
+
+
     @Override
-    public Vector getNormal(Point p) {
-        return super.getNormal(p);
+    public Vector getNormal(Point p0) {
+        // Check if the point is at the base center
+        if(p0.equals(axis.getPoint())) {
+            return axis.getDirection().scale(-1);
+        }
+
+        // Compute the projection of the point onto the cylinder's axis
+        double distance = axis.getDirection().dotProduct(p0.subtract(axis.getPoint()));
+
+        // Check if the point is on the bottom base
+        if (distance == 0) {
+            return axis.getDirection().scale(-1);
+        }
+
+        // Check if the point is on the top base
+        if(distance == height) {
+            return axis.getDirection();
+        }
+
+        // If the point is on the curved surface, use the normal from the Tube class
+        return super.getNormal(p0);
     }
 }

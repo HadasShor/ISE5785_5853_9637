@@ -7,10 +7,34 @@ import primitives.Vector;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TubeTests {
- final Point point1= new Point(1,1,1);
-    final Point point2= new Point(2, 3, 4);
- final Vector vector1= new Vector(1,2,3);
-    final Vector vector2= new Vector(-3,1,4);
+
+    /**
+     * Default constructor for {@code TubeTests}.
+     * Initializes the cylinder with default values.
+     */
+    public TubeTests() {
+        // Default constructor, no initialization or actions
+    }
+    /**
+     * A point in 3D space with coordinates (1, 1, 1).
+     */
+    final Point point1 = new Point(1, 1, 1);
+
+    /**
+     * A point in 3D space with coordinates (2, 3, 4).
+     */
+    final Point point2 = new Point(2, 3, 4);
+
+    /**
+     * A vector in 3D space with components (1, 2, 3).
+     */
+    final Vector vector1 = new Vector(1, 2, 3);
+
+    /**
+     * A vector in 3D space with components (-3, 1, 4).
+     */
+    final Vector vector2 = new Vector(-3, 1, 4);
+
     @Test
     void testGetNormal() {
         // Tube tube = new Tube(new Ray(point1, vector1), 1);

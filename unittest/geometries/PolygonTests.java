@@ -15,6 +15,14 @@ import primitives.*;
  * @author Dan
  */
 class PolygonTests {
+
+    /**
+     * Default constructor for {@code Polygon}.
+     * Initializes the Polygon with default values.
+     */
+    public PolygonTests() {
+        // Default constructor, no initialization or actions
+    }
     /**
      * Delta value for accuracy when comparing the numbers of type 'double' in
      * assertEquals
