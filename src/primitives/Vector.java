@@ -113,6 +113,12 @@ public class Vector extends Point {
         double z = xyz.d1() * vector.xyz.d2() - xyz.d2() * vector.xyz.d1();
         return new Vector(x, y, z);
     }
+    /**
+     * Scales this vector by a given scalar.
+     *
+     * @param scalar the scalar to scale the vector by
+     * @return the scaled vector
+     */
     public Vector scale(double scalar) {
         return new Vector(xyz.scale(scalar));
     }

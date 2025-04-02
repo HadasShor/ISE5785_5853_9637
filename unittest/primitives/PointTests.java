@@ -14,6 +14,13 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class PointTests {
     /**
+     * Default constructor for the PointTests class.
+     * This constructor is intentionally empty.
+     */
+    public PointTests() {
+        // Default constructor
+    }
+    /**
      * A point in 3D space with coordinates (1, 2, 3).
      */
     private final Point point1 = new Point(1, 2, 3);

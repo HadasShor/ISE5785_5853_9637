@@ -1,4 +1,5 @@
 package geometries;
+
 import primitives.Point;
 import org.junit.jupiter.api.Test;
 import primitives.*;
@@ -6,6 +7,14 @@ import primitives.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the {@link Tube} class.
+ * <p>
+ * This class contains a series of tests for the methods implemented in the {@link Tube} class,
+ * ensuring that the tube operations behave as expected. The tests include operations such as
+ * normal vector calculations.
+ * </p>
+ */
 class TubeTests {
 
     /**
@@ -15,6 +24,7 @@ class TubeTests {
     public TubeTests() {
         // Default constructor, no initialization or actions
     }
+
     /**
      * A point in 3D space with coordinates (1, 1, 1).
      */
@@ -34,7 +44,13 @@ class TubeTests {
      * A vector in 3D space with components (-3, 1, 4).
      */
     final Vector vector2 = new Vector(-3, 1, 4);
-
+    /**
+     * Test method for {@link Tube#getNormal(Point)}.
+     * <p>
+     * This test verifies that the normal vector calculated at a given point on the surface of the tube
+     * is orthogonal to the direction vector of the tube's axis.
+     * </p>
+     */
     @Test
     void testGetNormal() {
         // Tube tube = new Tube(new Ray(point1, vector1), 1);
@@ -59,7 +75,5 @@ class TubeTests {
         // Vectors for testing
         final Vector vector1 = new Vector(1, 2, 3);
         final Vector vector2 = new Vector(-3, 1, 4);
-
-
     }
-    }
+}

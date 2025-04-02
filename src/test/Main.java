@@ -28,7 +28,13 @@ public final class Main {
    private static final Vector V3          = new Vector(0, 3, -2);
    /** A vector for tests to (1,2,2) */
    private static final Vector V4          = new Vector(1, 2, 2);
-
+   /**
+    * Default constructor for the Main class.
+    * This constructor is intentionally empty.
+    */
+   public Main() {
+      // Default constructor
+   }
    /**
     * Main program to tests initial functionality of the 1st stage
     * @param args irrelevant here

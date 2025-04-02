@@ -22,6 +22,11 @@ public class Ray {
         this.head = head;
         this.direction = direction.normalize();
     }
+    /**
+     * Getter for the normalized direction vector of the ray.
+     *
+     * @return the normalized direction vector of the ray
+     */
 public Vector getDirection()
 {
     return direction.normalize();
@@ -79,9 +84,12 @@ public Vector getDirection()
                 ", direction=" + direction +
                 '}';
     }
-
+    /**
+     * Getter for the head point of the ray.
+     *
+     * @return the head point of the ray
+     */
     public Point getPoint() {
-
-            return head;
+        return head;
     }
 }
