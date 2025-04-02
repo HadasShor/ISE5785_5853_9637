@@ -4,11 +4,17 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * The `Cylinder` class represents a cylinder in 3D space.
  * It extends the `Tube` class and adds a height parameter.
  */
 public class Cylinder extends Tube {
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
+    }
 
     /** The height of the cylinder. */
     private double height;
@@ -36,12 +42,12 @@ public class Cylinder extends Tube {
     @Override
     public Vector getNormal(Point p0) {
         // Check if the point is at the base center
-        if(p0.equals(axis.getPoint())) {
+        if(p0.equals(axis.getP0())) {
             return axis.getDirection().scale(-1);
         }
 
         // Compute the projection of the point onto the cylinder's axis
-        double distance = axis.getDirection().dotProduct(p0.subtract(axis.getPoint()));
+        double distance = axis.getDirection().dotProduct(p0.subtract(axis.getP0()));
 
         // Check if the point is on the bottom base
         if (distance == 0) {

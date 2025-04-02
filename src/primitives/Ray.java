@@ -37,7 +37,7 @@ public Vector getDirection()
 //{
 //    return head;
 //}
-    public Point getPoint(double t) {
+    public Point getP0(double t) {
         // if t is zero, return the head point
         if (Util.isZero(t))
             return head;
@@ -80,8 +80,14 @@ public Vector getDirection()
                 '}';
     }
 
-    public Point getPoint() {
+    public Point getP0() {
 
             return head;
+    }
+
+    public Point getPoint(double distance) {
+        if (Util.isZero(distance))
+            return head;
+        return head.add(direction.scale(distance));
     }
 }
