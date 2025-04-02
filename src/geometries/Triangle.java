@@ -23,39 +23,7 @@ public class Triangle extends Polygon {
         super(p1, p2, p3);
     }
 
-    /**
-     * Finds the intersections of the triangle with the specified ray.
-     * @param ray the ray to intersect with
-     * @return findIntersections
-     */
-    @Override
-    public List<Point> findIntersections(Ray ray) {
-        // barycentric coordinates
-        Vector edge1 = vertices.get(1).subtract(vertices.get(0));
-        Vector edge2 = vertices.get(2).subtract(vertices.get(0));
-        Vector h = ray.getDirection().crossProduct(edge2);
-        double a = edge1.dotProduct(h);
-        if (a == 0) {
-            return null;
-        }
-        Vector s = ray.getP0().subtract(vertices.get(0));
-        double f = 1 / a;
-        double u = f * s.dotProduct(h);
-        if (u < 0 || u > 1) {
-            return null;
-        }
-        Vector q = s.crossProduct(edge1);
-        double v = f * ray.getDirection().dotProduct(q);
-        if (v < 0 || u + v > 1) {
-            return null;
-        }
-        double t = f * edge2.dotProduct(q);
-        if (t > 0) {
-            return List.of(ray.getP0(t));
-        }
-        return null;
 
-    }
 
     /**
      * Returns the normal vector to the triangle at the given point.
@@ -66,5 +34,81 @@ public class Triangle extends Polygon {
     @Override
     public Vector getNormal(Point p) {
         return super.getNormal(p);
+    }
+
+    /**
+     * Finds the intersections of the triangle with the specified ray.
+     * @param ray the ray to intersect with
+     * @return findIntersections
+     */
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        // barycentric coordinates
+        /**
+         * The barycentric coordinates of a point P with respect to a triangle ABC are a set of three numbers α, β, γ
+         */
+        Vector edge1 = vertices.get(1).subtract(vertices.get(0));
+        /**
+         * The vector from the first vertex to the second vertex
+         */
+        Vector edge2 = vertices.get(2).subtract(vertices.get(0));
+        /**
+         * The vector from the first vertex to the third vertex
+         */
+        Vector h = ray.getDirection().crossProduct(edge2);
+        /**
+         * The cross product of the ray direction and the vector from the first vertex to the third vertex
+         */
+        double a = edge1.dotProduct(h);
+        /**
+         * The dot product of the vector from the first vertex to the second vertex and h
+         */
+        if (a == 0) {
+            return null;
+        }
+        /**
+         * If a is equal to 0, the ray is parallel to the triangle
+         */
+        Vector s = ray.getP0().subtract(vertices.get(0));
+        /**
+         * The vector from the first vertex to the ray's starting point
+         */
+        double f = 1 / a;
+        /**
+         * The reciprocal of a
+         */
+        double u = f * s.dotProduct(h);
+        /**
+         * The dot product of s and h
+         */
+        if (u < 0 || u > 1) {
+            return null;
+        }
+        /**
+         * If u is less than 0 or greater than 1, the intersection point is outside the triangle
+         */
+        Vector q = s.crossProduct(edge1);
+        /**
+         * The cross product of s and the vector from the first vertex to the second vertex
+         */
+        double v = f * ray.getDirection().dotProduct(q);
+        /**
+         * The dot product of the ray direction and q
+         */
+        if (v < 0 || u + v > 1) {
+            return null;
+        }
+        /**
+         * If v is less than 0 or u + v is greater than 1, the intersection point is outside the triangle
+         */
+        double t = f * edge2.dotProduct(q);
+        /**
+         * The dot product of the vector from the first vertex to the third vertex and q
+         */
+        if (t > 0) {
+            return List.of(ray.getP0(t));
+        }
+        return null;
+
     }
 }

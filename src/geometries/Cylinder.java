@@ -11,10 +11,7 @@ import java.util.List;
  * It extends the `Tube` class and adds a height parameter.
  */
 public class Cylinder extends Tube {
-    @Override
-    public List<Point> findIntersections(Ray ray) {
-        return null;
-    }
+
 
     /** The height of the cylinder. */
     private double height;
@@ -61,5 +58,16 @@ public class Cylinder extends Tube {
 
         // If the point is on the curved surface, use the normal from the Tube class
         return super.getNormal(p0);
+    }
+
+/**
+     * Finds the intersections of the cylinder with the specified ray.
+     *
+     * @param ray the ray to intersect with
+     * @return a list of intersection points, or {@code null} if there are no intersections
+     */
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
     }
 }
