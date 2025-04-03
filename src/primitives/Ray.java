@@ -42,7 +42,7 @@ public Vector getDirection()
 //{
 //    return head;
 //}
-    public Point getPoint(double t) {
+    public Point getP0(double t) {
         // if t is zero, return the head point
         if (Util.isZero(t))
             return head;
@@ -84,6 +84,7 @@ public Vector getDirection()
                 ", direction=" + direction +
                 '}';
     }
+<<<<<<< HEAD
     /**
      * Getter for the head point of the ray.
      *
@@ -91,5 +92,17 @@ public Vector getDirection()
      */
     public Point getPoint() {
         return head;
+=======
+
+    public Point getP0() {
+
+            return head;
+>>>>>>> fcef0ac86b456f702a5f6c193a57fe783f5ef2ed
+    }
+
+    public Point getPoint(double distance) {
+        if (Util.isZero(distance))
+            return head;
+        return head.add(direction.scale(distance));
     }
 }
