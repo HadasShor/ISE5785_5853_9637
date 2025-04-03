@@ -72,6 +72,7 @@ class TriangleTests {
     /**
      * Test method for {@link Triangle#Triangle(Point, Point, Point)}.
      */
+
     @Test
     void testFindIntersections() {
         // ============ Equivalence Partitions Tests ==============

@@ -34,7 +34,7 @@ public class Tube extends RadialGeometry {
     @Override
     public Vector getNormal(Point p0) {
 
-            // 1️⃣ חישוב ההיטל של P_0 על וקטור הכיוון של הקרן
+            //  חישוב ההיטל של P_0 על וקטור הכיוון של הקרן
          //   double t = axis.getDirection().dotProduct(p0.subtract(axis.getPoint()));
 
             // 2️ מוצאים את נקודת המרכז O על הציר

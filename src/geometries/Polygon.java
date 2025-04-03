@@ -13,9 +13,9 @@ public class Polygon extends Geometry {
    /** List of polygon's vertices */
    protected final List<Point> vertices;
    /** Associated plane in which the polygon lays */
-   protected final Plane       plane;
+   protected final Plane plane;
    /** The size of the polygon - the amount of the vertices in the polygon */
-   private final int           size;
+   private final int size;
 
    /**
     * Polygon constructor based on vertices list. The list must be ordered by edge
@@ -43,13 +43,11 @@ public class Polygon extends Geometry {
          throw new IllegalArgumentException("A polygon can't have less than 3 vertices");
       this.vertices = List.of(vertices);
       size          = vertices.length;
-
       // Generate the plane according to the first three vertices and associate the
       // polygon with this plane.
       // The plane holds the invariant normal (orthogonal unit) vector to the polygon
       plane         = new Plane(vertices[0], vertices[1], vertices[2]);
       if (size == 3) return; // no need for more tests for a Triangle
-
       Vector  n        = plane.getNormal(null);
       // Subtracting any subsequent points will throw an IllegalArgumentException
       // because of Zero Vector if they are in the same point
@@ -81,7 +79,30 @@ public class Polygon extends Geometry {
 
    @Override
    public List<Point> findIntersections(Ray ray) {
-
-      return null;
+      //א נמצא על המישורל
+      List<Point> p= plane.findIntersections(ray);
+      if(p==null) {
+         return null;
+      }
+      List<Vector> crossProductsOfP_Po = List.of();
+      for (var i = 0; i < size; ++i) {
+         crossProductsOfP_Po.add(vertices.get(i).subtract(p.get(0)));
+      }
+      if(crossProductsOfP_Po.get(0).dotProduct(crossProductsOfP_Po.get(1)) > 0) {
+         for (var i = 1; i < size; ++i) {
+            if (crossProductsOfP_Po.get(i).dotProduct(crossProductsOfP_Po.get(i + 1)) < 0) {
+               return null;
+            }
+         }
+         return p;
+      }
+        else {
+             for (var i = 1; i < size; ++i) {
+                if (crossProductsOfP_Po.get(i).dotProduct(crossProductsOfP_Po.get(i + 1)) > 0) {
+                 return null;
+                }
+             }
+             return p;
+        }
    }
 }
