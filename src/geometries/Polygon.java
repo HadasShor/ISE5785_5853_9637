@@ -131,10 +131,7 @@ public List<Point> findIntersections(Ray ray) {
       }
    }
 
-   // Create a plane defined by the first three vertices of the polygon
-   Plane plane = new Plane(vertices.getFirst(), vertices.get(1), vertices.get(2));
-
    // Find and return the intersection points of the ray with the plane
    return plane.findIntersections(ray);
-}
+   }
 }
