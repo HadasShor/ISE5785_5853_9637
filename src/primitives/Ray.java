@@ -3,56 +3,89 @@ package primitives;
 import java.util.Objects;
 
 /**
- * The `Ray` class represents a ray in 3D space.
+ * The {@code Ray} class represents a ray in 3D space.
  * A ray is defined by a starting point (head) and a direction vector.
  */
 public class Ray {
-    /** The starting point of the ray. */
+    /**
+     * The starting point of the ray.
+     */
     private final Point head;
-    /** The direction vector of the ray. */
+
+    /**
+     * The normalized direction vector of the ray.
+     */
     private final Vector direction;
 
     /**
-     * Constructs a `Ray` with the specified head point and direction vector.
+     * Constructs a {@code Ray} with the specified head point and direction vector.
+     * The direction is normalized upon creation.
      *
-     * @param head the starting point of the ray
+     * @param head      the starting point of the ray
      * @param direction the direction vector of the ray
      */
     public Ray(Point head, Vector direction) {
         this.head = head;
         this.direction = direction.normalize();
     }
-    /**
-     * Getter for the normalized direction vector of the ray.
-     *
-     * @return the normalized direction vector of the ray
-     */
-public Vector getDirection()
-{
-    return direction.normalize();
-}
 
     /**
-     * Getter for the point on the ray at a certain distance from the head
+     * Returns the normalized direction vector of the ray.
      *
-     * @param t the distance from the head
-     * @return the point on the ray at the distance t from the head
+     * @return the normalized direction vector
      */
-    //public Point getPoint()
-//{
-//    return head;
-//}
+    public Vector getDirection() {
+        return direction.normalize(); // this could just return direction since it's already normalized in constructor
+    }
+
+    /**
+     * Returns a point on the ray at a given distance from the head point using parameter {@code t}.
+     *
+     * @param t the distance from the ray's origin
+     * @return the point located {@code t} units in the direction of the ray
+     */
     public Point getP0(double t) {
-        // if t is zero, return the head point
         if (Util.isZero(t))
             return head;
         return head.add(direction.scale(t));
     }
+
     /**
-     * Checks if this ray is equal to another object.
+     * Returns a point on the ray at a given distance from the head point using parameter {@code distance}.
      *
-     * @param o the object to compare with
-     * @return true if the objects are equal, false otherwise
+     * @param distance the distance from the ray's origin
+     * @return the point located {@code distance} units in the direction of the ray
+     */
+    public Point getPoint(double distance) {
+        if (Util.isZero(distance))
+            return head;
+        return head.add(direction.scale(distance));
+    }
+
+    /**
+     * Returns the head (origin) point of the ray.
+     *
+     * @return the starting point of the ray
+     */
+    public Point getPoint() {
+        return head;
+    }
+
+    /**
+     * Returns the head (origin) point of the ray.
+     * This method is identical to {@link #getPoint()}.
+     *
+     * @return the starting point of the ray
+     */
+    public Point getP0() {
+        return head;
+    }
+
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     *
+     * @param o the reference object with which to compare
+     * @return {@code true} if this ray is equal to the specified object; {@code false} otherwise
      */
     @Override
     public boolean equals(Object o) {
@@ -63,9 +96,9 @@ public Vector getDirection()
     }
 
     /**
-     * Returns the hash code value for this ray.
+     * Returns a hash code value for this ray.
      *
-     * @return the hash code value for this ray
+     * @return a hash code value for this object
      */
     @Override
     public int hashCode() {
@@ -73,9 +106,9 @@ public Vector getDirection()
     }
 
     /**
-     * Returns a string representation of this ray.
+     * Returns a string representation of the ray.
      *
-     * @return a string representation of this ray
+     * @return a string describing the ray
      */
     @Override
     public String toString() {
@@ -83,26 +116,5 @@ public Vector getDirection()
                 "head=" + head +
                 ", direction=" + direction +
                 '}';
-    }
-<<<<<<< HEAD
-    /**
-     * Getter for the head point of the ray.
-     *
-     * @return the head point of the ray
-     */
-    public Point getPoint() {
-        return head;
-=======
-
-    public Point getP0() {
-
-            return head;
->>>>>>> fcef0ac86b456f702a5f6c193a57fe783f5ef2ed
-    }
-
-    public Point getPoint(double distance) {
-        if (Util.isZero(distance))
-            return head;
-        return head.add(direction.scale(distance));
     }
 }

@@ -16,12 +16,36 @@ import geometries.Triangle;
  * </p>
  */
 class TriangleTests {
+    /**
+     * Vector representing a direction along the negative Z-axis.
+     */
     private final Vector v1 = new Vector(0, 0, -1);
+
+    /**
+     * Vector representing a direction along the positive Z-axis.
+     */
     private final Vector v2 = new Vector(0, 0, 1);
+
+    /**
+     * A point representing the coordinates (0, 0, 1).
+     */
     private final Point p1 = new Point(0, 0, 1);
+
+    /**
+     * A point representing the coordinates (0, 1, 0).
+     */
     private final Point p2 = new Point(0, 1, 0);
+
+    /**
+     * A point representing the coordinates (1, 0, 0).
+     */
     private final Point p3 = new Point(1, 0, 0);
+
+    /**
+     * A triangle formed by the points (1, 1, 0), (1, 0, 0), and (0, 1, 0).
+     */
     private final Triangle triangle = new Triangle(new Point(1, 1, 0), p3, p2);
+
     /**
      * Default constructor for {@code TriangleTests}.
      * <p>
@@ -88,7 +112,5 @@ class TriangleTests {
         assertEquals(1, triangle2.findIntersections(
                         new Ray(new Point(-1, -1, -1), new Vector(1, 1, 1))).size(),
                 "Failed to find the intersection point when the intersection point is inside the triangle");
-
     }
-
 }
