@@ -4,7 +4,10 @@ import primitives.*;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static primitives.Util.isZero;
 
 /**
  * The `Tube` class represents a tube in 3D space.
