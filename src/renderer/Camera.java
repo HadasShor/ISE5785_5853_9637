@@ -13,10 +13,31 @@ public class Camera implements Cloneable {
     private double width = 0.0; // Width of the view plane
     private double height = 0.0; // Height of the view plane
     private double distance = 0.0; // Distance from the camera to the view plane
+    //X עמודות
+    //Y שורות
 
-    public Ray constructRay(int nX, int nY, int j, int i){
-        //todo
-        return null;
+    /**
+     * construct a ray through a pixel
+     *
+     * @param nX the number of pixels in the x direction
+     * @param nY the number of pixels in the y direction
+     * @param j  the x index of the pixel
+     * @param i  the y index of the pixel
+     * @return the ray that passes through the pixel
+     */
+    public Ray constructRay(int nX, int nY, int j, int i) {
+        Point pIJ = p0;
+        double yI = -(i - (nY - 1) / 2d) * height / nY;
+        double xJ = (j - (nX - 1) / 2d) * width / nX;
+
+        //check if xJ or yI are not zero, so we will not add zero vector
+        if (!Util.isZero(xJ)) pIJ = pIJ.add(vRight.scale(xJ));
+        if (!Util.isZero(yI)) pIJ = pIJ.add(vUp.scale(yI));
+
+        // we need to move the point in the direction of vTo by distance
+        pIJ = pIJ.add(vTo.scale(distance));
+
+        return new Ray(p0, pIJ.subtract(p0).normalize());
     }
     public Ray constructRayThroughPixel(int nX, int nY, double j, double i){
         //todo
