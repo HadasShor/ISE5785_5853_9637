@@ -8,9 +8,30 @@ import static primitives.Util.isZero;
  */
 public class Vector extends Point {
 
+    /**
+     * Constant representing the unit vector along the Z-axis.
+     * <p>
+     * This vector is used to represent the direction along the Z-axis in 3D space.
+     * </p>
+     */
     public static final Vector AXIS_Z = new Vector(0, 0, 1);
+
+    /**
+     * Constant representing the unit vector along the Y-axis.
+     * <p>
+     * This vector is used to represent the direction along the Y-axis in 3D space.
+     * </p>
+     */
     public static final Vector AXIS_Y = new Vector(0, 1, 0);
+
+    /**
+     * Constant representing the unit vector along the X-axis.
+     * <p>
+     * This vector is used to represent the direction along the X-axis in 3D space.
+     * </p>
+     */
     public static final Vector AXIS_X = new Vector(1, 0, 0);
+
 
     /**
      * Constructs a `Vector` with the specified coordinates.

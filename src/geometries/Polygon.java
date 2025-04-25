@@ -79,7 +79,18 @@ public class Polygon extends Geometry {
    @Override
    public Vector getNormal(Point point) { return plane.getNormal(point); }
 
-
+   /**
+    * Checks if a point {@code p} lies on the edge defined by points {@code a} and {@code b}.
+    * <p>
+    * This method computes the vectors from point {@code a} to points {@code p} and {@code b}, and verifies if they are collinear
+    * (i.e., if the cross product of the two vectors is zero). If the vectors are collinear, the method checks if point {@code p}
+    * lies within the bounds of the edge segment {@code ab}.
+    * </p>
+    * @param p The point to check
+    * @param a One endpoint of the edge
+    * @param b The other endpoint of the edge
+    * @return {@code true} if the point {@code p} lies on the edge {@code ab}, {@code false} otherwise
+    */
    public boolean isPointOnEdge(Point p, Point a, Point b) {
       // וקטור מ-A ל-P
       Vector v1 = p.subtract(a);

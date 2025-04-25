@@ -3,6 +3,13 @@ package primitives;
 /** Util class is used for some internal utilities, e.g. controlling accuracy
  * @author Dan */
 public final class Util {
+   /**
+    * Constant representing the value zero.
+    * <p>
+    * This constant can be used in cases where a zero value is needed,
+    * providing a named reference to improve code clarity and reduce magic numbers.
+    * </p>
+    */
     public static final double ZERO =0 ;
     /** It is binary, equivalent to ~1/1,000,000,000,000 in decimal (12 digits) */
    private static final int ACCURACY = -40;
@@ -52,6 +59,17 @@ public final class Util {
     * @return     the random value */
    public static double random(double min, double max) {
       return Math.random() * (max - min) + min;
+   }
+   /**
+    * Checks whether a given double value is approximately equal to 1.0,
+    * within a small epsilon threshold.
+    *
+    * @param value The value to check
+    * @return {@code true} if the value is close to 1.0 (within 1e-10), {@code false} otherwise
+    */
+   public static boolean isCloseToOne(double value) {
+      final double EPSILON = 1e-10;
+      return Math.abs(value - 1.0) < EPSILON;
    }
 
 }

@@ -9,14 +9,32 @@ import primitives.*;
 import renderer.Camera;
 
 /**
- * Testing Camera Class
+ * Unit tests for the {@link Camera} class.
+ * <p>
+ * This class contains tests to verify the correct behavior of the {@link Camera} class,
+ * including its builder pattern, view plane size, resolution, and camera direction.
+ * The tests check different scenarios, such as setting the target point, direction, and up vector,
+ * and handling boundary conditions such as invalid inputs.
+ * </p>
  * @author Dan
  */
 class CameraTest {
+
     /** Camera builder for the tests */
-    private final Camera.Builder cameraBuilder = Camera.getBuilder()
-            .setLocation((Point) Point.ZERO)
-            .setVpDistance(10);
+    private final Camera.Builder cameraBuilder;
+
+    /**
+     * Default constructor for {@link CameraTest}.
+     * <p>
+     * Initializes the camera builder with default settings.
+     * The default location is set to {@code Point.ZERO} and the view plane distance is set to 10.
+     * </p>
+     */
+    public CameraTest() {
+        cameraBuilder = Camera.getBuilder()
+                .setLocation((Point) Point.ZERO)
+                .setVpDistance(10);
+    }
     /** Assert failure message for a bad ray */
     private static final String  BAD_RAY       = "Bad ray";
 
@@ -61,7 +79,17 @@ class CameraTest {
                 camera2.constructRay(3, 3, 0, 0), BAD_RAY);
 
     }
-
+    /**
+     * Tests the builder pattern for the {@link Camera} class.
+     * <p>
+     * This test checks the functionality of setting the view plane size, resolution, and camera direction
+     * with or without an up vector. It includes equivalence partitions and boundary value tests:
+     * <ul>
+     * <li>EP01: Set target without an up vector.</li>
+     * <li>EP02: Set target with an up vector.</li>
+     * <li>BV01: Set target on the Y-axis without an up vector (should throw exception).</li>
+     * </ul>
+     */
     @Test
     void testBuilder() {
         cameraBuilder.setVpSize(4, 4).setResolution(2, 2);
