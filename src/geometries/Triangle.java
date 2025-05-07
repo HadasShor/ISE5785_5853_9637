@@ -27,7 +27,6 @@ public class Triangle extends Polygon {
     }
 
 
-
     /**
      * Returns the normal vector to the triangle at the given point.
      *
@@ -52,7 +51,7 @@ public class Triangle extends Polygon {
     @Override
     public List<Point> findIntersections(Ray ray) {
 
-    // Vector calculations for the triangle edges
+        // Vector calculations for the triangle edges
         Vector edge1 = vertices.get(1).subtract(vertices.get(0));
         Vector edge2 = vertices.get(2).subtract(vertices.get(0));
 
@@ -66,7 +65,7 @@ public class Triangle extends Polygon {
         }
 
         double f = 1 / a;
-        Vector s = ray.getP0().subtract(vertices.get(0));
+        Vector s = ray.getHead().subtract(vertices.get(0));
         double u = f * alignZero(s.dotProduct(h));
 
         // Intersection point is outside the triangle
@@ -91,7 +90,7 @@ public class Triangle extends Polygon {
         }
 
         // Return the intersection point
-        return List.of(ray.getP0().add(ray.getDirection().scale(t)));
+        return List.of(ray.getHead().add(ray.getDirection().scale(t)));
     }
 
 }

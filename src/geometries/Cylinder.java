@@ -13,13 +13,15 @@ import java.util.List;
 public class Cylinder extends Tube {
 
 
-    /** The height of the cylinder. */
-    private double height;
+    /**
+     * The height of the cylinder.
+     */
+    private final double height;
 
     /**
      * Constructs a `Cylinder` with the specified axis ray, radius, and height.
      *
-     * @param axis the axis ray of the cylinder
+     * @param axis   the axis ray of the cylinder
      * @param radius the radius of the cylinder
      * @param height the height of the cylinder
      */
@@ -39,12 +41,12 @@ public class Cylinder extends Tube {
     @Override
     public Vector getNormal(Point p0) {
         // Check if the point is at the base center
-        if(p0.equals(axis.getP0())) {
+        if (p0.equals(axis.getHead())) {
             return axis.getDirection().scale(-1);
         }
 
         // Compute the projection of the point onto the cylinder's axis
-        double distance = axis.getDirection().dotProduct(p0.subtract(axis.getP0()));
+        double distance = axis.getDirection().dotProduct(p0.subtract(axis.getHead()));
 
         // Check if the point is on the bottom base
         if (distance == 0) {
@@ -52,7 +54,7 @@ public class Cylinder extends Tube {
         }
 
         // Check if the point is on the top base
-        if(distance == height) {
+        if (distance == height) {
             return axis.getDirection();
         }
 
@@ -60,7 +62,7 @@ public class Cylinder extends Tube {
         return super.getNormal(p0);
     }
 
-/**
+    /**
      * Finds the intersections of the cylinder with the specified ray.
      *
      * @param ray the ray to intersect with

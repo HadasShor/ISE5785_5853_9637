@@ -1,5 +1,6 @@
 package primitives;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -44,7 +45,7 @@ public class Ray {
      * @param t the distance from the ray's origin
      * @return the point located {@code t} units in the direction of the ray
      */
-    public Point getP0(double t) {
+    public Point getHead(double t) {
         if (Util.isZero(t))
             return head;
         return head.add(direction.scale(t));
@@ -77,7 +78,7 @@ public class Ray {
      *
      * @return the starting point of the ray
      */
-    public Point getP0() {
+    public Point getHead() {
         return head;
     }
 
@@ -116,5 +117,20 @@ public class Ray {
                 "head=" + head +
                 ", direction=" + direction +
                 '}';
+    }
+
+    public Point findClosedPoint(List<Point> points) {
+        if(points==null|| points.size()==0)
+            return null;
+        double minDistance = Double.MAX_VALUE;
+        Point closePoint = points.get(0);
+        for (Point point : points) {
+            double distance = point.distanceSquared(head);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closePoint = point;
+            }
+        }
+        return closePoint;
     }
 }

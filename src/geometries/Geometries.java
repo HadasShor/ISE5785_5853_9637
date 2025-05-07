@@ -1,8 +1,11 @@
 package geometries;
 
-import primitives.*;
+import primitives.Point;
+import primitives.Ray;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -23,7 +26,8 @@ public class Geometries implements Intersectable {
      * Initializes the internal list of geometries to an empty list.
      * </p>
      */
-    public Geometries() {}
+    public Geometries() {
+    }
 
     /**
      * Constructs a {@code Geometries} object and adds the given {@link Intersectable} geometries to it.
@@ -44,20 +48,27 @@ public class Geometries implements Intersectable {
      *                   Can pass zero or more geometries.
      */
     public void add(Intersectable... geometries) {
-        for (Intersectable geometry : geometries) {
-            this.geometries.add(geometry);
-        }
+        Collections.addAll(this.geometries, geometries);
     }
 
     /**
-     * Finds the intersection points between a given {@link Ray} and all the geometries in this collection.
+     * Finds the intersections of a ray with all geometries in the list.
      *
-     * @param ray the {@link Ray} to intersect with the geometries.
-     * @return a list of {@link Point} objects where the ray intersects the geometries,
-     *         or {@code null} if there are no intersections.
+     * @param ray the ray to find intersections with
+     * @return a list of intersection points
      */
     @Override
     public List<Point> findIntersections(Ray ray) {
-        return null; // To be implemented
+        List<Point> intersections = null;
+        for (Intersectable geometry : geometries) {
+            List<Point> geoIntersections = geometry.findIntersections(ray);
+            if (geoIntersections != null) {
+                if (intersections == null) {
+                    intersections = new LinkedList<>();
+                }
+                intersections.addAll(geoIntersections);
+            }
+        }
+        return intersections;
     }
 }

@@ -61,25 +61,25 @@ public class Plane extends Geometry {
     public List<Point> findIntersections(Ray ray) {
 
         Vector v = ray.getDirection();
-        Point p0 = ray.getP0();
+        Point p0 = ray.getHead();
         //BVA 6
-        if(p0.equals(q)) {
+        if (p0.equals(q)) {
             return null;
         }
-        Vector q_p0 =q.subtract(p0);
-         //BVA 7+4
-        if(isZero( normal.dotProduct(q_p0))) {
+        Vector q_p0 = q.subtract(p0);
+        //BVA 7+4
+        if (isZero(normal.dotProduct(q_p0))) {
             return null;
         }
 
         //BVA 1 2
-        if( normal.dotProduct(v) == 0)
+        if (normal.dotProduct(v) == 0)
             return null;
 
         double nv = normal.dotProduct(v);
-       // double t = (v.dotProduct(q_p0) / nv);
+        // double t = (v.dotProduct(q_p0) / nv);
         double t = (normal.dotProduct(q_p0) / nv);
-        if(t < 0||t==(0)) {
+        if (t < 0 || t == (0)) {
             return null;
         }
         return List.of(ray.getPoint(t));

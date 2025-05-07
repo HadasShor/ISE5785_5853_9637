@@ -1,14 +1,18 @@
 package primitives;
-import java.util.Objects;
+
 /**
  * The `Point` class represents a point in 3D space.
  * It provides methods for basic geometric operations such as addition, subtraction, and distance calculation.
  */
 public class Point {
-    /** A constant representing the origin point (0,0,0). */
+    /**
+     * A constant representing the origin point (0,0,0).
+     */
     public static final Object ZERO = new Point(0, 0, 0);
 
-    /** The coordinates of the point stored as a `Double3` object. */
+    /**
+     * The coordinates of the point stored as a `Double3` object.
+     */
     final protected Double3 xyz;
 
     /**
@@ -40,10 +44,9 @@ public class Point {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if(!(o instanceof Point point)) return false;
-        return  xyz.equals(point.xyz);
+        if (!(o instanceof Point point)) return false;
+        return xyz.equals(point.xyz);
     }
-
 
 
     /**
@@ -53,8 +56,7 @@ public class Point {
      */
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return xyz.hashCode();
     }
 
@@ -93,12 +95,14 @@ public class Point {
 //        }
         return new Point(xyz.add(vector.xyz));
     }
+
     /**
      * Calculates the squared distance to another point.
      *
      * @param point the point to calculate the distance to
      * @return the squared distance to the point
-//     */
+     * //
+     */
 //    public double distanceSquared(Point point) {
 //        double x2x1 = point.xyz.d1() - xyz.d1();
 //        double y2y1 = point.xyz.d2() - xyz.d2();

@@ -1,7 +1,5 @@
 package primitives;
 
-import static primitives.Util.isZero;
-
 /**
  * The `Vector` class represents a vector in 3D space.
  * It extends the `Point` class and provides additional methods for vector operations.
@@ -46,7 +44,6 @@ public class Vector extends Point {
     }
 
 
-
     /**
      * Constructs a `Vector` with the specified coordinates.
      *
@@ -69,12 +66,12 @@ public class Vector extends Point {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if(!(o instanceof Vector vector)) return false;
+        if (!(o instanceof Vector vector)) return false;
         return xyz.equals(vector.xyz);
     }
 
 
-      /**
+    /**
      * Adds another vector to this vector and returns the resulting vector.
      *
      * @param vector the vector to add
@@ -100,7 +97,8 @@ public class Vector extends Point {
      *
      * @return the length of this vector
      */
-    public double length() { return Math.sqrt(lengthSquared());
+    public double length() {
+        return Math.sqrt(lengthSquared());
     }
 
     /**
@@ -138,6 +136,7 @@ public class Vector extends Point {
         double z = xyz.d1() * vector.xyz.d2() - xyz.d2() * vector.xyz.d1();
         return new Vector(x, y, z);
     }
+
     /**
      * Scales this vector by a given scalar.
      *

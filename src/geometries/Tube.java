@@ -1,7 +1,8 @@
 package geometries;
 
-import primitives.*;
+import primitives.Point;
 import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
 
 import java.util.ArrayList;
@@ -14,13 +15,15 @@ import static primitives.Util.isZero;
  * It is defined by a ray (axis) and a radius.
  */
 public class Tube extends RadialGeometry {
-    /** The axis ray of the tube. */
+    /**
+     * The axis ray of the tube.
+     */
     protected final Ray axis;
 
     /**
      * Constructs a `Tube` with the specified axis ray and radius.
      *
-     * @param axis the axis ray of the tube
+     * @param axis   the axis ray of the tube
      * @param radius the radius of the tube
      */
     public Tube(Ray axis, double radius) {
@@ -37,28 +40,28 @@ public class Tube extends RadialGeometry {
     @Override
     public Vector getNormal(Point p0) {
 
-            //  חישוב ההיטל של P_0 על וקטור הכיוון של הקרן
-         //   double t = axis.getDirection().dotProduct(p0.subtract(axis.getPoint()));
+        //  חישוב ההיטל של P_0 על וקטור הכיוון של הקרן
+        //   double t = axis.getDirection().dotProduct(p0.subtract(axis.getPoint()));
 
-            // 2️ מוצאים את נקודת המרכז O על הציר
-           // Point o = axis.getPoint().add(axis.getDirection().scale(t));
+        // 2️ מוצאים את נקודת המרכז O על הציר
+        // Point o = axis.getPoint().add(axis.getDirection().scale(t));
 
-            // 3 מחשבים את וקטור הנורמל
-           // Vector n = p0.subtract(o);
+        // 3 מחשבים את וקטור הנורמל
+        // Vector n = p0.subtract(o);
 
-            // 4 מנרמלים את הווקטור ומחזירים אותו
-            return p0.subtract(axis.getP0().add(axis.getDirection().scale(axis.getDirection().dotProduct(p0.subtract(axis.getP0()))))).normalize();
+        // 4 מנרמלים את הווקטור ומחזירים אותו
+        return p0.subtract(axis.getHead().add(axis.getDirection().scale(axis.getDirection().dotProduct(p0.subtract(axis.getHead()))))).normalize();
 
     }
 
     @Override
     public List<Point> findIntersections(Ray ray) {
         // קבלת נתוני הקרן
-        Point P = ray.getP0();
+        Point P = ray.getHead();
         Vector d = ray.getDirection();
 
         // קבלת נתוני ציר הגליל
-        Point C = axis.getP0();
+        Point C = axis.getHead();
         Vector v = axis.getDirection();  // מנורמל
 
         // מחשבים את הווקטור מהנקודה P לנקודה C

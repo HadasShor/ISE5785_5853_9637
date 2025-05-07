@@ -1,14 +1,13 @@
 package geometries;
 
-import primitives.Point;
-import primitives.Vector;
-
 /**
  * The `RadialGeometry` class represents a radial geometry in 3D space.
  * It is defined by a radius.
  */
 public abstract class RadialGeometry extends Geometry {
-    /** The radius of the radial geometry. */
+    /**
+     * The radius of the radial geometry.
+     */
     protected final double radius;
 
     /**

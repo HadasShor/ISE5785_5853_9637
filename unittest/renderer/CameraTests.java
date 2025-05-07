@@ -97,6 +97,8 @@ class CameraTest {
         // ============ Equivalence Partitions Tests ==============
         // EP01: set to a target point without up vector
         Point  target1    = new Point(10, -10, 0);
+        //Point  target1    = new Point(0, -10, 0);
+
         Camera camera1    = cameraBuilder.setDirection(target1).build();
         Point  center1    = target1.subtract((Point) Point.ZERO).normalize().scale(10);
         Vector right1     = Vector.AXIS_Z;
