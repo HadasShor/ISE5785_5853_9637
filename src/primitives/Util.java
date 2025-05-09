@@ -78,5 +78,15 @@ public final class Util {
     public static double random(double min, double max) {
         return Math.random() * (max - min) + min;
     }
-
+    /**
+     * Checks whether a given double value is approximately equal to 1.0,
+     * within a small epsilon threshold.
+     *
+     * @param value The value to check
+     * @return {@code true} if the value is close to 1.0 (within 1e-10), {@code false} otherwise
+     */
+    public static boolean isCloseToOne(double value) {
+        final double EPSILON = 1e-10;
+        return Math.abs(value - 1.0) < EPSILON;
+    }
 }

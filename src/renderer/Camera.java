@@ -154,9 +154,7 @@ public class Camera implements Cloneable {
         }
 
         public Builder setDirection(Point point) {
-            camera.vTo = point.subtract(camera.p0).normalize();
-            camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
-            return this;
+            return  setDirection(point, Vector.AXIS_Y);
         }
 
         public Builder setVpSize(double width, double height) {
@@ -182,6 +180,7 @@ public class Camera implements Cloneable {
             camera.imageWriter = new ImageWriter(nx, ny);
             camera.Nx = nx;
             camera.Ny = ny;
+
             return this;
         }
 
@@ -198,6 +197,7 @@ public class Camera implements Cloneable {
         }
 
         public Camera build() {
+            camera.imageWriter = new ImageWriter(camera.Nx, camera.Ny);
             if (camera.p0 == null)
                 throw new MissingResourceException("p0 must has value", "Camera", "p0");
             if (camera.vUp == null)
@@ -220,12 +220,15 @@ public class Camera implements Cloneable {
             double c = camera.vRight.dotProduct(camera.vUp);
             double d = camera.vTo.length();
             double m = camera.vUp.length();
+
             if (!Util.isZero(camera.vTo.dotProduct(camera.vRight)) ||
                     !Util.isZero(camera.vTo.dotProduct(camera.vUp)) ||
                     !Util.isZero(camera.vRight.dotProduct(camera.vUp)))
                 throw new IllegalArgumentException("vTo, vUp and vRight must be orthogonal");
 
-            if (camera.vTo.length() != 1 || camera.vUp.length() != 1 || camera.vRight.length() != 1)
+//            if (camera.vTo.length() != 1 || camera.vUp.length() != 1 || camera.vRight.length() != 1)
+//                throw new IllegalArgumentException("vTo, vUp and vRight must be normalized");
+            if (!Util.isCloseToOne(camera.vTo.length()) || !Util.isCloseToOne(camera.vUp.length()) || !Util.isCloseToOne(camera.vRight.length()))
                 throw new IllegalArgumentException("vTo, vUp and vRight must be normalized");
 
             if (camera.width <= 0 || camera.height <= 0)
