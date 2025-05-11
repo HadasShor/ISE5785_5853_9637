@@ -119,6 +119,14 @@ public class Ray {
                 '}';
     }
 
+    /**
+     * Finds the closest point to the ray from a given list of points.
+     *
+     * @param points The list of points to check against the ray.
+     *               It contains the points that will be compared to the ray
+     *               to find the one closest to it.
+     * @return The closest point to the ray, or {@code null} if the list is empty.
+     */
     public Point findClosedPoint(List<Point> points) {
         if(points==null|| points.size()==0)
             return null;
