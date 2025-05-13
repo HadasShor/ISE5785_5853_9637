@@ -40,26 +40,28 @@ public class Cylinder extends Tube {
 
     @Override
     public Vector getNormal(Point p0) {
+        Point head = axis.getHead();
+        Vector dir = axis.getDirection();
+        Point point = axis.getPoint();
         // Check if the point is at the base center
         if (p0.equals(axis.getHead())) {
-            return axis.getDirection().scale(-1);
+            return dir.scale(-1);
+        }
+        // Check if the point is at the top base center
+        if (p0.equals(axis.getPoint(height))) {
+            return dir;
         }
 
-        // Compute the projection of the point onto the cylinder's axis
-        double distance = axis.getDirection().dotProduct(p0.subtract(axis.getHead()));
-
-        // Check if the point is on the bottom base
-        if (distance == 0) {
-            return axis.getDirection().scale(-1);
+        // Check if the point is on the axis of the cylinder
+        if (p0.subtract(dir).dotProduct(dir) == 0.0 && p0.distanceSquared(point) <= radius * radius) {
+            return dir.scale(-1);
         }
 
-        // Check if the point is on the top base
-        if (distance == height) {
-            return axis.getDirection();
+        if (p0.subtract(axis.getPoint(height)).dotProduct(dir) == 0.0 && p0.distanceSquared(axis.getPoint(height)) <= radius * radius) {
+            return dir;
         }
 
-        // If the point is on the curved surface, use the normal from the Tube class
-        return super.getNormal(p0);
+    return super.getNormal(p0);
     }
 
     /**
