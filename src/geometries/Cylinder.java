@@ -4,7 +4,16 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.LinkedList;
 import java.util.List;
+
+import static primitives.Util.alignZero;
+
+
+import java.util.Comparator;
+
+
+import static primitives.Util.alignZero;
 
 /**
  * The `Cylinder` class represents a cylinder in 3D space.
@@ -13,6 +22,16 @@ import java.util.List;
 public class Cylinder extends Tube {
 
 
+
+    /**
+     * To represent bottomPlane of the cylinder.
+     */
+    private final Plane bottomPlane;
+
+    /**
+     * To represent topPlane of the cylinder.
+     */
+    private final Plane topPlane;
     /**
      * The height of the cylinder.
      */
@@ -28,6 +47,9 @@ public class Cylinder extends Tube {
     public Cylinder(Ray axis, double radius, double height) {
         super(axis, radius);
         this.height = height;
+
+        this.bottomPlane = new Plane(axis.getHead(), axis.getDirection());
+        this.topPlane = new Plane(axis.getPoint(height), axis.getDirection());
     }
 
     /**
@@ -66,14 +88,48 @@ public class Cylinder extends Tube {
         return super.getNormal(p0);
     }
 
-    /**
-     * Finds the intersections of the cylinder with the specified ray.
-     *
-     * @param ray the ray to intersect with
-     * @return a list of intersection points, or {@code null} if there are no intersections
-     */
     @Override
-    public List<Point> findIntersections(Ray ray) {
-        return null;
+    protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
+        final List<Intersection> intersections = new LinkedList<>();
+        final Vector axisDir = axis.getDirection();
+        final Point baseCenter = axis.getHead();
+        final Point topCenter = axis.getPoint(height);
+        final Point rayOrigin = ray.getHead();
+
+        // 1. Tube intersections
+        List<Intersection> tubeIntersections = super.calculateIntersectionsHelper(ray);
+        if (tubeIntersections != null) {
+            for (Intersection p : tubeIntersections) {
+                double axisProjection = axisDir.dotProduct(p.point.subtract(baseCenter));
+                if (alignZero(axisProjection) >= 0 && alignZero(axisProjection - height) <= 0) {
+                    intersections.add(new Intersection(this, p.point));
+                }
+            }
+        }
+
+        // 2. Bottom cap
+        List<Point> bottom = bottomPlane.findIntersections(ray);
+        if (bottom != null) {
+            Point p = bottom.getFirst();
+            if (alignZero(p.distanceSquared(baseCenter) - radius*radius) < 0) {
+                intersections.add(new Intersection(this, p));
+            }
+        }
+
+        // 3. Top cap
+        List<Point> top = topPlane.findIntersections(ray);
+        if (top != null) {
+            Point p = top.getFirst();
+            if (alignZero(p.distanceSquared(topCenter) - radius*radius) < 0) {
+                intersections.add(new Intersection(this, p));
+            }
+        }
+
+        // 4. Sort by distance
+        intersections.sort(Comparator.comparingDouble(p ->
+                p.point.subtract(rayOrigin).dotProduct(ray.getDirection())));
+
+        return intersections.isEmpty() ? null : intersections;
     }
+
 }

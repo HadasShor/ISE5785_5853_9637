@@ -8,6 +8,7 @@ import primitives.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
@@ -51,51 +52,64 @@ public class Tube extends RadialGeometry {
         ).normalize();
     }
 
-    /**
-     * Finds the intersection points between the tube and a given ray.
-     *
-     * @param ray the ray to check for intersections with the tube
-     * @return a list of intersection points, or {@code null} if there are no intersections
-     */
     @Override
-    public List<Point> findIntersections(Ray ray) {
-        Point P = ray.getHead();
-        Vector d = ray.getDirection();
+    protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
+        // protected List<Intersection> calculateIntersectionsHelper(Ray ray)
+        // Get ray origin and direction
+        final Point rayOrigin = ray.getHead();
+        final Point axisPoint = axis.getHead(); // Cylinder axis starting point
+        final Vector axisDir = axis.getDirection(); // Cylinder axis direction
+        final Vector rayDir = ray.getDirection();
 
-        Point C = axis.getHead();
-        Vector v = axis.getDirection();
-
-        Vector delta = P.subtract(C);
-
-        double dDotV = d.dotProduct(v);
-        Vector dPerp = d.subtract(v.scale(dDotV));
-
-        double deltaDotV = delta.dotProduct(v);
-        Vector deltaPerp = delta.subtract(v.scale(deltaDotV));
-
-        double A = dPerp.lengthSquared();
-        double B = 2 * deltaPerp.dotProduct(dPerp);
-        double C_coeff = deltaPerp.lengthSquared() - radius * radius;
-
-        if (isZero(A))
-            return null;
-
-        double disc = B * B - 4 * A * C_coeff;
-        if (disc < 0)
-            return null;
-
-        double sqrtDisc = Math.sqrt(disc);
-        double t1 = (-B + sqrtDisc) / (2 * A);
-        double t2 = (-B - sqrtDisc) / (2 * A);
-
-        List<Point> intersections = new ArrayList<>();
-        if (t1 > Util.ZERO) {
-            intersections.add(ray.getPoint(t1));
-        }
-        if (t2 > Util.ZERO) {
-            intersections.add(ray.getPoint(t2));
+        Vector deltaP;
+        boolean isDeltaPZero;
+        try {
+            // Vector from cylinder axis point to ray origin
+            deltaP = rayOrigin.subtract(axisPoint);
+            isDeltaPZero = false;
+        } catch (IllegalArgumentException e) {
+            // Special case: ray origin lies exactly on the axis line
+            deltaP = null;
+            isDeltaPZero = true;
         }
 
-        return intersections.isEmpty() ? null : intersections;
+        double rayDirDotAxis = rayDir.dotProduct(axisDir);
+        // Compute quadratic coefficients for intersection equation
+        double a = rayDir.dotProduct(rayDir) - rayDirDotAxis * rayDirDotAxis;
+        double b, c;
+
+        if (isDeltaPZero) {
+            // Special case handling if deltaP is zero
+            b = 0;
+            c = -radius*radius;
+        } else {
+            // General case
+            double deltaPDotAxis = deltaP.dotProduct(axisDir);
+
+            // Coefficient b of quadratic equation
+            b = 2 * (rayDir.dotProduct(deltaP) - rayDirDotAxis * deltaPDotAxis);
+
+            // Coefficient c of quadratic equation
+            c = deltaP.dotProduct(deltaP) - deltaPDotAxis * deltaPDotAxis - radius*radius;
+        }
+
+        // Calculate discriminant to determine intersection existence
+        double discriminant = alignZero(b * b - 4 * a * c);
+        if (discriminant <= 0) return null; // No real solutions → no intersection
+
+        double sqrtDiscriminant = Math.sqrt(discriminant);
+        double denominator = 2 * a;
+
+        // quadratic parameter 'a' is always positive in our equation, therefore t2 is always greater than t1
+        // Calculate the intersection parameters (t values)
+        double t2 = alignZero((-b + sqrtDiscriminant) / denominator);
+        if (t2 <= 0) return null; // No valid intersection
+
+        double t1 = alignZero((-b - sqrtDiscriminant) / denominator);
+        return t1 <= 0 ?
+
+                List.of(new Intersection(this, ray.getPoint(t2))) :
+                List.of(new Intersection(this, ray.getPoint(t1)),
+                        new Intersection(this, ray.getPoint(t2)));
     }
 }
