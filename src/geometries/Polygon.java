@@ -137,19 +137,21 @@ public class Polygon extends Geometry {
         // Initialize a list to hold the normals of the edges of the polygonal base
         List<Vector> normals = new LinkedList<>();
 
+        Point first = vertices.getFirst();
         // Get the starting point and direction of the ray
         final Point startPoint = ray.getPoint(0);
         final Vector dir = ray.getDirection();
 
         // Calculate the normal vector for each edge of the polygonal base
-        Vector v1 = vertices.get(0).subtract(startPoint);
-        for (Point p : vertices.subList(1, size)) {
+        Vector v1 = first.subtract(startPoint);
+        var reshima = vertices.subList(1, size);
+        for (Point p : reshima ) {
             Vector v2 = p.subtract(startPoint);
             normals.add(v1.crossProduct(v2).normalize());
             v1 = v2;
         }
         // Add the normal for the edge connecting the last vertex to the first vertex
-        normals.add(vertices.get(size - 1).subtract(startPoint).crossProduct(vertices.get(0).subtract(startPoint)).normalize());
+        normals.add(vertices.get(size - 1).subtract(startPoint).crossProduct(first.subtract(startPoint)).normalize());
 
         // Determine if the ray direction is consistently on one side of all the polygon's edges
         boolean allPositive = dir.dotProduct(normals.get(0)) > 0;

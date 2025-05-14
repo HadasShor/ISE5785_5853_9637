@@ -8,7 +8,7 @@ public class Point {
     /**
      * A constant representing the origin point (0,0,0).
      */
-    public static final Object ZERO = new Point(0, 0, 0);
+    public static final Point ZERO = new Point(0, 0, 0);
 
     /**
      * The coordinates of the point stored as a `Double3` object.

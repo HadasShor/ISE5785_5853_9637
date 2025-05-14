@@ -52,16 +52,18 @@ public class Cylinder extends Tube {
             return dir;
         }
 
-        // Check if the point is on the axis of the cylinder
-        if (p0.subtract(dir).dotProduct(dir) == 0.0 && p0.distanceSquared(point) <= radius * radius) {
+        if (p0.subtract(axis.getHead()).dotProduct(dir) == 0.0 &&
+                p0.distanceSquared(axis.getHead()) <= radius * radius) {
             return dir.scale(-1);
         }
 
-        if (p0.subtract(axis.getPoint(height)).dotProduct(dir) == 0.0 && p0.distanceSquared(axis.getPoint(height)) <= radius * radius) {
+        if (p0.subtract(axis.getPoint(height)).dotProduct(dir) == 0.0 &&
+                p0.distanceSquared(axis.getPoint(height)) <= radius * radius) {
             return dir;
         }
 
-    return super.getNormal(p0);
+
+        return super.getNormal(p0);
     }
 
     /**

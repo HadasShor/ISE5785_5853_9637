@@ -6,6 +6,8 @@ import scene.Scene;
 import javax.imageio.ImageIO;
 import java.util.MissingResourceException;
 
+import static primitives.Util.isZero;
+
 /**
  * Camera class represents a virtual camera for rendering 3D scenes.
  * @author Hadas_Shor, Nurit_Ezra
@@ -93,29 +95,20 @@ public class Camera implements Cloneable {
      */
     public Ray constructRay(int nX, int nY, int j, int i) {
         Point pc = p0.add(vTo.scale(distance));
+
         double yI = -(i - (nY - 1) / 2d) * height / nY;
         double xJ = (j - (nX - 1) / 2d) * width / nX;
 
         Point pIJ = pc;
-        if (!Util.isZero(xJ)) pIJ = pIJ.add(vRight.scale(xJ));
-        if (!Util.isZero(yI)) pIJ = pIJ.add(vUp.scale(yI));
 
-        return new Ray(p0, pIJ.subtract(p0).normalize());
+        if (!isZero(xJ))
+            pIJ = pIJ.add(vRight.scale(xJ));
+        if (!isZero(yI))
+            pIJ = pIJ.add(vUp.scale(yI));
+
+        return new Ray(p0, pIJ.subtract(p0));
     }
 
-    /**
-     * Placeholder for constructing a ray through fractional pixel coordinates.
-     *
-     * @param nX number of pixels in x-direction
-     * @param nY number of pixels in y-direction
-     * @param j  x-coordinate (double) of the pixel
-     * @param i  y-coordinate (double) of the pixel
-     * @return ray through the given pixel
-     */
-    public Ray constructRayThroughPixel(int nX, int nY, double j, double i) {
-        //todo
-        return null;
-    }
 
     /**
      * Gets the camera's position.
@@ -363,9 +356,9 @@ public class Camera implements Cloneable {
          * @throws IllegalArgumentException if vectors are not orthogonal or normalized
          */
         public Camera build() {
-            camera.imageWriter = new ImageWriter(camera.Nx, camera.Ny);
-            if (camera.p0 == null)
-                throw new MissingResourceException("p0 must has value", "Camera", "p0");
+               if (camera.p0 == null)
+               // throw new MissingResourceException("p0 must has value", "Camera", "p0");
+                   camera.p0 = Point.ZERO;
             if (camera.vUp == null)
                 throw new MissingResourceException("vUp must has value", "Camera", "vUp");
             if (camera.vTo == null)
@@ -382,9 +375,9 @@ public class Camera implements Cloneable {
                 camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
             }
 
-            if (!Util.isZero(camera.vTo.dotProduct(camera.vRight)) ||
-                    !Util.isZero(camera.vTo.dotProduct(camera.vUp)) ||
-                    !Util.isZero(camera.vRight.dotProduct(camera.vUp)))
+            if (!isZero(camera.vTo.dotProduct(camera.vRight)) ||
+                    !isZero(camera.vTo.dotProduct(camera.vUp)) ||
+                    !isZero(camera.vRight.dotProduct(camera.vUp)))
                 throw new IllegalArgumentException("vTo, vUp and vRight must be orthogonal");
 
             if (!Util.isCloseToOne(camera.vTo.length()) ||
@@ -402,7 +395,7 @@ public class Camera implements Cloneable {
                 throw new IllegalArgumentException("Nx and Ny must be positive");
 
             if (camera.imageWriter == null)
-                throw new MissingResourceException("ImageWriter must be set", "Camera", "imageWriter");
+                camera.imageWriter = new ImageWriter(camera.Nx, camera.Ny);
 
             if (camera.rayTracer == null) {
                 camera.rayTracer = new SimpleRayTracer(null, RayTracerType.SIMPLE);
