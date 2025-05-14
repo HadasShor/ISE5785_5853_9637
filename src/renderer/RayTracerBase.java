@@ -1,8 +1,10 @@
 package renderer;
 
+import geometries.Intersectable;
 import primitives.Color;
 import primitives.Ray;
 import scene.Scene;
+import geometries.Intersectable.Intersection;
 /**
  * The `RayTracerBase` class is an abstract base class for ray tracing algorithms.
  * It provides a method to trace rays through a scene and obtain the color at the intersection point.

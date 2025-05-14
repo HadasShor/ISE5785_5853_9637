@@ -30,6 +30,7 @@ public class Scene {
      */
     public final Geometries geometries = new Geometries();
 
+
     /**
      * Constructor for creating a new scene with a specified name.
      *
@@ -59,6 +60,16 @@ public class Scene {
     public Scene setAmbientLight(AmbientLight ambientLight) {
         this.ambientLight = ambientLight;
         // Set the ambient light for the scene
+        return this;
+    }
+    /**
+     * Adds geometries to the scene.
+     *
+     * @param geometries the geometries to add
+     * @return the current Scene instance (for method chaining)
+     */
+    public Scene setGeometries(Geometries geometries) {
+        this.geometries.add(geometries);
         return this;
     }
 }

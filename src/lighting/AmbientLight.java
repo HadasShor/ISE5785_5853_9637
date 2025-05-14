@@ -12,7 +12,7 @@ public class AmbientLight {
     /**
      * Represents no ambient light (black color).
      */
-    public static final AmbientLight NONE = new AmbientLight(Color.BLACK) ;
+    public static final AmbientLight NONE = new AmbientLight(Color.BLACK,1.0) ;
     /**
      * The intensity of the ambient light.
      * It is represented as a {@link Color} object.
@@ -24,6 +24,14 @@ public class AmbientLight {
      * @param IA The intensity of the ambient light.
      */
     public AmbientLight(Color IA) {
+        this.intensity = IA;
+    }
+    /**
+     * Constructor for AmbientLight with intensity.
+     *
+     * @param IA The intensity of the ambient light.
+     */
+    public AmbientLight(Color IA, double kA) {
         this.intensity = IA;
     }
 

@@ -133,7 +133,7 @@ public class Polygon extends Geometry {
      * @return A list of intersection points, or null if no intersection is found.
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
         // Initialize a list to hold the normals of the edges of the polygonal base
         List<Vector> normals = new LinkedList<>();
 
@@ -164,6 +164,14 @@ public class Polygon extends Geometry {
         }
 
         // Find and return the intersection points of the ray with the plane
-        return plane.findIntersections(ray);
+        List<Point> intersections = plane.findIntersections(ray);
+        if (intersections == null) return null;
+
+        // השלב השלישי: המרת הנקודות לרשימת Intersections
+        List<Intersection> result = new LinkedList<>();
+        for (Point p : intersections) {
+            result.add(new Intersection(this, p));
+        }
+        return result;
     }
 }

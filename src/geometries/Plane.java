@@ -100,4 +100,39 @@ public class Plane extends Geometry {
         // Return the intersection point
         return List.of(ray.getPoint(t));
     }
+
+    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
+        Vector v = ray.getDirection();
+        Point p0 = ray.getHead();
+
+        // Special case: the ray origin is on the plane
+        if (p0.equals(q)) {
+            return null;
+        }
+
+        Vector q_p0 = q.subtract(p0);
+
+        // Special case: the vector from the ray origin to the plane point is orthogonal to the plane
+        if (isZero(normal.dotProduct(q_p0))) {
+            return null;
+        }
+
+        double nv = normal.dotProduct(v);
+
+        // If the ray is parallel to the plane (dot product is zero), no intersection
+        if (isZero(nv)) {
+            return null;
+        }
+
+        // Compute the intersection scalar 't'
+        double t = normal.dotProduct(q_p0) / nv;
+
+        // If the intersection is behind the ray's origin or at the origin, it's not considered
+        if (t <= 0) {
+            return null;
+        }
+
+        // Return the intersection point
+        return List.of(new Intersection(this,ray.getPoint(t)));
+    }
 }

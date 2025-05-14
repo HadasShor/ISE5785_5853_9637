@@ -17,7 +17,7 @@ import java.util.List;
  * intersection points of a given {@link Ray} with all the geometries in the collection.
  * </p>
  */
-public class Geometries implements Intersectable {
+public class Geometries extends Intersectable {
 
     /**
      * The list of geometries contained in this collection.
@@ -76,10 +76,10 @@ public class Geometries implements Intersectable {
      * @return a list of intersection points, or {@code null} if no intersections are found.
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
-        List<Point> intersections = null;
+    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
+        List<Intersection> intersections = null;
         for (Intersectable geometry : geometries) {
-            List<Point> geoIntersections = geometry.findIntersections(ray);
+            List<Intersection> geoIntersections = geometry.calculateIntersectionsHelper(ray);
             if (geoIntersections != null) {
                 if (intersections == null) {
                     intersections = new LinkedList<>();
@@ -89,4 +89,6 @@ public class Geometries implements Intersectable {
         }
         return intersections;
     }
+
+
 }
