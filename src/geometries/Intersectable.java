@@ -1,7 +1,10 @@
 package geometries;
 
+import lighting.LightSource;
+import primitives.Material;
 import primitives.Point;
 import primitives.Ray;
+import primitives.Vector;
 
 import java.util.List;
 
@@ -10,6 +13,9 @@ import java.util.List;
  * It provides a method to find the intersections of the object with a ray.
  */
 public abstract class Intersectable {
+
+
+
     /**
      * Finds the intersections of the object with the specified ray.
      *
@@ -30,10 +36,24 @@ public abstract class Intersectable {
     }
 
     public static class Intersection {
+
+
+
         public final Geometry geometry;
         public final Point point;
 
+        public final Material material;
+        public Vector rayDir;
+        public Vector normal;
+        public double scaleNR;
+        public LightSource lightSource;
+        public Vector lightDir;
+        public double scaleNL;
         public Intersection(Geometry geometry, Point point) {
+            if (geometry != null)
+                this.material = geometry.getMaterial();
+            else
+                this.material = new Material();
             this.geometry = geometry;
             this.point = point;
         }

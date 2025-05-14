@@ -29,10 +29,11 @@ public class SpotLight extends PointLight {
 
     @Override
     public Color getIntensity(Point point) {
-        Color oldColor = super.getIntensity(point);
-        if(narrowBeam != 1d)
-            return oldColor.scale(Math.pow(Math.max(0d, direction.dotProduct(getL(point))),narrowBeam));
-        return oldColor.scale(Math.max(0d, direction.dotProduct(getL(point))));
+        Vector l = getL(point);
+        double dir = l.dotProduct(direction.scale(-1));
+        double intensity = Math.max(0, dir);
+        intensity = Math.pow(intensity, narrowBeam);
+        return super.getIntensity(point).scale(intensity);
     }
     /**
      * set the narrow beam of the light
