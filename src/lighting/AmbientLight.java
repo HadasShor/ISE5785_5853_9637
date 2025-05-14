@@ -8,33 +8,23 @@ import primitives.Color;
  * Ambient light is non-directional and illuminates all objects equally.
  * @author Hadas_Shor, Nurit_Ezra
  */
-public class AmbientLight {
+public class AmbientLight extends Light {
     /**
      * Represents no ambient light (black color).
      */
     public static final AmbientLight NONE = new AmbientLight(Color.BLACK,1.0) ;
-    /**
-     * The intensity of the ambient light.
-     * It is represented as a {@link Color} object.
-     */
-    private final Color intensity;
-    /**
-     * Constructor for AmbientLight with intensity.
-     *
-     * @param IA The intensity of the ambient light.
-     */
-    public AmbientLight(Color IA) {
-        this.intensity = IA;
-    }
+
     /**
      * Constructor for AmbientLight with intensity.
      *
      * @param IA The intensity of the ambient light.
      */
     public AmbientLight(Color IA, double kA) {
-        this.intensity = IA;
+        super(IA);
     }
-
+    public AmbientLight(Color IA) {
+        super(IA);
+    }
     /**
      * Gets the intensity of the ambient light.
      *
@@ -43,4 +33,6 @@ public class AmbientLight {
     public Color getIntensity() {
         return intensity;
     }
+
+
 }

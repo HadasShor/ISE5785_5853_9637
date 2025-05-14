@@ -3,6 +3,7 @@ package renderer;
 import geometries.Geometries;
 import geometries.Intersectable.*;
 import primitives.Color;
+import primitives.Double3;
 import primitives.Point;
 import primitives.Ray;
 import scene.Scene;
@@ -57,6 +58,7 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return the ambient light color at the given point
      */
     private Color calcColor(Intersection intersection) {
-        return scene.ambientLight.getIntensity().add(intersection.geometry.getEmission());
+        Double3 k=intersection.geometry.getMaterial().Ka;
+        return scene.ambientLight.getIntensity().scale(k).add(intersection.geometry.getEmission());
     }
 }
