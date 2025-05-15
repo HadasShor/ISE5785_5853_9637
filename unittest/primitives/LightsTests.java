@@ -10,6 +10,8 @@ import renderer.Camera;
 import renderer.RayTracerType;
 import scene.Scene;
 
+import javax.imageio.ImageWriter;
+
 /**
  * Test rendering a basic image
  * @author Dan Zilberstein
@@ -199,6 +201,47 @@ class LightsTests {
          .build() //
          .renderImage() //
          .writeToImage("lightTrianglesSpotSharp");
+   }
+
+
+
+   /// /////////////////////////////////////////////////////////
+   /** Produce a picture of a sphere lighted by multiple light sources */
+   @Test
+   void sphereMultipleLights() {
+      scene1.geometries.add(sphere);
+
+      // Adding multiple light sources
+      scene1.light.add(new DirectionalLight(sphereLightColor, sphereLightDirection));
+      scene1.light.add(new PointLight(new Color(500, 300, 0), new Point(50, -50, 25))
+              .setKL(0.001).setKQ(0.0002));
+      scene1.light.add(new SpotLight(new Color(200, 500, 300), new Point(-50, -50, 25), new Vector(1, 1, -0.5))
+              .setKL(0.001).setKQ(0.0001).setNarrowBeam(10.0));
+
+      // Rendering the image
+      camera1.setResolution(500, 500) //
+              .build() //
+              .renderImage() //
+              .writeToImage("lightSphereMultiple");
+   }
+
+   /** Produce a picture of two triangles lighted by multiple light sources */
+   @Test
+   void trianglesMultipleLights() {
+      scene2.geometries.add(triangle1, triangle2);
+
+      // Adding multiple light sources
+      scene2.light.add(new DirectionalLight(trianglesLightColor, trianglesLightDirection));
+      scene2.light.add(new PointLight(new Color(500, 300, 0), new Point(20, 30, -100))
+              .setKL(0.001).setKQ(0.0002));
+      scene2.light.add(new SpotLight(new Color(200, 500, 300), new Point(-30, 10, -100), new Vector(-2, -2, -2))
+              .setKL(0.001).setKQ(0.0001).setNarrowBeam(10.0));
+
+      // Rendering the image
+      camera2.setResolution(500, 500) //
+              .build() //
+              .renderImage() //
+              .writeToImage("lightTrianglesMultiple");
    }
 
 }

@@ -20,7 +20,7 @@ public class AmbientLight extends Light {
      * @param IA The intensity of the ambient light.
      */
     public AmbientLight(Color IA, double kA) {
-        super(IA);
+        super(IA);//בונוס
     }
     public AmbientLight(Color IA) {
         super(IA);

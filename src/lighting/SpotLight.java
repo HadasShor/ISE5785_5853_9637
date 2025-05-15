@@ -31,6 +31,7 @@ public class SpotLight extends PointLight {
     public Color getIntensity(Point point) {
         Vector l = getL(point);
         double dir = l.dotProduct(direction.scale(-1));
+
         double intensity = Math.max(0, dir);
         intensity = Math.pow(intensity, narrowBeam);
         return super.getIntensity(point).scale(intensity);
@@ -44,4 +45,13 @@ public class SpotLight extends PointLight {
         this.narrowBeam = narrowBeam;
         return this;
     }
+    @Override
+    public Vector getL(Point point) {
+
+        return position.subtract(point).normalize();
+    }
+//@Override
+//public Vector getL(Point point) {
+//    return point.subtract(position).normalize(); // כיוון מנקודה למקור
+//}
 }

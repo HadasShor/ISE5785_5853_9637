@@ -15,7 +15,6 @@ import java.util.List;
 public abstract class Intersectable {
 
 
-
     /**
      * Finds the intersections of the object with the specified ray.
      *
@@ -23,13 +22,13 @@ public abstract class Intersectable {
      * @return a list of intersection points, or {@code null} if there are no intersections
      */
     //public abstract List<Point> findIntersections(Ray ray);
-
-    public  List<Point> findIntersections(Ray ray) {
+    public List<Point> findIntersections(Ray ray) {
         var list = calculateIntersections(ray);
         return list == null ? null : list.stream().map(intersection -> intersection.point).toList();
     }
 
-    protected abstract List<Intersection> calculateIntersectionsHelper(Ray ray);
+    protected List<Intersection> calculateIntersectionsHelper(Ray ray)
+    {return null;};
 
     public final List<Intersection> calculateIntersections(Ray ray) {
         return calculateIntersectionsHelper(ray);
