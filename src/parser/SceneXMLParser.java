@@ -34,7 +34,7 @@ public class SceneXMLParser {
      */
     public static void main(String[] args) {
         SceneXMLParser parser = new SceneXMLParser();
-        parser.initializeFromXML("xml/renderTestTwoColors (1).xml");
+        parser.initializeFromXML("unittest/xml/renderTestTwoColors.xml");
 
         System.out.println("Scene Attributes: " + parser.getData().getSceneAttributes());
         System.out.println("Ambient Light: " + parser.getData().getAmbientLightAttributes());

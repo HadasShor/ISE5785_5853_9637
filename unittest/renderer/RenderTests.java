@@ -9,6 +9,7 @@ import geometries.Triangle;
 import lighting.AmbientLight;
 import primitives.*;
 import scene.Scene;
+import scene.SceneBuilder;
 
 /**
  * Test rendering a basic image
@@ -84,7 +85,11 @@ class RenderTests {
    /** Test for XML based scene - for bonus */
    @Test
    void basicRenderXml() {
-      Scene scene = new Scene("Using XML");
+
+      Scene scene = new SceneBuilder()
+              .loadSceneFromFile("unittest/xml/renderTestTwoColors.xml")
+              .build();
+      //Scene scene = new Scene("Using XML");
       // enter XML file name and parse from XML file into scene object instead of the
       // new Scene above,
       // Use the code you added in appropriate packages

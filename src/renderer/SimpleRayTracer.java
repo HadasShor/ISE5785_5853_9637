@@ -62,18 +62,15 @@ public class SimpleRayTracer extends RayTracerBase {
         if (!preprocessIntersection(intersection, ray.getDirection()))
             return Color.BLACK; // No local effects → return black
 
-        Double3 kA = intersection.geometry.getMaterial().Ka;
-        Color c = scene.ambientLight.getIntensity().scale(kA);
+        //Double3 kA = intersection.geometry.getMaterial().Ka;
+        //Color c = scene.ambientLight.getIntensity().scale(kA);
 
-        c = c.add(calcColorLocalEffects(intersection));
+        //c = c.add(calcColorLocalEffects(intersection));
+        Color color = scene.ambientLight.getIntensity()
+                .scale(intersection.material.Ka)
+                .add(calcColorLocalEffects(intersection));
+        return color;
 
-        return c;
-        // Start with ambient light + emission
-//        Color color = scene.ambientLight.getIntensity()
-//                .scale(intersection.material.Ka)
-//                .add(calcColorLocalEffects(intersection));
-//
-//        return color;
     }
 
 
@@ -108,7 +105,7 @@ public class SimpleRayTracer extends RayTracerBase {
         Material material = intersection.material;
         Color color = intersection.geometry.getEmission();
 
-        color = color.add(scene.ambientLight.getIntensity().scale(material.Ka));
+        //color = color.add(scene.ambientLight.getIntensity().scale(material.Ka));
 
         for (LightSource lightSource : scene.light) {
             {
