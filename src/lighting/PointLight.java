@@ -22,28 +22,27 @@ public class PointLight extends Light implements LightSource{
         this.kC = kC;
         return this;
     }
-    public PointLight setKL(double kL) {
+    public PointLight setKl(double kL) {
         this.kL = kL;
         return this;
     }
-    public PointLight setKQ(double kQ) {
+    public PointLight setKq(double kQ) {
         this.kQ = kQ;
         return this;
     }
 
-
     public Color getIntensity(Point point) {
         double d = position.distance(point);
         double factor = kC + kL * d + kQ * d * d;
-        if(Util.isZero(factor))
-            return intensity.scale(Double.POSITIVE_INFINITY);
+        if(factor <= 0)
+            return Color.BLACK;
 
         return intensity.scale(1d/factor);
     }
 
     @Override
     public Vector getL(Point point) {
-
-        return position.subtract(point).normalize();
+        return point.subtract(position);
+        //return position.subtract(point).normalize();
     }
 }

@@ -20,9 +20,12 @@ public class SimpleRayTracer extends RayTracerBase {
      * Constructor for {@code SimpleRayTracer}.
      *
      * @param scene  the scene to be rendered, containing geometries and lighting
-     * @param simple a placeholder parameter representing the ray tracer type (currently unused)
+    //* @param  a placeholder parameter representing the ray tracer type (currently unused)
      */
     public SimpleRayTracer(Scene scene, RayTracerType simple) {
+        super(scene);
+    }
+    public SimpleRayTracer(Scene scene) {
         super(scene);
     }
 
@@ -76,11 +79,11 @@ public class SimpleRayTracer extends RayTracerBase {
 
 /// need check
     public boolean preprocessIntersection(Intersection intersection, Vector rayDir) {
-        intersection.rayDir = rayDir.scale(-1);
+        intersection.rayDir = rayDir;
         intersection.normal = intersection.geometry.getNormal(intersection.point);
-        //intersection.scaleNR = intersection.normal.dotProduct(rayDir);
+
         intersection.scaleNR = alignZero(intersection.rayDir.dotProduct(intersection.normal));
-        if (intersection.scaleNR == 0)
+        if (intersection.scaleNR ==0)
             return false;
         return true;
     }
@@ -89,7 +92,7 @@ public class SimpleRayTracer extends RayTracerBase {
         intersection.lightSource = lightSource;
         intersection.lightDir = lightSource.getL(intersection.point).normalize();
         intersection.scaleNL = alignZero(intersection.lightDir.dotProduct(intersection.normal));
-        return (intersection.scaleNL * intersection.scaleNR > 0);
+        return (intersection.scaleNL * intersection.scaleNR) > 0;
     }
 
     /**
@@ -102,10 +105,9 @@ public class SimpleRayTracer extends RayTracerBase {
         if (intersection == null) {
             return scene.backgroundColor;
         }
-        Material material = intersection.material;
+
         Color color = intersection.geometry.getEmission();
 
-        //color = color.add(scene.ambientLight.getIntensity().scale(material.Ka));
 
         for (LightSource lightSource : scene.light) {
             {
@@ -117,6 +119,7 @@ public class SimpleRayTracer extends RayTracerBase {
                 Color iL = lightSource.getIntensity(intersection.point);
 
                 // Add contribution from diffusive and specular effects
+                //color = color.add(iL.scale(calcDiffusive(intersection))).add(iL.scale(calcSpecular(intersection)));
                 color = color.add(iL.scale(calcDiffusive(intersection))).add(iL.scale(calcSpecular(intersection)));
             }
         }
@@ -129,8 +132,8 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return the specular component as Double3
      */
     private Double3 calcSpecular(Intersection intersection) {
-        Vector n = intersection.normal;
-        Vector l = intersection.lightDir;
+        Vector n = intersection.normal.normalize();
+        Vector l = intersection.lightDir.normalize();
         Vector v = intersection.rayDir.normalize(); // inverse of ray direction
         Vector r = l.subtract(n.scale(2 * intersection.scaleNL));
         double rv = Math.max(0, (r.dotProduct(v) * -1));
