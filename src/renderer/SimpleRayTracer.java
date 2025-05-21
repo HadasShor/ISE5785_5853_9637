@@ -16,15 +16,19 @@ import static primitives.Util.alignZero;
  */
 public class SimpleRayTracer extends RayTracerBase {
 
+
+    private static final double DELTA = 0.1; // Maximum recursion depth for color calculation
+
     /**
      * Constructor for {@code SimpleRayTracer}.
      *
-     * @param scene  the scene to be rendered, containing geometries and lighting
-    //* @param  a placeholder parameter representing the ray tracer type (currently unused)
+     * @param scene the scene to be rendered, containing geometries and lighting
+     *              //* @param  a placeholder parameter representing the ray tracer type (currently unused)
      */
     public SimpleRayTracer(Scene scene, RayTracerType simple) {
         super(scene);
     }
+
     public SimpleRayTracer(Scene scene) {
         super(scene);
     }
@@ -50,7 +54,7 @@ public class SimpleRayTracer extends RayTracerBase {
         Intersection closestintersection = ray.findClosestIntersection(intersections);
 
         // Return the color at the closest intersection point
-        return calcColor(closestintersection,ray);
+        return calcColor(closestintersection, ray);
     }
 
     /**
@@ -77,13 +81,13 @@ public class SimpleRayTracer extends RayTracerBase {
     }
 
 
-/// need check
+    /// need check
     public boolean preprocessIntersection(Intersection intersection, Vector rayDir) {
         intersection.rayDir = rayDir;
         intersection.normal = intersection.geometry.getNormal(intersection.point);
 
         intersection.scaleNR = alignZero(intersection.rayDir.dotProduct(intersection.normal));
-        if (intersection.scaleNR ==0)
+        if (intersection.scaleNR == 0)
             return false;
         return true;
     }
@@ -111,20 +115,18 @@ public class SimpleRayTracer extends RayTracerBase {
 
         for (LightSource lightSource : scene.light) {
             {
-                if(!setLightSource(intersection, lightSource)) {
+                if (!setLightSource(intersection, lightSource)||!unshaded(intersection, lightSource)) {
                     continue;
                 }
 
-                // Compute light intensity at the intersection point
-                Color iL = lightSource.getIntensity(intersection.point);
 
-                // Add contribution from diffusive and specular effects
-                //color = color.add(iL.scale(calcDiffusive(intersection))).add(iL.scale(calcSpecular(intersection)));
+                Color iL = lightSource.getIntensity(intersection.point);
                 color = color.add(iL.scale(calcDiffusive(intersection))).add(iL.scale(calcSpecular(intersection)));
             }
         }
         return color;
     }
+
     /**
      * Calculates the specular component of the light at the intersection point.
      *
@@ -141,6 +143,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
         return intersection.material.Ks.scale(specularFactor);
     }
+
     /**
      * Calculates the diffusive component of the light at the intersection point.
      *
@@ -155,6 +158,30 @@ public class SimpleRayTracer extends RayTracerBase {
     }
 
 
+    private boolean unshaded(Intersection intersection, LightSource lightSource) {
 
+        Vector pointToLight = lightSource.getL(intersection.point).scale(-1);
+        Vector delta = intersection.normal.scale(intersection.scaleNL < 0 ? DELTA : -DELTA);
+        Ray shadowRay = new Ray(intersection.point.add(delta), pointToLight);
+        // Check if the shadow ray intersects with any geometry in the scene
+        List<Intersection> intersections = scene.geometries.calculateIntersectionsHelper(shadowRay);
+        if (intersections == null||intersections.isEmpty()) {
+            return true; // No intersections, shaded
+        }
+        double minDistance = lightSource.getDistance(intersection.point);
+        for (Intersection shadowIntersection: intersections) {
 
+            if (shadowIntersection.geometry == intersection.geometry) {
+                continue; // Ignore the intersection with the same geometry
+            }
+            double dis = lightSource.getDistance(shadowIntersection.point);//.distance(intersection.point);
+            double distance = shadowIntersection.point.distance(intersection.point);
+            if (dis > minDistance) {
+                return true; // Shaded by another geometry
+            }
+
+        }
+
+        return false; // Not shaded
+    }
 }
