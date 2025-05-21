@@ -18,7 +18,9 @@ public class SimpleRayTracer extends RayTracerBase {
 
 
     private static final double DELTA = 0.1; // Maximum recursion depth for color calculation
-
+    private static final int MAX_CALC_COLOR_LEVEL =10;
+    private static final double MIN_CALC_COLOR_K = 0.001;
+    private static final Double3 INITIAL_K = Double3.ONE;
     /**
      * Constructor for {@code SimpleRayTracer}.
      *
@@ -65,19 +67,18 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return the color at the intersection point
      */
     private Color calcColor(Intersection intersection, Ray ray) {
-        // Preprocess data: set normal, ray direction, dot product
-        if (!preprocessIntersection(intersection, ray.getDirection()))
-            return Color.BLACK; // No local effects → return black
 
-        //Double3 kA = intersection.geometry.getMaterial().Ka;
-        //Color c = scene.ambientLight.getIntensity().scale(kA);
-
-        //c = c.add(calcColorLocalEffects(intersection));
-        Color color = scene.ambientLight.getIntensity()
-                .scale(intersection.material.Ka)
-                .add(calcColorLocalEffects(intersection));
-        return color;
-
+//        if (!preprocessIntersection(intersection, ray.getDirection()))
+//            return Color.BLACK; // No local effects → return black
+//
+//        Color color = scene.ambientLight.getIntensity()
+//                .scale(intersection.material.Ka)
+//                .add(calcColorLocalEffects(intersection));
+//        return color;
+        return preprocessIntersection(intersection, ray.getDirection())
+                ? calcColor(intersection, MAX_CALC_COLOR_LEVEL, INITIAL_K)
+                .add(scene.ambientLight.getIntensity().scale(intersection.geometry.getMaterial().Ka))
+                : Color.BLACK;
     }
 
 
@@ -179,9 +180,11 @@ public class SimpleRayTracer extends RayTracerBase {
             if (dis > minDistance) {
                 return true; // Shaded by another geometry
             }
-
         }
-
         return false; // Not shaded
+    }
+
+    private Color calcColor (Intersection intersection, int level, Double3 k) {
+
     }
 }

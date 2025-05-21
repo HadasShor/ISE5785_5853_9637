@@ -6,6 +6,8 @@ public class Material {
     public Double3 Kd=Double3.Zero;
     public Double3 Ks=Double3.Zero;
     public int nSh=0;
+    public Double3 KT=Double3.ZERO;
+    public Double3 KR=Double3.ZERO;
 
     public Material setKA(Double3 ka) {
         this.Ka = ka ;
@@ -33,6 +35,22 @@ public class Material {
     }
     public Material setShininess(int nSh) {
         this.nSh = nSh;
+        return this;
+    }
+    public Material setKT(Double3 kt) {
+        this.KT = kt ;
+        return this;
+    }
+    public Material setKT (double kt) {
+        this.KT = new Double3(kt);
+        return this;
+    }
+    public Material setKR(Double3 kr) {
+        this.KR = kr ;
+        return this;
+    }
+    public Material setKR (double kr) {
+        this.KR = new Double3(kr);
         return this;
     }
 }
