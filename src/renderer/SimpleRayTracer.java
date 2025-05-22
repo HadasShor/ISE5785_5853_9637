@@ -71,12 +71,16 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return the color at the intersection point
      */
     private Color calcColor(Intersection intersection, Ray ray) {
-
-        return preprocessIntersection(intersection, ray.getDirection())
-                ? calcColor(intersection, MAX_CALC_COLOR_LEVEL, INITIAL_K)
-                .add(scene.ambientLight.getIntensity().scale(intersection.geometry.getMaterial().Ka))
-                : Color.BLACK;
+        Color c;
+        if (preprocessIntersection(intersection, ray.getDirection())) {
+             c= calcColor(intersection, MAX_CALC_COLOR_LEVEL, INITIAL_K)
+                    .add(scene.ambientLight.getIntensity().scale(intersection.geometry.getMaterial().Ka));
+        } else {
+            return Color.BLACK;
+        }
+        return c;
     }
+
 
 
     /// need check
@@ -113,9 +117,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
         for (LightSource lightSource : scene.light) {
             {
-//                if (!setLightSource(intersection, lightSource)||!unshaded(intersection, lightSource)) {
-//                    continue;
-//                }
+
                 if (!setLightSource(intersection, lightSource)||!unshaded(intersection,lightSource)) {
                    continue;
                 }
@@ -185,21 +187,18 @@ public class SimpleRayTracer extends RayTracerBase {
             }
         }
 
-        return true; // אין חסימה משמעותית – לא בצל
+        return true;
     }
 
 
 
    private Color calcColor (Intersection intersection, int level, Double3 k) {
 
-             Color color = scene.ambientLight.getIntensity()
-                .scale(intersection.material.Ka)
-                .add(calcColorLocalEffects(intersection));
+       Color color = calcColorLocalEffects(intersection);
         if (level == 1 || k.lowerThan(MIN_CALC_COLOR_K)) {
             return color;
         }
       return color.add(calcGlobalEffects(intersection, level-1, k));
-
 
     }
 

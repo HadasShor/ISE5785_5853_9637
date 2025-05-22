@@ -175,6 +175,7 @@ public class Camera implements Cloneable {
         for (int i = 0; i < Ny; i++) { // Corrected loop order to match writePixel(j, i)
             for (int j = 0; j < Nx; j++) {
                 castRay(j, i);
+
             }
         }
         return this;
