@@ -107,6 +107,7 @@ public class SimpleRayTracer extends RayTracerBase {
      * @param intersection the intersection object
      * @return the local lighting color contribution
      */
+
     private Color calcColorLocalEffects(Intersection intersection) {
         if (intersection == null) {
             return scene.backgroundColor;
@@ -114,20 +115,28 @@ public class SimpleRayTracer extends RayTracerBase {
 
         Color color = intersection.geometry.getEmission();
 
-
         for (LightSource lightSource : scene.light) {
-            {
-
-                if (!setLightSource(intersection, lightSource)||!unshaded(intersection,lightSource)) {
-                   continue;
-                }
-
-                Color iL = lightSource.getIntensity(intersection.point);
-                color = color.add(iL.scale(calcDiffusive(intersection))).add(iL.scale(calcSpecular(intersection)));
+            if (!setLightSource(intersection, lightSource)) {
+                continue;
             }
+
+            // שקיפות חלקית – מחשבת צל רך
+            Double3 ktr = transparency(intersection);
+            if (ktr.lowerThan(MIN_CALC_COLOR_K)) {
+                continue; // חסימה כמעט מלאה – מדלגים על האור
+            }
+
+            // מחשבים את עוצמת האור בנקודה – לאחר השפעת השקיפות
+            Color iL = lightSource.getIntensity(intersection.point).scale(ktr);
+
+            // תאורה דיפוזית + מבריקה
+            color = color.add(iL.scale(calcDiffusive(intersection)))
+                    .add(iL.scale(calcSpecular(intersection)));
         }
+
         return color;
     }
+
 
     /**
      * Calculates the specular component of the light at the intersection point.
@@ -190,9 +199,71 @@ public class SimpleRayTracer extends RayTracerBase {
         return true;
     }
 
+    private Double3 transparency(Intersection intersection) {
+        // שליפת מקור האור מתוך ה-intersection
+        LightSource lightSource = intersection.lightSource;
+        if (lightSource == null) {
+            return Double3.ONE; // אין מקור אור, אין הצללה
+        }
+
+        // כיוון מקרן הצל – מהנקודה אל מקור האור (בכיוון ההפוך)
+        Vector lightDirection = lightSource.getL(intersection.point).scale(-1);
+
+        // הזזה קלה מנקודת החיתוך כדי למנוע חיתוך עצמי
+        Vector delta = intersection.normal.scale(intersection.scaleNL < 0 ? DELTA : -DELTA);
+        Point origin = intersection.point.add(delta);
+
+        // יצירת קרן צל
+        Ray shadowRay = new Ray(origin, lightDirection);
+
+        // מרחק לנקודת האור
+        double lightDistance = lightSource.getDistance(intersection.point);
+
+        // חישוב החיתוכים של קרן הצל עם הסצנה
+        List<Intersection> shadowIntersections = scene.geometries.calculateIntersectionsHelper(shadowRay);
+
+        // שקיפות מצטברת – מתחילה כ־1 (אין חסימה)
+        Double3 ktr = Double3.ONE;
+
+        // אם אין חיתוכים – אין חסימה כלל
+        if (shadowIntersections == null) {
+            return ktr;
+        }
+
+        // מעבר על כל החיתוכים
+        for (Intersection shadowIntersection : shadowIntersections) {
+            // מדלגים על אותו גוף
+            if (shadowIntersection.geometry == intersection.geometry) {
+                continue;
+            }
+
+            // חישוב מרחק בין מקור קרן הצל לנקודת החיתוך
+            double distance = shadowIntersection.point.distance(origin);
+
+            // אם הגוף בנתיב הקרן לפני מקור האור – הוא חוסם חלקית
+            if (distance < lightDistance) {
+                // מכפילים את השקיפות המצטברת בשקיפות הגוף
+                ktr = ktr.product(shadowIntersection.geometry.getMaterial().KT);
+
+                // אם השקיפות נמוכה מאוד – עצירה מוקדמת
+                if (ktr.lowerThan(MIN_CALC_COLOR_K)) {
+                    return Double3.ZERO;
+                }
+            }
+        }
+
+        // מחזירים את שקיפות הקרן – מתארת צל חלקי
+        return ktr;
+    }
 
 
-   private Color calcColor (Intersection intersection, int level, Double3 k) {
+
+
+
+
+
+
+    private Color calcColor (Intersection intersection, int level, Double3 k) {
 
        Color color = calcColorLocalEffects(intersection);
         if (level == 1 || k.lowerThan(MIN_CALC_COLOR_K)) {
