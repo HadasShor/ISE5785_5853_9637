@@ -111,6 +111,31 @@ class ReflectionRefractionTests {
    @Test
    void crystalConstellation() {
       // הוספת גאומטריות מרובות עם חומרים שונים
+
+      // פירמידה משופרת ראשונה - נקודות ברורות
+      Point basePoint1 = new Point(-50, -20, -150); // קדמי שמאלי
+      Point basePoint2 = new Point(50, -20, -150);  // קדמי ימני
+      Point basePoint3 = new Point(50, -20, -50);   // אחורי ימני
+      Point basePoint4 = new Point(-50, -20, -50);  // אחורי שמאלי
+      Point apexPoint = new Point(0, 70, -100);     // קודקוד הפירמידה
+
+      // חומר מראה לפירמידה הראשונה
+      Material mirrorMaterial = new Material()
+              .setKD(0.1).setKS(0.9).setShininess(200)
+              .setKR(0.9);
+
+      // פירמידה שנייה (ברונזה) - נקודות ברורות
+      Point bronzeBase1 = new Point(40, -30, -120);  // קדמי שמאלי
+      Point bronzeBase2 = new Point(120, -30, -130); // קדמי ימני
+      Point bronzeBase3 = new Point(110, -30, -70);  // אחורי ימני
+      Point bronzeBase4 = new Point(30, -30, -60);   // אחורי שמאלי
+      Point bronzeApex = new Point(75, 50, -95);     // קודקוד הפירמידה
+
+      // חומר ברונזה לפירמידה השנייה
+      Material bronzeMaterial = new Material()
+              .setKD(0.4).setKS(0.6).setShininess(80)
+              .setKR(0.6);
+
       scene.geometries.add(
               // כדור קריסטל מרכזי שקוף עם השתקפויות
               new Sphere(45d, new Point(0, 30, -80))
@@ -133,24 +158,65 @@ class ReflectionRefractionTests {
                               .setKD(0.25).setKS(0.75).setShininess(110)
                               .setKT(0.75).setKR(0.25)),
 
-              // משולש מראה גדול ליצירת השתקפויות
-              new Triangle(
-                      new Point(-80, -20, -120),
-                      new Point(30, -20, -140),
-                      new Point(-25, 90, -130))
-                      .setMaterial(new Material()
-                              .setKD(0.1).setKS(0.9).setShininess(200)
-                              .setKR(0.9)),
+              // פירמידת מראה ראשונה
+              // פאה קדמית
+              new Triangle(basePoint1, basePoint2, apexPoint)
+                      .setEmission(new Color(20, 20, 80)) // צבע כחול-אפור
+                      .setMaterial(mirrorMaterial),
 
-              // משולש ברונזה עם מאפיינים מתכתיים
-              new Triangle(
-                      new Point(40, -30, -100),
-                      new Point(120, -30, -110),
-                      new Point(80, 50, -105))
-                      .setEmission(new Color(30, 20, 10))
-                      .setMaterial(new Material()
-                              .setKD(0.4).setKS(0.6).setShininess(80)
-                              .setKR(0.6)),
+              // פאה ימנית
+              new Triangle(basePoint2, basePoint3, apexPoint)
+                      .setEmission(new Color(20, 80, 20)) // צבע ירוק-אפור
+                      .setMaterial(mirrorMaterial),
+
+              // פאה אחורית
+              new Triangle(basePoint3, basePoint4, apexPoint)
+                      .setEmission(new Color(80, 20, 20)) // צבע אדום-אפור
+                      .setMaterial(mirrorMaterial),
+
+              // פאה שמאלית
+              new Triangle(basePoint4, basePoint1, apexPoint)
+                      .setEmission(new Color(80, 80, 20)) // צבע צהוב-אפור
+                      .setMaterial(mirrorMaterial),
+
+              // בסיס (מורכב משני משולשים)
+              new Triangle(basePoint1, basePoint2, basePoint3)
+                      .setEmission(new Color(40, 40, 40)) // צבע אפור כהה
+                      .setMaterial(mirrorMaterial),
+
+              new Triangle(basePoint1, basePoint3, basePoint4)
+                      .setEmission(new Color(40, 40, 40)) // צבע אפור כהה
+                      .setMaterial(mirrorMaterial),
+
+              // פירמידת ברונזה (במקום המשולש הברונזה)
+              // פאה קדמית
+              new Triangle(bronzeBase1, bronzeBase2, bronzeApex)
+                      .setEmission(new Color(35, 22, 10)) // ברונזה כהה
+                      .setMaterial(bronzeMaterial),
+
+              // פאה ימנית
+              new Triangle(bronzeBase2, bronzeBase3, bronzeApex)
+                      .setEmission(new Color(30, 20, 10)) // ברונזה רגילה
+                      .setMaterial(bronzeMaterial),
+
+              // פאה אחורית
+              new Triangle(bronzeBase3, bronzeBase4, bronzeApex)
+                      .setEmission(new Color(38, 25, 13)) // ברונזה בהירה
+                      .setMaterial(bronzeMaterial),
+
+              // פאה שמאלית
+              new Triangle(bronzeBase4, bronzeBase1, bronzeApex)
+                      .setEmission(new Color(28, 18, 8)) // ברונזה כהה
+                      .setMaterial(bronzeMaterial),
+
+              // בסיס (מורכב משני משולשים)
+              new Triangle(bronzeBase1, bronzeBase2, bronzeBase3)
+                      .setEmission(new Color(25, 15, 5)) // ברונזה מאוד כהה
+                      .setMaterial(bronzeMaterial),
+
+              new Triangle(bronzeBase1, bronzeBase3, bronzeBase4)
+                      .setEmission(new Color(25, 15, 5)) // ברונזה מאוד כהה
+                      .setMaterial(bronzeMaterial),
 
               // משולש זכוכית שקוף
               new Triangle(
