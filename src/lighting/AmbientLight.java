@@ -15,24 +15,32 @@ public class AmbientLight extends Light {
     public static final AmbientLight NONE = new AmbientLight(Color.BLACK,1.0) ;
 
     /**
-     * Constructor for AmbientLight with intensity.
+     * Constructs an {@code AmbientLight} object with the specified intensity and attenuation factor.
      *
-     * @param IA The intensity of the ambient light.
+     * @param IA The base intensity of the ambient light.
+     * @param kA The attenuation factor for the ambient light's intensity.
      */
     public AmbientLight(Color IA, double kA) {
-        super(IA);//בונוס
+        super(IA.scale(kA));
     }
+
+    /**
+     * Constructs an {@code AmbientLight} object with the specified base intensity.
+     * The attenuation factor is implicitly 1.0.
+     *
+     * @param IA The base intensity of the ambient light.
+     */
     public AmbientLight(Color IA) {
         super(IA);
     }
+
     /**
      * Gets the intensity of the ambient light.
      *
      * @return The color intensity of the ambient light.
      */
+    @Override
     public Color getIntensity() {
         return intensity;
     }
-
-
 }

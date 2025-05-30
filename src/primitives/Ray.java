@@ -35,17 +35,19 @@ public class Ray {
     /**
      * Returns the normalized direction vector of the ray.
      *
-     * @return the normalized direction vector
+     * @return the normalized direction vector.
      */
     public Vector getDirection() {
-        return direction.normalize(); // this could just return direction since it's already normalized in constructor
+        // The direction is already normalized in the constructor, so we can just return it.
+        return direction;
     }
 
     /**
      * Returns a point on the ray at a given distance from the head point using parameter {@code t}.
+     * If the distance is approximately zero, the head point itself is returned.
      *
-     * @param t the distance from the ray's origin
-     * @return the point located {@code t} units in the direction of the ray
+     * @param t the distance from the ray's origin.
+     * @return the point located {@code t} units in the direction of the ray.
      */
     public Point getHead(double t) {
         if (Util.isZero(t))
@@ -54,10 +56,11 @@ public class Ray {
     }
 
     /**
-     * Returns a point on the ray at a given distance from the head point using parameter {@code distance}.
+     * Returns a point on the ray at a given distance from the head point.
+     * If the distance is approximately zero, the head point itself is returned.
      *
-     * @param distance the distance from the ray's origin
-     * @return the point located {@code distance} units in the direction of the ray
+     * @param distance the distance from the ray's origin.
+     * @return the point located {@code distance} units in the direction of the ray.
      */
     public Point getPoint(double distance) {
         if (Util.isZero(distance))
@@ -68,7 +71,7 @@ public class Ray {
     /**
      * Returns the head (origin) point of the ray.
      *
-     * @return the starting point of the ray
+     * @return the starting point of the ray.
      */
     public Point getPoint() {
         return head;
@@ -78,7 +81,7 @@ public class Ray {
      * Returns the head (origin) point of the ray.
      * This method is identical to {@link #getPoint()}.
      *
-     * @return the starting point of the ray
+     * @return the starting point of the ray.
      */
     public Point getHead() {
         return head;
@@ -87,12 +90,13 @@ public class Ray {
     /**
      * Indicates whether some other object is "equal to" this one.
      *
-     * @param o the reference object with which to compare
-     * @return {@code true} if this ray is equal to the specified object; {@code false} otherwise
+     * @param o the reference object with which to compare.
+     * @return {@code true} if this ray is equal to the specified object; {@code false} otherwise.
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        // The 'direction' is already normalized in the constructor, so we can directly compare.
         return (o instanceof Ray ray)
                 && this.direction.equals(ray.direction)
                 && this.head.equals(ray.head);
@@ -101,7 +105,7 @@ public class Ray {
     /**
      * Returns a hash code value for this ray.
      *
-     * @return a hash code value for this object
+     * @return a hash code value for this object.
      */
     @Override
     public int hashCode() {
@@ -111,7 +115,7 @@ public class Ray {
     /**
      * Returns a string representation of the ray.
      *
-     * @return a string describing the ray
+     * @return a string describing the ray.
      */
     @Override
     public String toString() {
@@ -122,31 +126,40 @@ public class Ray {
     }
 
     /**
-     * Finds the closest point to the ray from a given list of points.
+     * Finds the closest point to the ray's origin from a given list of points.
      *
-     * @param points The list of points to check against the ray.
-     *               It contains the points that will be compared to the ray
-     *               to find the one closest to it.
-     * @return The closest point to the ray, or {@code null} if the list is empty.
+     * @param points The list of points to check.
+     * @return The closest point to the ray's origin, or {@code null} if the list is empty or {@code null}.
      */
     public Point findClosedPoint(List<Point> points) {
-        return points == null ? null
-                : findClosestIntersection(points.stream().map(p -> new Intersection(null, p)).toList()).point;
+        if (points == null || points.isEmpty()) {
+            return null;
+        }
+        // Map points to Intersection objects (geometry is null as it's not relevant here)
+        // Then find the closest intersection and return its point.
+        return findClosestIntersection(points.stream().map(p -> new Intersection(null, p)).toList()).point;
     }
 
-    //public findClosestIntersection
-    public Intersection findClosestIntersection(List<Intersection> intersection) {
-        if(intersection==null|| intersection.size()==0)
+    /**
+     * Finds the closest intersection point to the ray's origin from a given list of intersections.
+     *
+     * @param intersections The list of intersections to check.
+     * @return The closest intersection to the ray's origin, or {@code null} if the list is empty or {@code null}.
+     */
+    public Intersection findClosestIntersection(List<Intersection> intersections) {
+        if (intersections == null || intersections.isEmpty()) {
             return null;
-        double minDistance = Double.MAX_VALUE;
-        Intersection closeIntersection = intersection.get(0);
-        for (Intersection i : intersection) {
-            double distance = i.point.distanceSquared(head);
-            if (distance < minDistance) {
-                minDistance = distance;
-                closeIntersection = i;
+        }
+        double minDistanceSquared = Double.MAX_VALUE;
+        Intersection closestIntersection = null;
+
+        for (Intersection i : intersections) {
+            double distanceSquared = i.point.distanceSquared(head);
+            if (distanceSquared < minDistanceSquared) {
+                minDistanceSquared = distanceSquared;
+                closestIntersection = i;
             }
         }
-        return closeIntersection;
+        return closestIntersection;
     }
 }

@@ -21,30 +21,27 @@ class ImageWriterTests {
      * The grid helps in verifying that pixel placement is accurate and uniform.
      */
     @Test
-    void creatYellowSubmarineTest()
-    {
+    void creatYellowSubmarineTest() {
         /** Red color used for the grid lines */
         Color Red = new Color(java.awt.Color.RED);
         /** Yellow color used for the background */
         Color Yellow = new Color(java.awt.Color.YELLOW);
         /** Image width in pixels */
-        int nx=800;
+        int nx = 800;
         /** Image height in pixels */
-        int ny=500;
+        int ny = 500;
         /** Distance between grid lines */
-        int gap =50;
+        int gap = 50;
         /** Instance of ImageWriter for creating the image */
-        ImageWriter imageWriter= new ImageWriter( nx, ny);
+        ImageWriter imageWriter = new ImageWriter(nx, ny);
 
-        for (int i=0; i< nx; i++)
-        {
-            for (int j=0; j< ny; j++)
-            {
+        for (int i = 0; i < nx; i++) {
+            for (int j = 0; j < ny; j++) {
                 // Draw red grid lines at every 'gap' interval, otherwise fill with yellow
-                if (i%gap==0 || j%gap==0)
-                    imageWriter.writePixel(i,j,Red);
+                if (i % gap == 0 || j % gap == 0)
+                    imageWriter.writePixel(i, j, Red);
                 else
-                    imageWriter.writePixel(i,j,Yellow);
+                    imageWriter.writePixel(i, j, Yellow);
             }
         }
         // Write the generated image to a file named "YellowSubmarine"
@@ -57,8 +54,7 @@ class ImageWriterTests {
      * Each dot is a filled circle with a given radius and spacing between them.
      */
     @Test
-    void createRedDotsOnYellowTest()
-    {
+    void createRedDotsOnYellowTest() {
         /** Cyan color used for the dots (despite the method name suggesting red) */
         Color Red = new Color(java.awt.Color.CYAN);
         /** Yellow color used for the background */
@@ -74,24 +70,19 @@ class ImageWriterTests {
         /** Instance of ImageWriter for creating the image */
         ImageWriter imageWriter = new ImageWriter(nx, ny);
 
-        for (int i = 0; i < nx; i++)
-        {
-            for (int j = 0; j < ny; j++)
-            {
+        for (int i = 0; i < nx; i++) {
+            for (int j = 0; j < ny; j++) {
                 /** Flag to determine whether the current pixel is part of a dot */
                 boolean isDot = false;
 
-                for (int x = spacing / 2; x < nx; x += spacing)
-                {
-                    for (int y = spacing / 2; y < ny; y += spacing)
-                    {
+                for (int x = spacing / 2; x < nx; x += spacing) {
+                    for (int y = spacing / 2; y < ny; y += spacing) {
                         /** Horizontal distance from current pixel to dot center */
                         int dx = i - x;
                         /** Vertical distance from current pixel to dot center */
                         int dy = j - y;
                         // If the pixel is within the radius of a dot center, mark it as a dot
-                        if (dx * dx + dy * dy <= dotRadius * dotRadius)
-                        {
+                        if (dx * dx + dy * dy <= dotRadius * dotRadius) {
                             isDot = true;
                             break;
                         }

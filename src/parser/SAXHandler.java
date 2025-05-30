@@ -15,21 +15,25 @@ import java.util.Map;
  */
 public class SAXHandler extends DefaultHandler {
 
-    private SceneDescriptor sceneDesc = new SceneDescriptor();
+    /**
+     * The {@link SceneDescriptor} instance that will be populated with data parsed from the XML.
+     */
+    private SceneDescriptor sceneDesc;
 
 
     /**
-     * Constructs a new SAXHandler with the given {@link SceneDescriptor}.
+     * Constructs a new {@code SAXHandler} with the given {@link SceneDescriptor}.
      *
-     * @param sceneDesc the {@link SceneDescriptor} object to populate with parsed data
+     * @param sceneDesc the {@link SceneDescriptor} object to populate with parsed data.
      */
     public SAXHandler(SceneDescriptor sceneDesc) {
         this.sceneDesc = sceneDesc;
     }
+
     /**
      * Returns the {@link SceneDescriptor} populated with the parsed XML data.
      *
-     * @return the populated {@link SceneDescriptor}
+     * @return the populated {@link SceneDescriptor}.
      */
     public SceneDescriptor getSceneDescriptor() {
         return sceneDesc;
@@ -37,13 +41,14 @@ public class SAXHandler extends DefaultHandler {
 
     /**
      * Called at the start of an XML element. This method processes the element's attributes
-     * and maps them to the appropriate fields in the {@link SceneDescriptor}.
+     * and maps them to the appropriate data structures within the {@link SceneDescriptor}.
+     * It handles "scene", "ambient-light", "sphere", and "triangle" elements.
      *
-     * @param uri        the Namespace URI, or the empty string if the element has no Namespace URI
-     * @param localName  the local name (without prefix), or the empty string if not namespace processing
-     * @param qName      the qualified name (with prefix), or the empty string if qualified names are not available
-     * @param attributes the attributes attached to the element
-     * @throws SAXException any SAX exception, possibly wrapping another exception
+     * @param uri        The Namespace URI, or the empty string if the element has no Namespace URI.
+     * @param localName  The local name (without prefix), or the empty string if not namespace processing.
+     * @param qName      The qualified name (with prefix), or the empty string if qualified names are not available.
+     * @param attributes The attributes attached to the element.
+     * @throws SAXException if any SAX error occurs during parsing.
      */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {

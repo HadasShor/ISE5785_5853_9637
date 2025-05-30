@@ -13,7 +13,7 @@ import scene.Scene;
 import javax.imageio.ImageWriter;
 
 /**
- * Test rendering a basic image
+ * Test rendering a basic image with various light sources.
  * @author Dan Zilberstein
  */
 class LightsTests {
@@ -23,18 +23,22 @@ class LightsTests {
    LightsTests() { /* to satisfy JavaDoc generator */ }
 
    /**
-    * First scene for some of tests
+    * First scene for some of tests.
     */
    private final Scene scene1 = new Scene("Test scene");
    /**
-    * Second scene for some of tests
+    * Second scene for some of tests with a predefined ambient light.
     */
    private final Scene scene2 = new Scene("Test scene")
            .setAmbientLight(new AmbientLight(new Color(38, 38, 38)));
+
+   /**
+    * Shininess value for most of the geometries in the tests.
+    */
    private static final int SHININESS = 100;
 
    /**
-    * First camera builder for some of tests
+    * First camera builder for some of tests.
     */
    private final Camera.Builder camera1 = Camera.getBuilder()                                          //
            .setRayTracer(scene1, RayTracerType.SIMPLE)                                                                      //
@@ -43,7 +47,7 @@ class LightsTests {
            .setVpSize(150, 150).setVpDistance(1000);
 
    /**
-    * Second camera builder for some of tests
+    * Second camera builder for some of tests.
     */
    private final Camera.Builder camera2 = Camera.getBuilder()                                          //
            .setRayTracer(scene2, RayTracerType.SIMPLE)                                                                      //
@@ -51,54 +55,52 @@ class LightsTests {
            .setDirection(Point.ZERO, Vector.AXIS_Y)                                                                         //
            .setVpSize(200, 200).setVpDistance(1000);
 
-   /** Shininess value for most of the geometries in the tests */
-
    /**
-    * Diffusion attenuation factor for some of the geometries in the tests
+    * Diffusion attenuation factor for some of the geometries in the tests.
     */
    private static final double KD = 0.5;
    /**
-    * Diffusion attenuation factor for some of the geometries in the tests
+    * Diffusion attenuation factor as a {@link Double3} object for some of the geometries in the tests.
     */
    private static final Double3 KD3 = new Double3(0.2, 0.6, 0.4);
 
    /**
-    * Specular attenuation factor for some of the geometries in the tests
+    * Specular attenuation factor for some of the geometries in the tests.
     */
    private static final double KS = 0.5;
    /**
-    * Specular attenuation factor for some of the geometries in the tests
+    * Specular attenuation factor as a {@link Double3} object for some of the geometries in the tests.
     */
    private static final Double3 KS3 = new Double3(0.2, 0.4, 0.3);
 
    /**
-    * Material for some of the geometries in the tests
+    * Material for some of the geometries in the tests.
     */
    private final Material material = new Material().setKD(KD3).setKS(KS3).setShininess(SHININESS);
    /**
-    * Light color for tests with triangles
+    * Light color for tests with triangles.
     */
    private final Color trianglesLightColor = new Color(800, 500, 250);
    /**
-    * Light color for tests with sphere
+    * Light color for tests with sphere.
     */
    private final Color sphereLightColor = new Color(800, 500, 0);
    /**
-    * Color of the sphere
+    * Color of the sphere.
     */
    private final Color sphereColor = new Color(BLUE).reduce(2);
 
    /**
-    * Center of the sphere
+    * Center of the sphere.
     */
    private final Point sphereCenter = new Point(0, 0, -50);
    /**
-    * Radius of the sphere
+    * Radius of the sphere.
     */
    private static final double SPHERE_RADIUS = 50d;
 
    /**
-    * The triangles' vertices for the tests with triangles
+    * The triangles' vertices for the tests with triangles.
     */
    private final Point[] vertices =
            {
@@ -112,40 +114,40 @@ class LightsTests {
                    new Point(-75, 78, 100)
            };
    /**
-    * Position of the light in tests with sphere
+    * Position of the light in tests with sphere.
     */
    private final Point sphereLightPosition = new Point(-50, -50, 25);
    /**
-    * Light direction (directional and spot) in tests with sphere
+    * Light direction (directional and spot) in tests with sphere.
     */
    private final Vector sphereLightDirection = new Vector(1, 1, -0.5);
    /**
-    * Position of the light in tests with triangles
+    * Position of the light in tests with triangles.
     */
    private final Point trianglesLightPosition = new Point(30, 10, -100);
    /**
-    * Light direction (directional and spot) in tests with triangles
+    * Light direction (directional and spot) in tests with triangles.
     */
    private final Vector trianglesLightDirection = new Vector(-2, -2, -2);
 
    /**
-    * The sphere in appropriate tests
+    * The sphere geometry used in appropriate tests.
     */
    private final Geometry sphere = new Sphere(SPHERE_RADIUS, sphereCenter)
            .setEmission(sphereColor).setMaterial(new Material().setKD(KD).setKS(KS).setShininess(SHININESS));
    /**
-    * The first triangle in appropriate tests
+    * The first triangle geometry used in appropriate tests.
     */
    private final Geometry triangle1 = new Triangle(vertices[0], vertices[1], vertices[2])
            .setMaterial(material);
    /**
-    * The first triangle in appropriate tests
+    * The second triangle geometry used in appropriate tests.
     */
    private final Geometry triangle2 = new Triangle(vertices[0], vertices[1], vertices[3])
            .setMaterial(material);
 
    /**
-    * Produce a picture of a sphere lighted by a directional light
+    * Produces a picture of a sphere lighted by a directional light.
     */
    @Test
    void sphereDirectional() {
@@ -160,7 +162,7 @@ class LightsTests {
    }
 
    /**
-    * Produce a picture of a sphere lighted by a point light
+    * Produces a picture of a sphere lighted by a point light.
     */
    @Test
    void spherePoint() {
@@ -176,7 +178,7 @@ class LightsTests {
    }
 
    /**
-    * Produce a picture of a sphere lighted by a spotlight
+    * Produces a picture of a sphere lighted by a spotlight.
     */
    @Test
    void sphereSpot() {
@@ -192,7 +194,7 @@ class LightsTests {
    }
 
    /**
-    * Produce a picture of two triangles lighted by a directional light
+    * Produces a picture of two triangles lighted by a directional light.
     */
    @Test
    void trianglesDirectional() {
@@ -206,7 +208,7 @@ class LightsTests {
    }
 
    /**
-    * Produce a picture of two triangles lighted by a point light
+    * Produces a picture of two triangles lighted by a point light.
     */
    @Test
    void trianglesPoint() {
@@ -221,7 +223,7 @@ class LightsTests {
    }
 
    /**
-    * Produce a picture of two triangles lighted by a spotlight
+    * Produces a picture of two triangles lighted by a spotlight.
     */
    @Test
    void trianglesSpot() {
@@ -236,7 +238,7 @@ class LightsTests {
    }
 
    /**
-    * Produce a picture of a sphere lighted by a narrow spotlight
+    * Produces a picture of a sphere lighted by a narrow spotlight.
     */
    @Test
    void sphereSpotSharp() {
@@ -252,7 +254,7 @@ class LightsTests {
    }
 
    /**
-    * Produce a picture of two triangles lighted by a narrow spotlight
+    * Produces a picture of two triangles lighted by a narrow spotlight.
     */
    @Test
    void trianglesSpotSharp() {
@@ -267,9 +269,8 @@ class LightsTests {
    }
 
 
-   /// /////////////////////////////////////////////////////////
    /**
-    * Produce a picture of a sphere lighted by multiple light sources
+    * Produce a picture of a sphere lighted by multiple light sources.
     */
    @Test
    void sphereMultipleLights() {
@@ -290,7 +291,7 @@ class LightsTests {
    }
 
    /**
-    * Produce a picture of two triangles lighted by multiple light sources
+    * Produce a picture of two triangles lighted by multiple light sources.
     */
    @Test
    void trianglesMultipleLights() {
@@ -311,7 +312,7 @@ class LightsTests {
    }
 
    /**
-    * Produce a picture of a sphere on triangular base with multiple colored lights
+    * Vertices of the triangular base for the {@link #sphereOnTrianglesWithMultipleLights()} test.
     */
    Point[] baseVertices = {
            new Point(-70, -40, -50),
@@ -319,11 +320,12 @@ class LightsTests {
            new Point(0, -40, 50)
    };
 
+   /**
+    * Produce a picture of a sphere on a triangular base with multiple colored lights.
+    */
    @Test
    void sphereOnTrianglesWithMultipleLights() {
       // Create a triangular base for the sphere
-
-
       Geometry base = new Triangle(baseVertices[0], baseVertices[1], baseVertices[2])
               .setEmission(new Color(20, 20, 80))
               .setMaterial(new Material().setKD(0.4).setKS(0.3).setShininess(100));

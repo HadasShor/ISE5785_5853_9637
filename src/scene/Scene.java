@@ -14,7 +14,11 @@ import java.util.List;
  */
 public class Scene {
 
+    /**
+     * A list of light sources present in the scene.
+     */
     public List <LightSource> light=new LinkedList<>();
+
     /**
      * The name of the scene.
      */
@@ -37,7 +41,7 @@ public class Scene {
 
 
     /**
-     * Constructor for creating a new scene with a specified name.
+     * Constructs a new scene with a specified name.
      *
      * @param sceneName The name of the scene.
      */
@@ -64,22 +68,28 @@ public class Scene {
      */
     public Scene setAmbientLight(AmbientLight ambientLight) {
         this.ambientLight = ambientLight;
-        // Set the ambient light for the scene
         return this;
     }
+
     /**
-     * Adds geometries to the scene.
+     * Adds geometries to the scene's existing collection.
      *
-     * @param geometries the geometries to add
-     * @return the current Scene instance (for method chaining)
+     * @param geometries The {@link Geometries} object containing the geometries to add.
+     * @return The current {@code Scene} instance, for method chaining.
      */
     public Scene setGeometries(Geometries geometries) {
         this.geometries.add(geometries);
         return this;
     }
 
-    public Scene setLight( List <LightSource> light) {
-        this.light=(light);
+    /**
+     * Sets the list of light sources for the scene.
+     *
+     * @param light A {@link List} of {@link LightSource} objects to set as the scene's lights.
+     * @return The current {@code Scene} instance, for method chaining.
+     */
+    public Scene setLight(List <LightSource> light) {
+        this.light = light;
         return this;
     }
 }

@@ -14,56 +14,108 @@ import java.util.List;
  */
 public abstract class Intersectable {
 
-
     /**
-     * Finds the intersections of the object with the specified ray.
+     * Finds the intersection points of the object with the specified ray.
+     * This method delegates to {@link #calculateIntersections(Ray)} and extracts only the point component of the intersections.
      *
-     * @param ray the ray to intersect with
-     * @return a list of intersection points, or {@code null} if there are no intersections
+     * @param ray The ray to intersect with the object.
+     * @return A list of intersection points, or {@code null} if there are no intersections.
      */
-    //public abstract List<Point> findIntersections(Ray ray);
     public List<Point> findIntersections(Ray ray) {
         var list = calculateIntersections(ray);
         return list == null ? null : list.stream().map(intersection -> intersection.point).toList();
     }
 
-    protected List<Intersection> calculateIntersectionsHelper(Ray ray)
-    {return null;};
+    /**
+     * Helper method to calculate the detailed intersections of the object with the specified ray.
+     * Subclasses must implement this method to provide specific intersection logic.
+     *
+     * @param ray The ray to intersect with.
+     * @return A list of {@link Intersection} objects, each containing the geometry and the intersection point,
+     * or {@code null} if no intersections are found.
+     */
+    protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
+        return null;
+    }
 
+    /**
+     * Calculates the detailed intersections of the object with the specified ray.
+     * This method is final to ensure that the intersection calculation mechanism is consistent across all subclasses.
+     *
+     * @param ray The ray to intersect with.
+     * @return A list of {@link Intersection} objects, each containing the geometry and the intersection point,
+     * or {@code null} if no intersections are found.
+     */
     public final List<Intersection> calculateIntersections(Ray ray) {
         return calculateIntersectionsHelper(ray);
     }
 
+    /**
+     * Represents a single intersection point between a ray and a geometric object.
+     * This inner class holds information about the geometry, the intersection point itself,
+     * and additional properties relevant for shading calculations.
+     */
     public static class Intersection {
 
-
-
+        /**
+         * The geometry object that was intersected.
+         */
         public final Geometry geometry;
+        /**
+         * The 3D point of intersection on the geometry's surface.
+         */
         public final Point point;
-
+        /**
+         * The material properties of the geometry at the intersection point.
+         */
         public final Material material;
+        /**
+         * The direction of the incident ray at the intersection point.
+         */
         public Vector rayDir;
+        /**
+         * The normal vector to the geometry's surface at the intersection point.
+         */
         public Vector normal;
+        /**
+         * The scalar product of the normal vector and the ray direction, used in lighting calculations.
+         */
         public double scaleNR;
+        /**
+         * The light source illuminating the intersection point.
+         */
         public LightSource lightSource;
+        /**
+         * The direction vector from the intersection point to the light source.
+         */
         public Vector lightDir;
+        /**
+         * The scalar product of the normal vector and the light direction, used in lighting calculations.
+         */
         public double scaleNL;
+
+        /**
+         * Constructs an Intersection object with the intersected geometry and the intersection point.
+         * The material is derived from the provided geometry.
+         *
+         * @param geometry The {@link Geometry} object that was intersected.
+         * @param point    The {@link Point} of intersection.
+         */
         public Intersection(Geometry geometry, Point point) {
             if (geometry != null)
                 this.material = geometry.getMaterial();
             else
-                this.material = new Material();
+                this.material = new Material(); // Default material if geometry is null
             this.geometry = geometry;
             this.point = point;
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj) return true; // אם זה אותו אובייקט בדיוק – שווה
-            if (obj == null || getClass() != obj.getClass()) return false; // אם null או מסוג אחר – לא שווה
+            if (this == obj) return true;
+            if (obj == null || getClass() != obj.getClass()) return false;
             Intersection other = (Intersection) obj;
-            return this.geometry == other.geometry // בדיקת זהות של האובייקט הגיאומטרי (==)
-                    && this.point.equals(other.point); // בדיקת שוויון הנקודה (equals)
+            return this.geometry == other.geometry && this.point.equals(other.point);
         }
 
         @Override
@@ -74,6 +126,4 @@ public abstract class Intersectable {
                     '}';
         }
     }
-
-
 }
