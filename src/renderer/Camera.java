@@ -5,7 +5,9 @@ import scene.Scene;
 
 import javax.imageio.ImageIO;
 import java.util.MissingResourceException;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import static primitives.Util.isZero;
 
 /**
@@ -13,6 +15,9 @@ import static primitives.Util.isZero;
  * @author Hadas_Shor, Nurit_Ezra
  */
 public class Camera implements Cloneable {
+
+    private boolean AA_FLAG = false;
+    private int AA_GRID_SIZE = 9; // Default grid size for anti-aliasing
     /**
      * Camera position in 3D space.
      */
@@ -174,7 +179,10 @@ public class Camera implements Cloneable {
     public Camera renderImage() {
         for (int i = 0; i < Ny; i++) { // Corrected loop order to match writePixel(j, i)
             for (int j = 0; j < Nx; j++) {
-                castRay(j, i);
+                if(AA_FLAG)
+                    castRayJ(Nx, Ny, j, i); // Using the jittered ray casting method
+                else
+                    castRay(j, i); // Using the standard ray casting method
 
             }
         }
@@ -221,6 +229,65 @@ public class Camera implements Cloneable {
         Color color = rayTracer.traceRay(ray);
         imageWriter.writePixel(x, y, color);
     }
+
+
+    /**
+     * Construct rays through a pixel in the view plane
+     *
+     * @param nX the number of pixels in the x direction
+     * @param nY the number of pixels in the y direction
+     * @param j  the x index of the pixel
+     * @param i  the y index of the pixel
+     * @return the list of rays through the pixel
+     */
+    public List<Ray> constructRaysJ(int nX, int nY, int j, int i) {
+
+        List<Ray> rays = new ArrayList<>();
+        Random random = new Random();
+        double Ry = height / nY;
+        double Rx = width / nX;
+        double stepY = Ry / AA_GRID_SIZE;
+        double stepX = Rx / AA_GRID_SIZE;
+
+        for (int subI = 0; subI < AA_GRID_SIZE; subI++) {
+            for (int subJ = 0; subJ < AA_GRID_SIZE; subJ++) {
+                double jitterY = random.nextDouble() % AA_GRID_SIZE; // Random offset in Y direction
+                double jitterX = random.nextDouble() % AA_GRID_SIZE; // Random offset in X direction
+
+                double offsetI = (subI + jitterY) * stepY;
+                double offsetJ = (subJ + jitterX) * stepX;
+                double Yi = -(i - (nY - 1) / 2d) * Ry + offsetI;
+                double Xj = (j - (nX - 1) / 2d) * Rx + offsetJ;
+                Point pIJ = p0;
+                if (!isZero(Xj)) pIJ = pIJ.add(vRight.scale(Xj));
+                if (!isZero(Yi)) pIJ = pIJ.add(vUp.scale(Yi));
+                pIJ = pIJ.add(vTo.scale(distance)); // pIJ is the center of the pixel in the view plane
+
+                Ray ray = new Ray(p0, pIJ.subtract(p0).normalize());
+                rays.add(ray);
+            }
+        }
+        return rays;
+    }
+    /**
+     * Cast a ray through a pixel in the view plane
+     *
+     * @param nX the number of pixels in the x direction
+     * @param nY the number of pixels in the y direction
+     * @param j  the x index of the pixel
+     * @param i  the y index of the pixel
+     */
+    private void castRayJ(int nX, int nY, int j, int i) {
+
+        List<Ray> rays = constructRaysJ(nX, nY, j, i);
+        Color color = Color.BLACK;
+        for (Ray ray : rays) {
+            color = color.add(rayTracer.traceRay(ray));
+        }
+        color = color.scale(1d / rays.size());
+        imageWriter.writePixel(j, i, color);
+
+}
 
     /**
      * Builder class for constructing a Camera instance.
@@ -357,9 +424,9 @@ public class Camera implements Cloneable {
          * @throws IllegalArgumentException if vectors are not orthogonal or normalized
          */
         public Camera build() {
-               if (camera.p0 == null)
-               // throw new MissingResourceException("p0 must has value", "Camera", "p0");
-                   camera.p0 = Point.ZERO;
+            if (camera.p0 == null)
+                // throw new MissingResourceException("p0 must has value", "Camera", "p0");
+                camera.p0 = Point.ZERO;
             if (camera.vUp == null)
                 throw new MissingResourceException("vUp must has value", "Camera", "vUp");
             if (camera.vTo == null)

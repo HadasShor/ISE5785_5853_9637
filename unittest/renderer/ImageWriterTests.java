@@ -99,4 +99,7 @@ class ImageWriterTests {
         imageWriter.writeToImage("RedDotsOnYellow");
     }
 
+
+
+
 }
