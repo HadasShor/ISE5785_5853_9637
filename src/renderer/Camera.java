@@ -16,7 +16,7 @@ import static primitives.Util.isZero;
  */
 public class Camera implements Cloneable {
 
-    private boolean AA_FLAG = true;
+    private boolean AA_FLAG = false;
     private int AA_GRID_SIZE = 9; // Default grid size for anti-aliasing
     /**
      * Camera position in 3D space.
