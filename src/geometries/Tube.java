@@ -37,19 +37,18 @@ public class Tube extends RadialGeometry {
     /**
      * Returns the normal vector to the surface of the tube at a given point.
      *
-     * @param p0 a point on the surface of the tube
+     *
      * @return the normalized normal vector at the given point
      * @throws IllegalArgumentException if the given point is not on the tube's surface
      */
     @Override
-    public Vector getNormal(Point p0) {
-        return p0.subtract(
-                axis.getHead().add(
-                        axis.getDirection().scale(
-                                axis.getDirection().dotProduct(p0.subtract(axis.getHead()))
-                        )
-                )
-        ).normalize();
+    public Vector getNormal(Point point) {
+        Point head = axis.getHead();
+        Vector direction = axis.getDirection();
+
+        Vector v = point.subtract(head);
+        double t = v.dotProduct(direction);
+        return point.subtract(axis.getPoint(t)).normalize();
     }
 
     @Override

@@ -88,13 +88,57 @@ public class Cylinder extends Tube {
         return super.getNormal(p0);
     }
 
+//    @Override
+//    protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
+//        final List<Intersection> intersections = new LinkedList<>();
+//        final Vector axisDir = axis.getDirection();
+//        final Point baseCenter = axis.getHead();
+//        final Point topCenter = axis.getPoint(height);
+//        final Point rayOrigin = ray.getHead();
+//
+//        // 1. Tube intersections
+//        List<Intersection> tubeIntersections = super.calculateIntersectionsHelper(ray);
+//        if (tubeIntersections != null) {
+//            for (Intersection p : tubeIntersections) {
+//                double axisProjection = axisDir.dotProduct(p.point.subtract(baseCenter));
+//                if (alignZero(axisProjection) >= 0 && alignZero(axisProjection - height) <= 0) {
+//                    intersections.add(new Intersection(this, p.point));
+//                }
+//            }
+//        }
+//
+//        // 2. Bottom cap
+//        List<Point> bottom = bottomPlane.findIntersections(ray);
+//        if (bottom != null) {
+//            Point p = bottom.getFirst();
+//            if (alignZero(p.distanceSquared(baseCenter) - radius*radius) < 0) {
+//                intersections.add(new Intersection(this, p));
+//            }
+//        }
+//
+//        // 3. Top cap
+//        List<Point> top = topPlane.findIntersections(ray);
+//        if (top != null) {
+//            Point p = top.getFirst();
+//            if (alignZero(p.distanceSquared(topCenter) - radius*radius) < 0) {
+//                intersections.add(new Intersection(this, p));
+//            }
+//        }
+//
+//        // 4. Sort by distance
+//        intersections.sort(Comparator.comparingDouble(p ->
+//                p.point.subtract(rayOrigin).dotProduct(ray.getDirection())));
+//
+//        return intersections.isEmpty() ? null : intersections;
+//    }
+    double radiusSquared= radius * radius;
     @Override
     protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
-        final List<Intersection> intersections = new LinkedList<>();
-        final Vector axisDir = axis.getDirection();
-        final Point baseCenter = axis.getHead();
-        final Point topCenter = axis.getPoint(height);
-        final Point rayOrigin = ray.getHead();
+    final List<Intersection> intersections = new LinkedList<>();
+    final Vector axisDir = axis.getDirection();
+    final Point baseCenter = axis.getHead();
+    final Point topCenter = axis.getPoint(height);
+    final Point rayOrigin = ray.getHead();
 
         // 1. Tube intersections
         List<Intersection> tubeIntersections = super.calculateIntersectionsHelper(ray);
@@ -107,6 +151,7 @@ public class Cylinder extends Tube {
             }
         }
 
+
         // 2. Bottom cap
         List<Point> bottom = bottomPlane.findIntersections(ray);
         if (bottom != null) {
@@ -115,7 +160,7 @@ public class Cylinder extends Tube {
                 intersections.add(new Intersection(this, p));
             }
         }
-
+//
         // 3. Top cap
         List<Point> top = topPlane.findIntersections(ray);
         if (top != null) {
@@ -125,11 +170,17 @@ public class Cylinder extends Tube {
             }
         }
 
-        // 4. Sort by distance
-        intersections.sort(Comparator.comparingDouble(p ->
-                p.point.subtract(rayOrigin).dotProduct(ray.getDirection())));
 
-        return intersections.isEmpty() ? null : intersections;
-    }
 
+
+
+
+
+    // 4. Sort by distance
+    intersections.sort(Comparator.comparingDouble(p ->
+            p.point.subtract(rayOrigin).dotProduct(ray.getDirection())));
+
+    return intersections.isEmpty() ? null : intersections;
 }
+}
+

@@ -46,46 +46,42 @@ class TubeTests {
      * A vector in 3D space with components (-3, 1, 4).
      */
     final Vector vector2 = new Vector(-3, 1, 4);
+
     /**
-     * Test method for {@link Tube#getNormal(Point)}.
-     * <p>
-     * This test verifies that the normal vector calculated at a given point on the surface of the tube
-     * is orthogonal to the direction vector of the tube's axis.
-     * </p>
+     * Test method for {@link geometries.Tube#getNormal(primitives.Point)}.
+     * This test verifies the correct calculation of the normal vector at a given point on the tube.
      */
     @Test
     void testGetNormal() {
-        // Tube tube = new Tube(new Ray(point1, vector1), 1);
+        // ============ Equivalence Partitions Tests ==============
+        // Define the radius and ray for the tube
+        double radius = 1;
+        Ray ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
+        Tube tube = new Tube(ray, radius);
 
-        // נקודה על פני הגליל לבדיקה
-        //  Point p0 = new Point(2, 3, 4); // בחר נקודה שמתאימה לך על הגליל
+        // Test normal for a point on the tube surface
+        Point p = new Point(1, 0, 3);
+        Vector normal = new Vector(1, 0, 0);
 
-        // חישוב הנורמל לנקודה
-        //Vector normal = tube.getNormal(p0);
+        // TC01: Verify the normal vector is correct
+        assertEquals(normal, tube.getNormal(p), "Incorrect normal vector");
 
-        // בדיקה אם הנורמל מאונך לוקטור הכיוון של הקרן (ציר הגליל)
-        assertTrue(Math.abs(new Tube(new Ray(point1, vector1), 1).getNormal(new Point(3, 2, 1)).dotProduct(vector1)) < 0.0001, "Erore in Tube getNormal(), the normal is not orthogonal to the direction vector of the tube");
-        assertEquals(0, new Tube(new Ray(point1, vector1), 1).getNormal(new Point(2, 2, 3)).dotProduct(vector1), 0.00001, "Error in Tube getNormal(), the normal is not orthogonal to the direction vector of the tube");
+        // =============== Boundary Values Tests ==================
+        // Test normal for a point at the base of the tube
+        p = new Point(1, 0, 0);
 
-        //assertEquals(0,new Tube( new Ray(point1, vector1),1).getNormal(point2).length(), "ERROR: Tube getNormal() does not work correctly with Zero");
-        // assertEquals(vector2.normalize(),new Tube( new Ray(point1, vector1),1).getNormal(new Point(1,0,0)), "ERROR: Tube getNormal() does not work correctly");
-
-        // Points for testing
-        final Point point1 = new Point(1, 1, 1);
-        final Point point2 = new Point(-2, -1, 0);
-
-        // Vectors for testing
-        final Vector vector1 = new Vector(1, 2, 3);
-        final Vector vector2 = new Vector(-3, 1, 4);
+        // TC02: Verify the normal vector is correct
+        assertEquals(normal, tube.getNormal(p), "Incorrect normal vector");
     }
+
     /**
      * Test method for {@link geometries.Tube#findIntersections(primitives.Ray)}.
      */
     @Test
     public void testFindIntersectionsRay() {
-        Tube tube1 = new Tube( new Ray(new Point(1, 0, 0), new Vector(0, 1, 0)),1d);
+        Tube tube1 = new Tube(new Ray(new Point(1, 0, 0), new Vector(0, 1, 0)), 1d);
         Vector vAxis = new Vector(0, 0, 1);
-        Tube tube2 = new Tube( new Ray(new Point(1, 1, 1), vAxis),1d);
+        Tube tube2 = new Tube(new Ray(new Point(1, 1, 1), vAxis), 1d);
         Ray ray;
 
         // ============ Equivalence Partitions Tests ==============
