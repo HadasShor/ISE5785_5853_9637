@@ -13,7 +13,7 @@ public class Point {
     /**
      * The coordinates of the point stored as a `Double3` object.
      */
-    final protected Double3 xyz;
+    public final Double3 xyz;
 
     /**
      * Constructs a `Point` with the specified coordinates.
