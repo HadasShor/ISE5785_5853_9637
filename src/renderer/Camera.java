@@ -1,13 +1,11 @@
 package renderer;
-
+import java.util.stream.*;
 import primitives.*;
+import primitives.Vector;
 import scene.Scene;
 
-import javax.imageio.ImageIO;
-import java.util.MissingResourceException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+
 import static primitives.Util.isZero;
 
 /**
@@ -16,7 +14,22 @@ import static primitives.Util.isZero;
  */
 public class Camera implements Cloneable {
 
-    private boolean AA_FLAG = false;
+
+
+    private int threadsCount = 0; // Default number of threads for rendering
+    private static final int SPARE_THREADS = 2;
+    private double printInterval = 0;
+    /**
+     * Pixel manager for supporting:
+     * <ul>
+     * <li>multi-threading</li>
+     * <li>debug print of progress percentage in Console window/tab</li>
+     * </ul>
+     */
+    private PixelManager pixelManager;
+
+
+    private boolean AA_FLAG = true;
     private int AA_GRID_SIZE = 9; // Default grid size for anti-aliasing
     /**
      * Camera position in 3D space.
@@ -176,18 +189,32 @@ public class Camera implements Cloneable {
      *
      * @return this camera instance
      */
-    public Camera renderImage() {
-        for (int i = 0; i < Ny; i++) { // Corrected loop order to match writePixel(j, i)
-            for (int j = 0; j < Nx; j++) {
-                if(AA_FLAG)
-                    castRayJ(Nx, Ny, j, i); // Using the jittered ray casting method
-                else
-                    castRay(j, i); // Using the standard ray casting method
+//    public Camera renderImage() {
+//        for (int i = 0; i < Ny; i++) { // Corrected loop order to match writePixel(j, i)
+//            for (int j = 0; j < Nx; j++) {
+//                if(AA_FLAG)
+//                    castRayJ(Nx, Ny, j, i); // Using the jittered ray casting method
+//                else
+//                    castRay(j, i); // Using the standard ray casting method
+//
+//            }
+//        }
+//        return this;
+//    }
 
-            }
-        }
-        return this;
+    /** This function renders image's pixel color map from the scene
+     * included in the ray tracer object
+     * @return the camera object itself
+     */
+    public Camera renderImage() {
+        pixelManager = new PixelManager(Nx, Ny, printInterval);
+        return switch (threadsCount) {
+            case 0 -> renderImageNoThreads();
+            case -1 -> renderImageStream();
+            default -> renderImageRawThreads();
+        };
     }
+
 
     /**
      * Draws a grid over the image with the specified interval and color.
@@ -272,22 +299,70 @@ public class Camera implements Cloneable {
     /**
      * Cast a ray through a pixel in the view plane
      *
-     * @param nX the number of pixels in the x direction
-     * @param nY the number of pixels in the y direction
-     * @param j  the x index of the pixel
-     * @param i  the y index of the pixel
+
+
      */
     private void castRayJ(int nX, int nY, int j, int i) {
-
         List<Ray> rays = constructRaysJ(nX, nY, j, i);
         Color color = Color.BLACK;
         for (Ray ray : rays) {
             color = color.add(rayTracer.traceRay(ray));
         }
         color = color.scale(1d / rays.size());
-        imageWriter.writePixel(j, i, color);
+        imageWriter.writePixel(j, i, color);  // כתיבה למיקום הנכון
+        pixelManager.pixelDone();
+    }
 
-}
+    /**
+     * Render image using multi-threading by parallel streaming
+     * @return the camera object itself
+     */
+    private Camera renderImageStream() {
+        IntStream.range(0, Ny).parallel()
+                .forEach(i -> IntStream.range(0, Nx).parallel()
+                        .forEach(j -> {
+                            if (AA_FLAG)
+                                castRayJ(Nx, Ny, j, i);  // העברת אינדקסי הפיקסל
+                            else
+                                castRay(j, i);
+                        }));
+        return this;
+    }
+    /**
+     * Render image without multi-threading
+     * @return the camera object itself
+     */
+    private Camera renderImageNoThreads() {
+        for (int i = 0; i < Ny; ++i)
+            for (int j = 0; j < Nx; ++j)
+                if (AA_FLAG)
+                    castRayJ(Nx, Ny, j, i);  // העברת אינדקסי הפיקסל
+                else
+                    castRay(j, i);
+        return this;
+    }
+    /**
+     * Render image using multi-threading by creating and running raw threads
+     * @return the camera object itself
+     */
+    private Camera renderImageRawThreads() {
+        var threads = new LinkedList<Thread>();
+        while (threadsCount-- > 0)
+            threads.add(new Thread(() -> {
+                Pixel pixel;
+                while ((pixel = pixelManager.nextPixel()) != null)
+                    if (AA_FLAG)
+                        castRayJ(Nx, Ny, pixel.col(), pixel.row());  // להשתמש באנטי-אליאסינג
+                    else
+                        castRay(pixel.col(), pixel.row());
+            }));
+        for (var thread : threads) thread.start();
+        try {
+            for (var thread : threads) thread.join();
+        } catch (InterruptedException ignored) {}
+        return this;
+    }
+
 
     /**
      * Builder class for constructing a Camera instance.
@@ -475,5 +550,39 @@ public class Camera implements Cloneable {
                 return null;
             }
         }
+
+        /**
+         * Set multi-threading <br>
+         * Parameter value meaning:
+         * <ul>
+         * <li>-2 - number of threads is number of logical processors less 2</li>
+         * <li>-1 - stream processing parallelization (implicit multi-threading) is used</li>
+         * <li>0 - multi-threading is not activated</li>
+         * <li>1 and more - literally number of threads</li>
+         * </ul>
+         * @param threads number of threads
+         * @return builder object itself
+         */
+        public Builder setMultithreading(int threads) {
+            if (threads < -3)
+                throw new IllegalArgumentException("Multithreading parameter must be -2 or higher");
+            if (threads == -2) {
+                int cores = Runtime.getRuntime().availableProcessors() - SPARE_THREADS;
+                camera.threadsCount = cores <= 2 ? 1 : cores;
+            } else
+                camera.threadsCount = threads;
+            return this;
+        }
+        /**
+         * Set debug printing interval. If it's zero - there won't be printing at all
+         * @param interval printing interval in %
+         * @return builder object itself
+         */
+        public Builder setDebugPrint(double interval) {
+            if (interval < 0) throw new IllegalArgumentException("interval parameter must be non-negative");
+            camera.printInterval = interval;
+            return this;
+        }
     }
+
 }
