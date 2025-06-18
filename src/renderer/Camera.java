@@ -15,9 +15,19 @@ import static primitives.Util.isZero;
 public class Camera implements Cloneable {
 
 
+    /**
+     * Number of threads for rendering the image.
+     */
+    private int threadsCount = 0;
+    /**
+     * Default number of threads for rendering.
+     */
 
-    private int threadsCount = 0; // Default number of threads for rendering
     private static final int SPARE_THREADS = 2;
+    /**
+     * Interval for printing debug information in percentage.
+     * If set to 0, no debug information will be printed.
+     */
     private double printInterval = 0;
     /**
      * Pixel manager for supporting:
@@ -28,7 +38,9 @@ public class Camera implements Cloneable {
      */
     private PixelManager pixelManager;
 
-
+    /**
+     * Flag to enable or disable anti-aliasing.
+     */
     private boolean AA_FLAG = true;
     private int AA_GRID_SIZE = 9; // Default grid size for anti-aliasing
     /**
@@ -297,19 +309,33 @@ public class Camera implements Cloneable {
         return rays;
     }
     /**
-     * Cast a ray through a pixel in the view plane
+     * Casts rays for a specific pixel in the image and writes the resulting color.
      *
-
-
+     * This method handles the ray casting process for an individual pixel (j,i) in the image:
+     * 1. Constructs multiple rays for the pixel (for anti-aliasing or supersampling)
+     * 2. Traces each ray to determine its color contribution
+     * 3. Averages all color contributions from the rays
+     * 4. Writes the final color to the output image
+     * 5. Updates the pixel processing manager
+     *
+     * @param nX  The horizontal resolution of the image
+     * @param nY  The vertical resolution of the image
+     * @param j   The horizontal coordinate of the pixel (column)
+     * @param i   The vertical coordinate of the pixel (row)
      */
     private void castRayJ(int nX, int nY, int j, int i) {
+        // בדיקה שהקואורדינטות בתוך הגבולות של התמונה
+        if (j < 0 || j >= Nx || i < 0 || i >= Ny) {
+            return;  // אל תכתוב אם מחוץ לגבולות
+        }
+
         List<Ray> rays = constructRaysJ(nX, nY, j, i);
         Color color = Color.BLACK;
         for (Ray ray : rays) {
             color = color.add(rayTracer.traceRay(ray));
         }
         color = color.scale(1d / rays.size());
-        imageWriter.writePixel(j, i, color);  // כתיבה למיקום הנכון
+        imageWriter.writePixel(j, i, color);
         pixelManager.pixelDone();
     }
 

@@ -33,7 +33,9 @@ class ReflectionRefractionTests {
            .setRayTracer(scene, RayTracerType.SIMPLE);
 
    /**
-    * Produce a picture of a sphere lighted by a spot light
+    * Tests the rendering of two spheres illuminated by a spotlight.
+    * The outer sphere is blue and partially transparent, while the inner sphere is red and opaque.
+    * This test demonstrates refraction of light through a transparent object.
     */
    @Test
    void twoSpheres() {
@@ -57,7 +59,9 @@ class ReflectionRefractionTests {
    }
 
    /**
-    * Produce a picture of a sphere lighted by a spot light
+    * Tests the rendering of two spheres positioned on reflective surfaces.
+    * Demonstrates multiple reflections and refraction effects.
+    * The outer sphere has selective transparency (only in the red channel).
     */
    @Test
    void twoSpheresOnMirrors() {
@@ -90,9 +94,9 @@ class ReflectionRefractionTests {
    }
 
    /**
-    * Produce a picture of a two triangles lighted by a spot light with a
-    * partially
-    * transparent Sphere producing partial shadow
+    * Tests the rendering of two triangles illuminated by a spotlight,
+    * with a partially transparent sphere creating partial shadow.
+    * Demonstrates partial shadow effects due to transparency (partial refraction).
     */
    @Test
    void trianglesTransparentSphere() {
@@ -118,7 +122,12 @@ class ReflectionRefractionTests {
               .renderImage() //
               .writeToImage("refractionShadow");
    }
-
+   /**
+    * Creates a complex scene with a constellation of crystals.
+    * Includes mirror pyramids, transparent and semi-transparent crystal spheres,
+    * mirror surfaces, and multiple reflection and refraction effects.
+    * Demonstrates the use of multiple light sources and various materials in a single scene.
+    */
    @Test
    void crystalConstellation() {
       // הוספת גאומטריות מרובות עם חומרים שונים
@@ -287,7 +296,11 @@ class ReflectionRefractionTests {
               .renderImage()
               .writeToImage("crystalConstellation");
    }
-
+   /**
+    * Creates a scene with crystalline prism surfaces featuring colorful reflections.
+    * Includes transparent triangles, transparent and semi-transparent spheres, and a reflective floor.
+    * Demonstrates light dispersion and reflection effects in transparent and colored surfaces.
+    */
    @Test
    void crystalPrismReflections() {
       // Set up a dark background with subtle ambient lighting
@@ -356,8 +369,11 @@ class ReflectionRefractionTests {
               .renderImage()
               .writeToImage("crystalPrismReflections");
    }
-
-   //סט בסיס עיגול גדול משולש ו 2 קטנים
+   /**
+    * Creates a scene with a metallic green pyramid and crystal spheres.
+    * A simpler version of the etherealGallery with fewer objects.
+    * Demonstrates reflection and refraction effects from metallic and crystalline surfaces.
+    */
    @Test
    void etherealGallery_piramudandsphere() {
       // === הגדרת הבסיס של הפירמידה ===
@@ -503,7 +519,11 @@ class ReflectionRefractionTests {
 
 
 
-
+   /**
+    * Creates an ethereal gallery with a pyramid and complex arrays of connected spheres.
+    * Features crystal spheres connected with shiny black connectors in a complex spatial arrangement.
+    * Demonstrates advanced scene building techniques with connected objects and material combinations.
+    */
    @Test
    void etherealGallery() {
       // === הגדרת הבסיס של הפירמידה ===
@@ -691,7 +711,9 @@ class ReflectionRefractionTests {
    }
 
    /**
-    * פונקציה שמוסיפה זוג עיגולים עם מחבר ביניהם
+    * Creates a version of the ethereal gallery with emphasis on the spheres.
+    * Includes a metallic green pyramid, crystal spheres, and a cylinder.
+    * Demonstrates the combination of different geometries in a single scene.
     */
    private void addConnectedSpheres(
            Scene scene,
@@ -800,10 +822,10 @@ class ReflectionRefractionTests {
 
 
    /**
-    * try the picture with sphere
+    * Creates a version of the ethereal gallery with emphasis on the spheres.
+    * Includes a metallic green pyramid, crystal spheres, and a cylinder.
+    * Demonstrates the combination of different geometries in a single scene.
     */
-
-
    @Test
    void etherealGallery_sphere() {
       // === הגדרת הבסיס של הפירמידה ===
@@ -964,336 +986,185 @@ class ReflectionRefractionTests {
    }
 
 
-//   @Test
-//   void new_test() {
-//      // === הגדרת הבסיס של הפירמידה ===
-//      Point pyramidBase1 = new Point(-40, -10, -180);
-//      Point pyramidBase2 = new Point(40, -10, -180);
-//      Point pyramidBase3 = new Point(40, -10, -120);
-//      Point pyramidBase4 = new Point(-40, -10, -120);
-//      Point pyramidApex = new Point(0, 50, -150);
-//
-//      // חומר מטאלי ירוק עם יותר גוון ירוק
-//      Material metallicGreenMaterial = new Material()
-//              .setKD(0.4).setKS(0.9).setShininess(180)
-//              .setKT(0.15).setKR(0.6);
-//
-//      // צבע ירוק יותר עשיר לפירמידה
-//      // Color brightGreen = new Color(0.5, 5, 1.0);
-//      Color brightGreen = new Color(0, 153, 51);
-//
-//      // פאות הפירמידה - כולן באותו צבע ירוק מטאלי בהיר
-//      scene.geometries.add(
-//              new Triangle(pyramidBase1, pyramidBase2, pyramidApex)
-//                      .setEmission(brightGreen)
-//                      .setMaterial(metallicGreenMaterial)
-//      );
-//
-//      scene.geometries.add(
-//              new Triangle(pyramidBase2, pyramidBase3, pyramidApex)
-//                      .setEmission(brightGreen)
-//                      .setMaterial(metallicGreenMaterial)
-//      );
-//
-//      scene.geometries.add(
-//              new Triangle(pyramidBase3, pyramidBase4, pyramidApex)
-//                      .setEmission(brightGreen)
-//                      .setMaterial(metallicGreenMaterial)
-//      );
-//
-//      scene.geometries.add(
-//              new Triangle(pyramidBase4, pyramidBase1, pyramidApex)
-//                      .setEmission(brightGreen)
-//                      .setMaterial(metallicGreenMaterial)
-//      );
-//
-//      // === הוספת יהלומים (כדורים מבריקים) ===
-//
-//      // חומר יהלום - מבריק מאוד עם שקיפות והשתקפות גבוהות
-//      Material diamondMaterial = new Material()
-//              .setKD(0.05).setKS(0.95).setShininess(300)
-//              .setKT(0.6).setKR(0.8);
-//
-//      // צבע יהלום מבריק
-//      Color diamondColor = new Color(8, 8, 8);
-//
-//      // נקודות המרכז של שני הכדורים
-//      Point sphere1Center = new Point(60, 10, -140);
-//      Point sphere2Center = new Point(85, 5, -160);
-//
-//      // שני כדורים קטנים מימין לפירמידה
-//      scene.geometries.add(
-//              new Sphere(10d, sphere1Center)
-//                      .setEmission(diamondColor)
-//                      .setMaterial(diamondMaterial)
-//      );
-//
-//      scene.geometries.add(
-//              new Sphere(8d, sphere2Center)
-//                      .setEmission(diamondColor)
-//                      .setMaterial(diamondMaterial)
-//      );
-//
-//      // === הוספת גליל בין שני הכדורים ===
-//      // יצירת וקטור כיוון מהכדור הראשון לשני
-//      Vector cylinderDirection = sphere2Center.subtract(sphere1Center);
-//
-//      // חומר מטאלי לגליל
-//      Material cylinderMaterial = new Material()
-//              .setKD(0.2).setKS(0.8).setShininess(100)
-//              .setKT(0.3).setKR(0.5);
-//
-//      // הוספת הגליל בין שני הכדורים
-//      scene.geometries.add(
-//              new Cylinder(new Ray(sphere1Center, cylinderDirection), 5, cylinderDirection.length())
-//                      .setEmission(new Color(120, 120, 200))
-//                      .setMaterial(cylinderMaterial)
-//      );
-//
-//      // כדור אחד משמאל לפירמידה - ממוקם יותר מקדימה
-//      scene.geometries.add(
-//              new Sphere(30d, new Point(-65, 15, -75)) // שיניתי את ערך ה-Z מ -150 ל -50 להזזה קדימה
-//                      .setEmission(diamondColor)
-//                      .setMaterial(diamondMaterial)
-//      );
-//
-//      // === מישורים - עוד פחות מראתיים ורקע בהיר יותר ===
-//
-//      // רצפה עם מינימום השתקפות ובהירה יותר
-//      scene.geometries.add(
-//              new Plane(new Point(0, -25, 0), new Vector(0, 1, 0))
-//                      .setEmission(new Color(7, 6, 5)) // בהיר יותר
-//                      .setMaterial(new Material()
-//                              .setKD(0.95).setKS(0.15).setShininess(20)
-//                              .setKR(0.08)) // עוד פחות השתקפות
-//      );
-//
-//      // קיר אחורי מאט בהיר יותר
-//      scene.geometries.add(
-//              new Plane(new Point(0, 0, -250), new Vector(0, 0, 1))
-//                      .setEmission(new Color(4, 3, 5)) // בהיר יותר
-//                      .setMaterial(new Material()
-//                              .setKD(0.98).setKS(0.02).setShininess(5)
-//                              .setKR(0.02)) // כמעט ללא השתקפות
-//      );
-//
-//      // קיר צדדי בהיר יותר וללא השתקפות כמעט
-//      scene.geometries.add(
-//              new Plane(new Point(-120, 0, 0), new Vector(1, 0, 0))
-//                      .setEmission(new Color(5, 6, 7)) // בהיר יותר
-//                      .setMaterial(new Material()
-//                              .setKD(0.9).setKS(0.2).setShininess(30)
-//                              .setKR(0.1)) // מינימום השתקפות
-//      );
-//
-//      // === תאורה ===
-//
-//      // תאורת סביבה עדינה
-//      scene.setAmbientLight(new AmbientLight(new Color(0.6, 0.6, 1.1))); // מעט בהיר יותר
-//
-//      // אור ספוט ראשי
-//      scene.light.add(
-//              new SpotLight(
-//                      new Color(250, 200, 150),
-//                      new Point(-100, 150, 50),
-//                      new Vector(2, -3, -4))
-//                      .setKl(0.0003).setKq(0.00003)
-//      );
-//
-//      // אור נקודתי משני
-//      scene.light.add(
-//              new PointLight(
-//                      new Color(100, 150, 200),
-//                      new Point(120, 80, -40))
-//                      .setKl(0.0003).setKq(0.00002)
-//      );
-//
-//      // אור כיווני רך
-//      scene.light.add(
-//              new DirectionalLight(
-//                      new Color(15, 20, 25),
-//                      new Vector(-0.2, -0.6, -1))
-//      );
-//
-//      // === הגדרת המצלמה ===
-//      cameraBuilder
-//              .setLocation(new Point(80, 60, 150))
-//              .setDirection(new Point(-10, 25, -100), Vector.AXIS_Y)
-//              .setVpDistance(200)
-//              .setVpSize(240, 240)
-//              .setResolution(800, 800)
-//              .build()
-//              .renderImage()
-//              .writeToImage("new_test");
-//   }
-@Test
-void new_test_multithreaded() {
-   // === הגדרת הבסיס של הפירמידה ===
-   Point pyramidBase1 = new Point(-40, -10, -180);
-   Point pyramidBase2 = new Point(40, -10, -180);
-   Point pyramidBase3 = new Point(40, -10, -120);
-   Point pyramidBase4 = new Point(-40, -10, -120);
-   Point pyramidApex = new Point(0, 50, -150);
+   /**
+    * Creates a complex scene using multi-threaded processing.
+    * Includes a green pyramid, crystal spheres, and a connecting cylinder between them.
+    * Demonstrates the use of multi-threading capabilities to improve rendering times.
+    */
+   @Test
+   void new_test_multithreaded() {
+      // === הגדרת הבסיס של הפירמידה ===
+      Point pyramidBase1 = new Point(-40, -10, -180);
+      Point pyramidBase2 = new Point(40, -10, -180);
+      Point pyramidBase3 = new Point(40, -10, -120);
+      Point pyramidBase4 = new Point(-40, -10, -120);
+      Point pyramidApex = new Point(0, 50, -150);
 
-   // חומר מטאלי ירוק עם יותר גוון ירוק
-   Material metallicGreenMaterial = new Material()
-           .setKD(0.4).setKS(0.9).setShininess(180)
-           .setKT(0.15).setKR(0.6);
+      // חומר מטאלי ירוק עם יותר גוון ירוק
+      Material metallicGreenMaterial = new Material()
+              .setKD(0.4).setKS(0.9).setShininess(180)
+              .setKT(0.15).setKR(0.6);
 
-   // צבע ירוק יותר עשיר לפירמידה
-   // Color brightGreen = new Color(0.5, 5, 1.0);
-   Color brightGreen = new Color(0, 153, 51);
+      // צבע ירוק יותר עשיר לפירמידה
+      // Color brightGreen = new Color(0.5, 5, 1.0);
+      Color brightGreen = new Color(0, 153, 51);
 
-   // פאות הפירמידה - כולן באותו צבע ירוק מטאלי בהיר
-   scene.geometries.add(
-           new Triangle(pyramidBase1, pyramidBase2, pyramidApex)
-                   .setEmission(brightGreen)
-                   .setMaterial(metallicGreenMaterial)
-   );
+      // פאות הפירמידה - כולן באותו צבע ירוק מטאלי בהיר
+      scene.geometries.add(
+              new Triangle(pyramidBase1, pyramidBase2, pyramidApex)
+                      .setEmission(brightGreen)
+                      .setMaterial(metallicGreenMaterial)
+      );
 
-   scene.geometries.add(
-           new Triangle(pyramidBase2, pyramidBase3, pyramidApex)
-                   .setEmission(brightGreen)
-                   .setMaterial(metallicGreenMaterial)
-   );
+      scene.geometries.add(
+              new Triangle(pyramidBase2, pyramidBase3, pyramidApex)
+                      .setEmission(brightGreen)
+                      .setMaterial(metallicGreenMaterial)
+      );
 
-   scene.geometries.add(
-           new Triangle(pyramidBase3, pyramidBase4, pyramidApex)
-                   .setEmission(brightGreen)
-                   .setMaterial(metallicGreenMaterial)
-   );
+      scene.geometries.add(
+              new Triangle(pyramidBase3, pyramidBase4, pyramidApex)
+                      .setEmission(brightGreen)
+                      .setMaterial(metallicGreenMaterial)
+      );
 
-   scene.geometries.add(
-           new Triangle(pyramidBase4, pyramidBase1, pyramidApex)
-                   .setEmission(brightGreen)
-                   .setMaterial(metallicGreenMaterial)
-   );
+      scene.geometries.add(
+              new Triangle(pyramidBase4, pyramidBase1, pyramidApex)
+                      .setEmission(brightGreen)
+                      .setMaterial(metallicGreenMaterial)
+      );
 
-   // === הוספת יהלומים (כדורים מבריקים) ===
+      // === הוספת יהלומים (כדורים מבריקים) ===
 
-   // חומר יהלום - מבריק מאוד עם שקיפות והשתקפות גבוהות
-   Material diamondMaterial = new Material()
-           .setKD(0.05).setKS(0.95).setShininess(300)
-           .setKT(0.6).setKR(0.8);
+      // חומר יהלום - מבריק מאוד עם שקיפות והשתקפות גבוהות
+      Material diamondMaterial = new Material()
+              .setKD(0.05).setKS(0.95).setShininess(300)
+              .setKT(0.6).setKR(0.8);
 
-   // צבע יהלום מבריק
-   Color diamondColor = new Color(8, 8, 8);
+      // צבע יהלום מבריק
+      Color diamondColor = new Color(8, 8, 8);
 
-   // נקודות המרכז של שני הכדורים
-   Point sphere1Center = new Point(60, 10, -140);
-   Point sphere2Center = new Point(85, 5, -160);
+      // נקודות המרכז של שני הכדורים
+      Point sphere1Center = new Point(60, 10, -140);
+      Point sphere2Center = new Point(85, 5, -160);
 
-   // שני כדורים קטנים מימין לפירמידה
-   scene.geometries.add(
-           new Sphere(10d, sphere1Center)
-                   .setEmission(diamondColor)
-                   .setMaterial(diamondMaterial)
-   );
+      // שני כדורים קטנים מימין לפירמידה
+      scene.geometries.add(
+              new Sphere(10d, sphere1Center)
+                      .setEmission(diamondColor)
+                      .setMaterial(diamondMaterial)
+      );
 
-   scene.geometries.add(
-           new Sphere(8d, sphere2Center)
-                   .setEmission(diamondColor)
-                   .setMaterial(diamondMaterial)
-   );
+      scene.geometries.add(
+              new Sphere(8d, sphere2Center)
+                      .setEmission(diamondColor)
+                      .setMaterial(diamondMaterial)
+      );
 
-   // === הוספת גליל בין שני הכדורים ===
-   // יצירת וקטור כיוון מהכדור הראשון לשני
-   Vector cylinderDirection = sphere2Center.subtract(sphere1Center);
+      // === הוספת גליל בין שני הכדורים ===
+      // יצירת וקטור כיוון מהכדור הראשון לשני
+      Vector cylinderDirection = sphere2Center.subtract(sphere1Center);
 
-   // חומר מטאלי לגליל
-   Material cylinderMaterial = new Material()
-           .setKD(0.2).setKS(0.8).setShininess(100)
-           .setKT(0.3).setKR(0.5);
+      // חומר מטאלי לגליל
+      Material cylinderMaterial = new Material()
+              .setKD(0.2).setKS(0.8).setShininess(100)
+              .setKT(0.3).setKR(0.5);
 
-   // הוספת הגליל בין שני הכדורים
-   scene.geometries.add(
-           new Cylinder(new Ray(sphere1Center, cylinderDirection), 5, cylinderDirection.length())
-                   .setEmission(new Color(120, 120, 200))
-                   .setMaterial(cylinderMaterial)
-   );
+      // הוספת הגליל בין שני הכדורים
+      scene.geometries.add(
+              new Cylinder(new Ray(sphere1Center, cylinderDirection), 5, cylinderDirection.length())
+                      .setEmission(new Color(120, 120, 200))
+                      .setMaterial(cylinderMaterial)
+      );
 
-   // כדור אחד משמאל לפירמידה - ממוקם יותר מקדימה
-   scene.geometries.add(
-           new Sphere(30d, new Point(-65, 15, -75)) // שיניתי את ערך ה-Z מ -150 ל -50 להזזה קדימה
-                   .setEmission(diamondColor)
-                   .setMaterial(diamondMaterial)
-   );
+      // כדור אחד משמאל לפירמידה - ממוקם יותר מקדימה
+      scene.geometries.add(
+              new Sphere(30d, new Point(-65, 15, -75)) // שיניתי את ערך ה-Z מ -150 ל -50 להזזה קדימה
+                      .setEmission(diamondColor)
+                      .setMaterial(diamondMaterial)
+      );
 
-   // === מישורים - עוד פחות מראתיים ורקע בהיר יותר ===
+      // === מישורים - עוד פחות מראתיים ורקע בהיר יותר ===
 
-   // רצפה עם מינימום השתקפות ובהירה יותר
-   scene.geometries.add(
-           new Plane(new Point(0, -25, 0), new Vector(0, 1, 0))
-                   .setEmission(new Color(7, 6, 5)) // בהיר יותר
-                   .setMaterial(new Material()
-                           .setKD(0.95).setKS(0.15).setShininess(20)
-                           .setKR(0.08)) // עוד פחות השתקפות
-   );
+      // רצפה עם מינימום השתקפות ובהירה יותר
+      scene.geometries.add(
+              new Plane(new Point(0, -25, 0), new Vector(0, 1, 0))
+                      .setEmission(new Color(7, 6, 5)) // בהיר יותר
+                      .setMaterial(new Material()
+                              .setKD(0.95).setKS(0.15).setShininess(20)
+                              .setKR(0.08)) // עוד פחות השתקפות
+      );
 
-   // קיר אחורי מאט בהיר יותר
-   scene.geometries.add(
-           new Plane(new Point(0, 0, -250), new Vector(0, 0, 1))
-                   .setEmission(new Color(4, 3, 5)) // בהיר יותר
-                   .setMaterial(new Material()
-                           .setKD(0.98).setKS(0.02).setShininess(5)
-                           .setKR(0.02)) // כמעט ללא השתקפות
-   );
+      // קיר אחורי מאט בהיר יותר
+      scene.geometries.add(
+              new Plane(new Point(0, 0, -250), new Vector(0, 0, 1))
+                      .setEmission(new Color(4, 3, 5)) // בהיר יותר
+                      .setMaterial(new Material()
+                              .setKD(0.98).setKS(0.02).setShininess(5)
+                              .setKR(0.02)) // כמעט ללא השתקפות
+      );
 
-   // קיר צדדי בהיר יותר וללא השתקפות כמעט
-   scene.geometries.add(
-           new Plane(new Point(-120, 0, 0), new Vector(1, 0, 0))
-                   .setEmission(new Color(5, 6, 7)) // בהיר יותר
-                   .setMaterial(new Material()
-                           .setKD(0.9).setKS(0.2).setShininess(30)
-                           .setKR(0.1)) // מינימום השתקפות
-   );
+      // קיר צדדי בהיר יותר וללא השתקפות כמעט
+      scene.geometries.add(
+              new Plane(new Point(-120, 0, 0), new Vector(1, 0, 0))
+                      .setEmission(new Color(5, 6, 7)) // בהיר יותר
+                      .setMaterial(new Material()
+                              .setKD(0.9).setKS(0.2).setShininess(30)
+                              .setKR(0.1)) // מינימום השתקפות
+      );
 
-   // === תאורה ===
+      // === תאורה ===
 
-   // תאורת סביבה עדינה
-   scene.setAmbientLight(new AmbientLight(new Color(0.6, 0.6, 1.1))); // מעט בהיר יותר
+      // תאורת סביבה עדינה
+      scene.setAmbientLight(new AmbientLight(new Color(0.6, 0.6, 1.1))); // מעט בהיר יותר
 
-   // אור ספוט ראשי
-   scene.light.add(
-           new SpotLight(
-                   new Color(250, 200, 150),
-                   new Point(-100, 150, 50),
-                   new Vector(2, -3, -4))
-                   .setKl(0.0003).setKq(0.00003)
-   );
+      // אור ספוט ראשי
+      scene.light.add(
+              new SpotLight(
+                      new Color(250, 200, 150),
+                      new Point(-100, 150, 50),
+                      new Vector(2, -3, -4))
+                      .setKl(0.0003).setKq(0.00003)
+      );
 
-   // אור נקודתי משני
-   scene.light.add(
-           new PointLight(
-                   new Color(100, 150, 200),
-                   new Point(120, 80, -40))
-                   .setKl(0.0003).setKq(0.00002)
-   );
+      // אור נקודתי משני
+      scene.light.add(
+              new PointLight(
+                      new Color(100, 150, 200),
+                      new Point(120, 80, -40))
+                      .setKl(0.0003).setKq(0.00002)
+      );
 
-   // אור כיווני רך
-   scene.light.add(
-           new DirectionalLight(
-                   new Color(15, 20, 25),
-                   new Vector(-0.2, -0.6, -1))
-   );
+      // אור כיווני רך
+      scene.light.add(
+              new DirectionalLight(
+                      new Color(15, 20, 25),
+                      new Vector(-0.2, -0.6, -1))
+      );
 
-   // === הגדרת המצלמה ===
-   cameraBuilder
-           .setLocation(new Point(80, 60, 150))
-           .setDirection(new Point(-10, 25, -100), Vector.AXIS_Y)
-           .setVpDistance(200)
-           .setVpSize(240, 240)
-           .setResolution(800, 800)
-           // הגדרות מולטי-תרדינג
-           .setMultithreading(8)      // שימוש ב-8 תהליכונים
-           .setDebugPrint(5)          // הדפסת התקדמות כל 5%
-           .setRayTracer(scene, RayTracerType.SIMPLE)  // חשוב להגדיר את הריי טרייסר
-           .build()
-           .renderImage()
-           .writeToImage("new_test_multithreaded");
-}
+      // === הגדרת המצלמה ===
+      cameraBuilder
+              .setLocation(new Point(80, 60, 150))
+              .setDirection(new Point(-10, 25, -100), Vector.AXIS_Y)
+              .setVpDistance(200)
+              .setVpSize(240, 240)
+              .setResolution(800, 800)
+              // הגדרות מולטי-תרדינג
+              .setMultithreading(8)      // שימוש ב-8 תהליכונים
+              .setDebugPrint(5)          // הדפסת התקדמות כל 5%
+              .setRayTracer(scene, RayTracerType.SIMPLE)  // חשוב להגדיר את הריי טרייסר
+              .build()
+              .renderImage()
+              .writeToImage("new_test_multithreaded");
+   }
 
 
+   /**
+    * Creates a wonderland of cylinders and tubes.
+    * Includes transparent cylinders, intersecting metallic tubes, and a spiral structure.
+    * Demonstrates transparency, reflection, and color effects in cylindrical shapes.
+    * Uses multi-threaded processing to improve rendering performance.
+    */
 
    @Test
    void cylindricalWonderland() {
@@ -1495,6 +1366,20 @@ void new_test_multithreaded() {
               .writeToImage("cylindricalWonderland_multithreaded");
 
    }
+
+   /**
+    * Creates a 3D scene with dual chains of Y-shaped molecules in a visually appealing arrangement.
+    *
+    * This test demonstrates advanced 3D rendering techniques including:
+    * - Creation of complex molecular structures with precise spatial positioning
+    * - Implementation of multiple material properties (reflection, shininess)
+    * - Strategic light placement with multiple colored light sources for dramatic effect
+    * - Multi-threaded rendering for improved performance
+    *
+    * The scene contains two parallel chains of Y-shaped molecules positioned at different depths,
+    * placed on a reflective dark surface, and illuminated by various light sources to create
+    * a visually striking scientific visualization.
+    */
    @Test
    void dualChainedYMoleculesTest() {
       // רקע שחור
@@ -1596,7 +1481,7 @@ void new_test_multithreaded() {
               .setDirection(new Point(0, 0, -100), Vector.AXIS_Y)
               .setVpDistance(1000)
               .setVpSize(200, 100)
-              .setResolution(1600, 800)
+              .setResolution(900, 900)
               .setRayTracer(scene, RayTracerType.SIMPLE)
               // הוספת תמיכה בתהליכונים
               .setMultithreading(-2)
@@ -1607,7 +1492,22 @@ void new_test_multithreaded() {
    }
 
    /**
-    * יוצר שרשרת מולקולות שלמה במיקום הרצוי
+    * Creates a complete chain of molecules at the specified position in 3D space.
+    *
+    * This method handles the placement of multiple Y-shaped molecules in a chain formation,
+    * with each molecule slightly rotated for visual variety. It also creates bonds between
+    * consecutive molecules in the chain.
+    *
+    * @param scene              The scene to which the molecule chain will be added
+    * @param numberOfMolecules  Number of molecules in the chain
+    * @param atomSize           Size (radius) of each atom sphere
+    * @param bondThickness      Thickness (radius) of the bonds between atoms
+    * @param moleculeSpacing    Distance between consecutive molecules in the chain
+    * @param zPosition          Z-axis position of the entire chain
+    * @param atomMaterial       Material properties for the atoms
+    * @param atomColor          Color of the atoms
+    * @param bondMaterial       Material properties for the bonds
+    * @param bondColor          Color of the bonds
     */
    private void createMoleculeChain(
            Scene scene,
@@ -1655,8 +1555,27 @@ void new_test_multithreaded() {
    }
 
    /**
-    * יוצר מולקולה בצורת Y עם נטייה מוגדרת
-    * מחזיר את נקודת החיבור למולקולה הבאה בשרשרת
+    * Creates a Y-shaped molecule with specified rotation angles in 3D space.
+    *
+    * This method builds a Y-shaped molecular structure consisting of four atoms connected by bonds:
+    * - A base atom at the bottom
+    * - A middle atom connected vertically to the base atom
+    * - Two upper atoms connected diagonally to the middle atom
+    *
+    * The entire structure can be rotated around all three axes to create variety in the molecule chain.
+    *
+    * @param scene          The scene to which the molecule will be added
+    * @param basePoint      The 3D point where the base atom will be positioned
+    * @param atomSize       Size (radius) of each atom sphere
+    * @param bondThickness  Thickness (radius) of the bonds between atoms
+    * @param rotateX        Rotation angle around X axis in degrees
+    * @param rotateY        Rotation angle around Y axis in degrees
+    * @param rotateZ        Rotation angle around Z axis in degrees
+    * @param atomMaterial   Material properties for the atoms
+    * @param atomColor      Color of the atoms
+    * @param bondMaterial   Material properties for the bonds
+    * @param bondColor      Color of the bonds
+    * @return               The 3D point of the top-right atom, used as connection point to the next molecule
     */
    private Point createRotatedYMolecule(
            Scene scene, Point basePoint, double atomSize, double bondThickness,
@@ -1726,7 +1645,14 @@ void new_test_multithreaded() {
    }
 
    /**
-    * מבצע סיבוב של וקטור בשלושת הצירים
+    * Performs rotation of a vector around all three axes.
+    * Applies sequential rotations: first around X axis, then Y axis, and finally Z axis.
+    *
+    * @param v        The original vector to be rotated
+    * @param angleX   Rotation angle around the X axis in degrees
+    * @param angleY   Rotation angle around the Y axis in degrees
+    * @param angleZ   Rotation angle around the Z axis in degrees
+    * @return         A new vector resulting from the applied rotations
     */
    private Vector rotateVector(Vector v, double angleX, double angleY, double angleZ) {
       // המרת מעלות לרדיאנים
@@ -1762,7 +1688,15 @@ void new_test_multithreaded() {
    }
 
    /**
-    * מוסיף קשר (גליל) בין שני אטומים
+    * Adds a bond (cylinder) between two atoms in 3D space.
+    * The bond is represented as a cylinder stretching between two points with defined radius and material.
+    *
+    * @param scene    The scene instance to which the cylinder will be added
+    * @param atom1    The point representing the first atom's position
+    * @param atom2    The point representing the second atom's position
+    * @param radius   The radius of the cylinder representing the bond
+    * @param color    The color of the cylinder
+    * @param material The material of the cylinder with reflection, transparency, and shininess properties
     */
    private void addBond(
            Scene scene,
@@ -1780,3 +1714,5 @@ void new_test_multithreaded() {
       );
    }
 }
+
+
