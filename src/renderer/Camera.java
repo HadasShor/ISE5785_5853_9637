@@ -98,7 +98,7 @@ public class Camera implements Cloneable {
      * @param i  y-index of the pixel
      * @return ray from the camera through the pixel
      */
-    public Ray constructRay(int nX, int nY, int j, int i) {
+    public Ray constructRay(int nX, int nY, double j, double i) {
         Point pc = p0.add(vTo.scale(distance));
 
         double yI = -(i - (nY - 1) / 2d) * height / nY;
@@ -180,7 +180,8 @@ public class Camera implements Cloneable {
         for (int i = 0; i < Ny; i++) { // Corrected loop order to match writePixel(j, i)
             for (int j = 0; j < Nx; j++) {
                 if(AA_FLAG)
-                    castRayJ(Nx, Ny, j, i); // Using the jittered ray casting method
+                    castRayAdaptive(Nx, Ny, j, i); // Using the adaptive ray casting method
+                    //castRayJ(Nx, Ny, j, i); // Using the jittered ray casting method
                 else
                     castRay(j, i); // Using the standard ray casting method
 
@@ -188,6 +189,15 @@ public class Camera implements Cloneable {
         }
         return this;
     }
+    private void castRayAdaptive(int nX, int nY, int j, int i) {
+        Color color = adaptiveCast(
+                nX, nY, j, i,
+                j, i, j + 1, i + 1,
+                0, 3, 0.0001 // start level, max depth, variance threshold
+        );
+        imageWriter.writePixel(j, i, color);
+    }
+
 
     /**
      * Draws a grid over the image with the specified interval and color.
@@ -230,6 +240,47 @@ public class Camera implements Cloneable {
         imageWriter.writePixel(x, y, color);
     }
 
+
+    private Color adaptiveCast(int nX, int nY, int j, int i,
+                               double minX, double minY,
+                               double maxX, double maxY,
+                               int level, int maxLevel, double threshold) {
+        if (level >= maxLevel) {
+            Ray ray = constructRay(nX, nY, (minX + maxX) / 2, (minY + maxY) / 2);
+            return rayTracer.traceRay(ray);
+        }
+
+        Ray r1 = constructRay(nX, nY, minX, minY);
+        Ray r2 = constructRay(nX, nY, maxX, minY);
+        Ray r3 = constructRay(nX, nY, minX, maxY);
+        Ray r4 = constructRay(nX, nY, maxX, maxY);
+
+        Color c1 = rayTracer.traceRay(r1);
+        Color c2 = rayTracer.traceRay(r2);
+        Color c3 = rayTracer.traceRay(r3);
+        Color c4 = rayTracer.traceRay(r4);
+
+        Color avg = c1.add(c2).add(c3).add(c4).scale(0.25);
+
+        double variance = Math.max(
+                Math.max(c1.subtract(avg).lengthSquared(), c2.subtract(avg).lengthSquared()),
+                Math.max(c3.subtract(avg).lengthSquared(), c4.subtract(avg).lengthSquared())
+        );
+
+        if (variance < threshold) {
+            return avg;
+        }
+
+        double midX = (minX + maxX) / 2;
+        double midY = (minY + maxY) / 2;
+
+        Color q1 = adaptiveCast(nX, nY, j, i, minX, minY, midX, midY, level + 1, maxLevel, threshold);
+        Color q2 = adaptiveCast(nX, nY, j, i, midX, minY, maxX, midY, level + 1, maxLevel, threshold);
+        Color q3 = adaptiveCast(nX, nY, j, i, minX, midY, midX, maxY, level + 1, maxLevel, threshold);
+        Color q4 = adaptiveCast(nX, nY, j, i, midX, midY, maxX, maxY, level + 1, maxLevel, threshold);
+
+        return q1.add(q2).add(q3).add(q4).scale(0.25);
+    }
 
     /**
      * Construct rays through a pixel in the view plane

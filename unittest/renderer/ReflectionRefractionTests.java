@@ -1452,98 +1452,112 @@ class ReflectionRefractionTests {
               .writeToImage("new_test");
    }
 
+   @Test
+   void dualChainedYMoleculesTest() {
+      // רקע שחור
+      scene.setBackground(new Color(0, 0, 0));
 
+      // חומר לאטומים - שחור יותר אך מבריק מאוד
+      Material atomMaterial = new Material()
+              .setKD(0.15).setKS(0.98).setShininess(1500)  // יותר מבריק, פחות דיפוזי
+              .setKT(0.0).setKR(0.75);  // יותר השתקפות לברק מוגבר
 
-@Test
-void dualChainedYMoleculesTest() {
-   // רקע שחור
-   scene.setBackground(new Color(0, 0, 0));
+      Material bondMaterial = new Material()
+              .setKD(0.1).setKS(0.9).setShininess(200)
+              .setKT(0.0).setKR(0.7);
 
-   // === חומרים ===
-   Material atomMaterial = new Material()
-           .setKD(0.05).setKS(0.95).setShininess(1000)  // מבריק מאוד
-           .setKT(0.0).setKR(0.9);  // השתקפות גבוהה
+      // צבעים - שחור יותר מבריק לאטומים
+      Color atomColor = new Color(8, 8, 10);  // שחור יותר עמוק
+      Color bondColor = new Color(150, 150, 150);  // אפור לקשרים
 
-   Material bondMaterial = new Material()
-           .setKD(0.1).setKS(0.9).setShininess(200)
-           .setKT(0.0).setKR(0.7);
+      // רצפה כהה מבריקה
+      scene.geometries.add(
+              new Plane(new Point(0, -10, 0), new Vector(0, 1, 0))
+                      .setEmission(new Color(20, 20, 20))
+                      .setMaterial(new Material()
+                              .setKD(0.2).setKS(0.8).setShininess(100)
+                              .setKR(0.6))  // השתקפות גבוהה
+      );
 
-   // צבעים - אפור כהה מבריק
-   Color atomColor = new Color(40, 40, 40);  // כמעט שחור
-   Color bondColor = new Color(150, 150, 150);  // אפור לקשרים
+      // === הגדרות הסצנה המקורית ===
+      int numberOfMolecules = 5;   // מספר מולקולות בשרשרת
+      double atomSize = 6.0;       // גודל האטומים
+      double bondThickness = 1.5;  // עובי הקשרים
+      double moleculeSpacing = 30.0;  // מרחק בין מולקולות
 
-   // רצפה כהה מבריקה
-   scene.geometries.add(
-           new Plane(new Point(0, -10, 0), new Vector(0, 1, 0))
-                   .setEmission(new Color(20, 20, 20))
-                   .setMaterial(new Material()
-                           .setKD(0.2).setKS(0.8).setShininess(100)
-                           .setKR(0.6))  // השתקפות גבוהה
-   );
+      // === יצירת שרשרת המולקולות המקורית (רחוקה) ===
+      createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
+              -100, // ערך Z המקורי
+              atomMaterial, atomColor, bondMaterial, bondColor);
 
-   // === הגדרות הסצנה המקורית ===
-   int numberOfMolecules = 5;   // מספר מולקולות בשרשרת
-   double atomSize = 6.0;       // גודל האטומים
-   double bondThickness = 1.5;  // עובי הקשרים
-   double moleculeSpacing = 30.0;  // מרחק בין מולקולות
+      // === יצירת שרשרת מולקולות זהה קרובה יותר למצלמה ===
+      createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
+              -50, // ערך Z קרוב יותר
+              atomMaterial, atomColor, bondMaterial, bondColor);
 
-   // === יצירת שרשרת המולקולות המקורית (רחוקה) ===
-   createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
-           -100, // ערך Z המקורי
-           atomMaterial, atomColor, bondMaterial, bondColor);
+      // === תאורה ===
+      scene.setAmbientLight(new AmbientLight(new Color(0.05, 0.05, 0.05)));
 
-   // === יצירת שרשרת מולקולות זהה קרובה יותר למצלמה ===
-   createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
-           -50, // ערך Z קרוב יותר
-           atomMaterial, atomColor, bondMaterial, bondColor);
+      // אור ספוט חזק מלפנים ומלמעלה
+      scene.light.add(
+              new SpotLight(
+                      new Color(900, 900, 900),
+                      new Point(0, 50, 50),
+                      new Vector(0, -1, -1))
+                      .setKl(0.0001).setKq(0.000005)
+      );
 
-   // === תאורה ===
-   scene.setAmbientLight(new AmbientLight(new Color(0.05, 0.05, 0.05)));
+      // אור נקודתי מימין להארת הצדדים
+      scene.light.add(
+              new PointLight(
+                      new Color(400, 400, 400),
+                      new Point(50, 30, 0))
+                      .setKl(0.0002).setKq(0.00002)
+      );
 
-   // אור ספוט חזק מלפנים ומלמעלה
-   scene.light.add( // תיקון: lights במקום light
-           new SpotLight(
-                   new Color(900, 900, 900),
-                   new Point(0, 50, 50),
-                   new Vector(0, -1, -1))
-                   .setKl(0.0001).setKq(0.000005)
-   );
+      // אור נקודתי משמאל להארת הצדדים השמאליים
+      scene.light.add(
+              new PointLight(
+                      new Color(400, 400, 400),
+                      new Point(-50, 30, 0))
+                      .setKl(0.0002).setKq(0.00002)
+      );
 
-   // אור נקודתי מימין להארת הצדדים
-   scene.light.add( // תיקון: lights במקום light
-           new PointLight(
-                   new Color(400, 400, 400),
-                   new Point(50, 30, 0))
-                   .setKl(0.0002).setKq(0.00002)
-   );
+      // תאורה צבעונית עדינה - תוספת אור בגוון כחול עדין
+      scene.light.add(
+              new PointLight(
+                      new Color(150, 180, 350), // כחול עדין
+                      new Point(-30, 40, -40))
+                      .setKl(0.0002).setKq(0.00003)
+      );
 
-   // אור נקודתי משמאל להארת הצדדים השמאליים
-   scene.light.add( // תיקון: lights במקום light
-           new PointLight(
-                   new Color(400, 400, 400),
-                   new Point(-50, 30, 0))
-                   .setKl(0.0002).setKq(0.00002)
-   );
+      // תאורה צבעונית עדינה - תוספת אור בגוון ירקרק עדין
+      scene.light.add(
+              new PointLight(
+                      new Color(180, 350, 200), // ירקרק עדין
+                      new Point(40, 25, -60))
+                      .setKl(0.0002).setKq(0.00003)
+      );
 
-   // אור נקודתי קדמי נוסף להארת השרשרת הקדמית
-   scene.light.add(
-           new PointLight(
-                   new Color(300, 300, 300),
-                   new Point(0, 20, -20))
-                   .setKl(0.0002).setKq(0.00002)
-   );
+      // תאורה צבעונית עדינה - תוספת אור בגוון סגלגל עדין
+      scene.light.add(
+              new PointLight(
+                      new Color(240, 120, 300), // סגלגל עדין
+                      new Point(10, 15, -120))
+                      .setKl(0.0003).setKq(0.00004)
+      );
 
-   // === המצלמה ===
-   cameraBuilder
-           .setLocation(new Point(-300, 10, 850))  // מצלמה רחוקה
-           .setDirection(new Point(0, 0, -100), Vector.AXIS_Y)
-           .setVpDistance(1000)
-           .setVpSize(200, 100)
-           .setResolution(1600, 800)
-           .build()
-           .renderImage()
-           .writeToImage("dual_molecule_chains_right_+");
-}
+      // === המצלמה ===
+      cameraBuilder
+              .setLocation(new Point(-300, 10, 850))  // מצלמה רחוקה
+              .setDirection(new Point(0, 0, -100), Vector.AXIS_Y)
+              .setVpDistance(1000)
+              .setVpSize(200, 100)
+              .setResolution(1600, 800)
+              .build()
+              .renderImage()
+              .writeToImage("dual_molecule_chains");
+   }
 
    /**
     * יוצר שרשרת מולקולות שלמה במיקום הרצוי

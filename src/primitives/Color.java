@@ -126,7 +126,29 @@ public class Color {
         if (k < 1) throw new IllegalArgumentException("Can't scale a color by a by a number lower than 1");
         return new Color(rgb.reduce(k));
     }
-
+    /**
+     * Subtracts another color from this color, component-wise. If the result of
+     * subtraction is negative, it is clamped to zero.
+     *
+     * @param other the color to subtract
+     * @return a new Color object representing the result of the subtraction
+     */
+    public Color subtract(Color other) {
+        double r = Math.max(0, this.rgb.d1() - other.rgb.d1());
+        double g = Math.max(0, this.rgb.d2() - other.rgb.d2());
+        double b = Math.max(0, this.rgb.d3() - other.rgb.d3());
+        return new Color(r, g, b);
+    }
+    /**
+     * Calculates the length of the color vector in RGB space.
+     *
+     * @return the length of the color vector
+     */
+    public double lengthSquared() {
+        return rgb.d1() * rgb.d1() +
+                rgb.d2() * rgb.d2() +
+                rgb.d3() * rgb.d3();
+    }
     @Override
     public String toString() {
         return "rgb:" + rgb;
