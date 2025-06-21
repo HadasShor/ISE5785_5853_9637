@@ -306,12 +306,6 @@ public class Cylinder extends Tube {
             }
         }
 
-
-
-
-
-
-
         // 4. Sort by distance
         intersections.sort(Comparator.comparingDouble(p ->
                 p.point.subtract(rayOrigin).dotProduct(ray.getDirection())));

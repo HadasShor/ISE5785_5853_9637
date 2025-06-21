@@ -1247,317 +1247,426 @@ class ReflectionRefractionTests {
    }
 
 
-   /**
-    * piramida definition
-    **/
-
-
-//      // פאות הקופסה (6 פאות מורכבות מ-12 משולשים)
+//   @Test
+//   void new_test() {
+//      // === הגדרת הבסיס של הפירמידה ===
+//      Point pyramidBase1 = new Point(-40, -10, -180);
+//      Point pyramidBase2 = new Point(40, -10, -180);
+//      Point pyramidBase3 = new Point(40, -10, -120);
+//      Point pyramidBase4 = new Point(-40, -10, -120);
+//      Point pyramidApex = new Point(0, 50, -150);
 //
-//      // פאה תחתונה
-//      scene.geometries.add(new Triangle(p1Bottom, p2Bottom, p1Right)
-//              .setEmission(blackColor).setMaterial(shinyBlackMaterial));
-//      scene.geometries.add(new Triangle(p1Right, p2Bottom, p2Right)
-//              .setEmission(blackColor).setMaterial(shinyBlackMaterial));
+//      // חומר מטאלי ירוק עם יותר גוון ירוק
+//      Material metallicGreenMaterial = new Material()
+//              .setKD(0.4).setKS(0.9).setShininess(180)
+//              .setKT(0.15).setKR(0.6);
 //
-//      // פאה עליונה
-//      scene.geometries.add(new Triangle(p1Top, p1TopRight, p2Top)
-//              .setEmission(blackColor).setMaterial(shinyBlackMaterial));
-//      scene.geometries.add(new Triangle(p1TopRight, p2TopRight, p2Top)
-//              .setEmission(blackColor).setMaterial(shinyBlackMaterial));
+//      // צבע ירוק יותר עשיר לפירמידה
+//      // Color brightGreen = new Color(0.5, 5, 1.0);
+//      Color brightGreen = new Color(0, 153, 51);
 //
-//      // פאה שמאלית
-//      scene.geometries.add(new Triangle(p1Bottom, p1Top, p2Bottom)
-//              .setEmission(blackColor).setMaterial(shinyBlackMaterial));
-//      scene.geometries.add(new Triangle(p1Top, p2Top, p2Bottom)
-//              .setEmission(blackColor).setMaterial(shinyBlackMaterial));
+//      // פאות הפירמידה - כולן באותו צבע ירוק מטאלי בהיר
+//      scene.geometries.add(
+//              new Triangle(pyramidBase1, pyramidBase2, pyramidApex)
+//                      .setEmission(brightGreen)
+//                      .setMaterial(metallicGreenMaterial)
+//      );
 //
-//      // פאה ימנית
-//      scene.geometries.add(new Triangle(p1Right, p2Right, p1TopRight)
-//              .setEmission(blackColor).setMaterial(shinyBlackMaterial));
-//      scene.geometries.add(new Triangle(p1TopRight, p2Right, p2TopRight)
-//              .setEmission(blackColor).setMaterial(shinyBlackMaterial));
+//      scene.geometries.add(
+//              new Triangle(pyramidBase2, pyramidBase3, pyramidApex)
+//                      .setEmission(brightGreen)
+//                      .setMaterial(metallicGreenMaterial)
+//      );
 //
-//      // פאה קדמית (בכדור הראשון)
-//      scene.geometries.add(new Triangle(p1Bottom, p1Right, p1Top)
-//              .setEmission(blackColor).setMaterial(shinyBlackMaterial));
-//      scene.geometries.add(new Triangle(p1Right, p1TopRight, p1Top)
-//              .setEmission(blackColor).setMaterial(shinyBlackMaterial));
+//      scene.geometries.add(
+//              new Triangle(pyramidBase3, pyramidBase4, pyramidApex)
+//                      .setEmission(brightGreen)
+//                      .setMaterial(metallicGreenMaterial)
+//      );
 //
-//      // פאה אחורית (בכדור השני)
-//      scene.geometries.add(new Triangle(p2Bottom, p2Top, p2Right)
-//              .setEmission(blackColor).setMaterial(shinyBlackMaterial));
-//      scene.geometries.add(new Triangle(p2Top, p2TopRight, p2Right)
-//              .setEmission(blackColor).setMaterial(shinyBlackMaterial));
-   @Test
-   void new_test() {
-      // === הגדרת הבסיס של הפירמידה ===
-      Point pyramidBase1 = new Point(-40, -10, -180);
-      Point pyramidBase2 = new Point(40, -10, -180);
-      Point pyramidBase3 = new Point(40, -10, -120);
-      Point pyramidBase4 = new Point(-40, -10, -120);
-      Point pyramidApex = new Point(0, 50, -150);
+//      scene.geometries.add(
+//              new Triangle(pyramidBase4, pyramidBase1, pyramidApex)
+//                      .setEmission(brightGreen)
+//                      .setMaterial(metallicGreenMaterial)
+//      );
+//
+//      // === הוספת יהלומים (כדורים מבריקים) ===
+//
+//      // חומר יהלום - מבריק מאוד עם שקיפות והשתקפות גבוהות
+//      Material diamondMaterial = new Material()
+//              .setKD(0.05).setKS(0.95).setShininess(300)
+//              .setKT(0.6).setKR(0.8);
+//
+//      // צבע יהלום מבריק
+//      Color diamondColor = new Color(8, 8, 8);
+//
+//      // נקודות המרכז של שני הכדורים
+//      Point sphere1Center = new Point(60, 10, -140);
+//      Point sphere2Center = new Point(85, 5, -160);
+//
+//      // שני כדורים קטנים מימין לפירמידה
+//      scene.geometries.add(
+//              new Sphere(10d, sphere1Center)
+//                      .setEmission(diamondColor)
+//                      .setMaterial(diamondMaterial)
+//      );
+//
+//      scene.geometries.add(
+//              new Sphere(8d, sphere2Center)
+//                      .setEmission(diamondColor)
+//                      .setMaterial(diamondMaterial)
+//      );
+//
+//      // === הוספת גליל בין שני הכדורים ===
+//      // יצירת וקטור כיוון מהכדור הראשון לשני
+//      Vector cylinderDirection = sphere2Center.subtract(sphere1Center);
+//
+//      // חומר מטאלי לגליל
+//      Material cylinderMaterial = new Material()
+//              .setKD(0.2).setKS(0.8).setShininess(100)
+//              .setKT(0.3).setKR(0.5);
+//
+//      // הוספת הגליל בין שני הכדורים
+//      scene.geometries.add(
+//              new Cylinder(new Ray(sphere1Center, cylinderDirection), 5, cylinderDirection.length())
+//                      .setEmission(new Color(120, 120, 200))
+//                      .setMaterial(cylinderMaterial)
+//      );
+//
+//      // כדור אחד משמאל לפירמידה - ממוקם יותר מקדימה
+//      scene.geometries.add(
+//              new Sphere(30d, new Point(-65, 15, -75)) // שיניתי את ערך ה-Z מ -150 ל -50 להזזה קדימה
+//                      .setEmission(diamondColor)
+//                      .setMaterial(diamondMaterial)
+//      );
+//
+//      // === מישורים - עוד פחות מראתיים ורקע בהיר יותר ===
+//
+//      // רצפה עם מינימום השתקפות ובהירה יותר
+//      scene.geometries.add(
+//              new Plane(new Point(0, -25, 0), new Vector(0, 1, 0))
+//                      .setEmission(new Color(7, 6, 5)) // בהיר יותר
+//                      .setMaterial(new Material()
+//                              .setKD(0.95).setKS(0.15).setShininess(20)
+//                              .setKR(0.08)) // עוד פחות השתקפות
+//      );
+//
+//      // קיר אחורי מאט בהיר יותר
+//      scene.geometries.add(
+//              new Plane(new Point(0, 0, -250), new Vector(0, 0, 1))
+//                      .setEmission(new Color(4, 3, 5)) // בהיר יותר
+//                      .setMaterial(new Material()
+//                              .setKD(0.98).setKS(0.02).setShininess(5)
+//                              .setKR(0.02)) // כמעט ללא השתקפות
+//      );
+//
+//      // קיר צדדי בהיר יותר וללא השתקפות כמעט
+//      scene.geometries.add(
+//              new Plane(new Point(-120, 0, 0), new Vector(1, 0, 0))
+//                      .setEmission(new Color(5, 6, 7)) // בהיר יותר
+//                      .setMaterial(new Material()
+//                              .setKD(0.9).setKS(0.2).setShininess(30)
+//                              .setKR(0.1)) // מינימום השתקפות
+//      );
+//
+//      // === תאורה ===
+//
+//      // תאורת סביבה עדינה
+//      scene.setAmbientLight(new AmbientLight(new Color(0.6, 0.6, 1.1))); // מעט בהיר יותר
+//
+//      // אור ספוט ראשי
+//      scene.light.add(
+//              new SpotLight(
+//                      new Color(250, 200, 150),
+//                      new Point(-100, 150, 50),
+//                      new Vector(2, -3, -4))
+//                      .setKl(0.0003).setKq(0.00003)
+//      );
+//
+//      // אור נקודתי משני
+//      scene.light.add(
+//              new PointLight(
+//                      new Color(100, 150, 200),
+//                      new Point(120, 80, -40))
+//                      .setKl(0.0003).setKq(0.00002)
+//      );
+//
+//      // אור כיווני רך
+//      scene.light.add(
+//              new DirectionalLight(
+//                      new Color(15, 20, 25),
+//                      new Vector(-0.2, -0.6, -1))
+//      );
+//
+//      // === הגדרת המצלמה ===
+//      cameraBuilder
+//              .setLocation(new Point(80, 60, 150))
+//              .setDirection(new Point(-10, 25, -100), Vector.AXIS_Y)
+//              .setVpDistance(200)
+//              .setVpSize(240, 240)
+//              .setResolution(800, 800)
+//              .build()
+//              .renderImage()
+//              .writeToImage("new_test");
+//   }
+@Test
+void new_test_multithreaded() {
+   // === הגדרת הבסיס של הפירמידה ===
+   Point pyramidBase1 = new Point(-40, -10, -180);
+   Point pyramidBase2 = new Point(40, -10, -180);
+   Point pyramidBase3 = new Point(40, -10, -120);
+   Point pyramidBase4 = new Point(-40, -10, -120);
+   Point pyramidApex = new Point(0, 50, -150);
 
-      // חומר מטאלי ירוק עם יותר גוון ירוק
-      Material metallicGreenMaterial = new Material()
-              .setKD(0.4).setKS(0.9).setShininess(180)
-              .setKT(0.15).setKR(0.6);
+   // חומר מטאלי ירוק עם יותר גוון ירוק
+   Material metallicGreenMaterial = new Material()
+           .setKD(0.4).setKS(0.9).setShininess(180)
+           .setKT(0.15).setKR(0.6);
 
-      // צבע ירוק יותר עשיר לפירמידה
-      // Color brightGreen = new Color(0.5, 5, 1.0);
-      Color brightGreen = new Color(0, 153, 51);
+   // צבע ירוק יותר עשיר לפירמידה
+   // Color brightGreen = new Color(0.5, 5, 1.0);
+   Color brightGreen = new Color(0, 153, 51);
 
-      // פאות הפירמידה - כולן באותו צבע ירוק מטאלי בהיר
-      scene.geometries.add(
-              new Triangle(pyramidBase1, pyramidBase2, pyramidApex)
-                      .setEmission(brightGreen)
-                      .setMaterial(metallicGreenMaterial)
-      );
+   // פאות הפירמידה - כולן באותו צבע ירוק מטאלי בהיר
+   scene.geometries.add(
+           new Triangle(pyramidBase1, pyramidBase2, pyramidApex)
+                   .setEmission(brightGreen)
+                   .setMaterial(metallicGreenMaterial)
+   );
 
-      scene.geometries.add(
-              new Triangle(pyramidBase2, pyramidBase3, pyramidApex)
-                      .setEmission(brightGreen)
-                      .setMaterial(metallicGreenMaterial)
-      );
+   scene.geometries.add(
+           new Triangle(pyramidBase2, pyramidBase3, pyramidApex)
+                   .setEmission(brightGreen)
+                   .setMaterial(metallicGreenMaterial)
+   );
 
-      scene.geometries.add(
-              new Triangle(pyramidBase3, pyramidBase4, pyramidApex)
-                      .setEmission(brightGreen)
-                      .setMaterial(metallicGreenMaterial)
-      );
+   scene.geometries.add(
+           new Triangle(pyramidBase3, pyramidBase4, pyramidApex)
+                   .setEmission(brightGreen)
+                   .setMaterial(metallicGreenMaterial)
+   );
 
-      scene.geometries.add(
-              new Triangle(pyramidBase4, pyramidBase1, pyramidApex)
-                      .setEmission(brightGreen)
-                      .setMaterial(metallicGreenMaterial)
-      );
+   scene.geometries.add(
+           new Triangle(pyramidBase4, pyramidBase1, pyramidApex)
+                   .setEmission(brightGreen)
+                   .setMaterial(metallicGreenMaterial)
+   );
 
-      // === הוספת יהלומים (כדורים מבריקים) ===
+   // === הוספת יהלומים (כדורים מבריקים) ===
 
-      // חומר יהלום - מבריק מאוד עם שקיפות והשתקפות גבוהות
-      Material diamondMaterial = new Material()
-              .setKD(0.05).setKS(0.95).setShininess(300)
-              .setKT(0.6).setKR(0.8);
+   // חומר יהלום - מבריק מאוד עם שקיפות והשתקפות גבוהות
+   Material diamondMaterial = new Material()
+           .setKD(0.05).setKS(0.95).setShininess(300)
+           .setKT(0.6).setKR(0.8);
 
-      // צבע יהלום מבריק
-      Color diamondColor = new Color(8, 8, 8);
+   // צבע יהלום מבריק
+   Color diamondColor = new Color(8, 8, 8);
 
-      // נקודות המרכז של שני הכדורים
-      Point sphere1Center = new Point(60, 10, -140);
-      Point sphere2Center = new Point(85, 5, -160);
+   // נקודות המרכז של שני הכדורים
+   Point sphere1Center = new Point(60, 10, -140);
+   Point sphere2Center = new Point(85, 5, -160);
 
-      // שני כדורים קטנים מימין לפירמידה
-      scene.geometries.add(
-              new Sphere(10d, sphere1Center)
-                      .setEmission(diamondColor)
-                      .setMaterial(diamondMaterial)
-      );
+   // שני כדורים קטנים מימין לפירמידה
+   scene.geometries.add(
+           new Sphere(10d, sphere1Center)
+                   .setEmission(diamondColor)
+                   .setMaterial(diamondMaterial)
+   );
 
-      scene.geometries.add(
-              new Sphere(8d, sphere2Center)
-                      .setEmission(diamondColor)
-                      .setMaterial(diamondMaterial)
-      );
+   scene.geometries.add(
+           new Sphere(8d, sphere2Center)
+                   .setEmission(diamondColor)
+                   .setMaterial(diamondMaterial)
+   );
 
-      // === הוספת גליל בין שני הכדורים ===
-      // יצירת וקטור כיוון מהכדור הראשון לשני
-      Vector cylinderDirection = sphere2Center.subtract(sphere1Center);
+   // === הוספת גליל בין שני הכדורים ===
+   // יצירת וקטור כיוון מהכדור הראשון לשני
+   Vector cylinderDirection = sphere2Center.subtract(sphere1Center);
 
-      // חומר מטאלי לגליל
-      Material cylinderMaterial = new Material()
-              .setKD(0.2).setKS(0.8).setShininess(100)
-              .setKT(0.3).setKR(0.5);
+   // חומר מטאלי לגליל
+   Material cylinderMaterial = new Material()
+           .setKD(0.2).setKS(0.8).setShininess(100)
+           .setKT(0.3).setKR(0.5);
 
-      // הוספת הגליל בין שני הכדורים
-      scene.geometries.add(
-              new Cylinder(new Ray(sphere1Center, cylinderDirection), 5, cylinderDirection.length())
-                      .setEmission(new Color(120, 120, 200))
-                      .setMaterial(cylinderMaterial)
-      );
+   // הוספת הגליל בין שני הכדורים
+   scene.geometries.add(
+           new Cylinder(new Ray(sphere1Center, cylinderDirection), 5, cylinderDirection.length())
+                   .setEmission(new Color(120, 120, 200))
+                   .setMaterial(cylinderMaterial)
+   );
 
-      // כדור אחד משמאל לפירמידה - ממוקם יותר מקדימה
-      scene.geometries.add(
-              new Sphere(30d, new Point(-65, 15, -75)) // שיניתי את ערך ה-Z מ -150 ל -50 להזזה קדימה
-                      .setEmission(diamondColor)
-                      .setMaterial(diamondMaterial)
-      );
+   // כדור אחד משמאל לפירמידה - ממוקם יותר מקדימה
+   scene.geometries.add(
+           new Sphere(30d, new Point(-65, 15, -75)) // שיניתי את ערך ה-Z מ -150 ל -50 להזזה קדימה
+                   .setEmission(diamondColor)
+                   .setMaterial(diamondMaterial)
+   );
 
-      // === מישורים - עוד פחות מראתיים ורקע בהיר יותר ===
+   // === מישורים - עוד פחות מראתיים ורקע בהיר יותר ===
 
-      // רצפה עם מינימום השתקפות ובהירה יותר
-      scene.geometries.add(
-              new Plane(new Point(0, -25, 0), new Vector(0, 1, 0))
-                      .setEmission(new Color(7, 6, 5)) // בהיר יותר
-                      .setMaterial(new Material()
-                              .setKD(0.95).setKS(0.15).setShininess(20)
-                              .setKR(0.08)) // עוד פחות השתקפות
-      );
+   // רצפה עם מינימום השתקפות ובהירה יותר
+   scene.geometries.add(
+           new Plane(new Point(0, -25, 0), new Vector(0, 1, 0))
+                   .setEmission(new Color(7, 6, 5)) // בהיר יותר
+                   .setMaterial(new Material()
+                           .setKD(0.95).setKS(0.15).setShininess(20)
+                           .setKR(0.08)) // עוד פחות השתקפות
+   );
 
-      // קיר אחורי מאט בהיר יותר
-      scene.geometries.add(
-              new Plane(new Point(0, 0, -250), new Vector(0, 0, 1))
-                      .setEmission(new Color(4, 3, 5)) // בהיר יותר
-                      .setMaterial(new Material()
-                              .setKD(0.98).setKS(0.02).setShininess(5)
-                              .setKR(0.02)) // כמעט ללא השתקפות
-      );
+   // קיר אחורי מאט בהיר יותר
+   scene.geometries.add(
+           new Plane(new Point(0, 0, -250), new Vector(0, 0, 1))
+                   .setEmission(new Color(4, 3, 5)) // בהיר יותר
+                   .setMaterial(new Material()
+                           .setKD(0.98).setKS(0.02).setShininess(5)
+                           .setKR(0.02)) // כמעט ללא השתקפות
+   );
 
-      // קיר צדדי בהיר יותר וללא השתקפות כמעט
-      scene.geometries.add(
-              new Plane(new Point(-120, 0, 0), new Vector(1, 0, 0))
-                      .setEmission(new Color(5, 6, 7)) // בהיר יותר
-                      .setMaterial(new Material()
-                              .setKD(0.9).setKS(0.2).setShininess(30)
-                              .setKR(0.1)) // מינימום השתקפות
-      );
+   // קיר צדדי בהיר יותר וללא השתקפות כמעט
+   scene.geometries.add(
+           new Plane(new Point(-120, 0, 0), new Vector(1, 0, 0))
+                   .setEmission(new Color(5, 6, 7)) // בהיר יותר
+                   .setMaterial(new Material()
+                           .setKD(0.9).setKS(0.2).setShininess(30)
+                           .setKR(0.1)) // מינימום השתקפות
+   );
 
-      // === תאורה ===
+   // === תאורה ===
 
-      // תאורת סביבה עדינה
-      scene.setAmbientLight(new AmbientLight(new Color(0.6, 0.6, 1.1))); // מעט בהיר יותר
+   // תאורת סביבה עדינה
+   scene.setAmbientLight(new AmbientLight(new Color(0.6, 0.6, 1.1))); // מעט בהיר יותר
 
-      // אור ספוט ראשי
-      scene.light.add(
-              new SpotLight(
-                      new Color(250, 200, 150),
-                      new Point(-100, 150, 50),
-                      new Vector(2, -3, -4))
-                      .setKl(0.0003).setKq(0.00003)
-      );
+   // אור ספוט ראשי
+   scene.light.add(
+           new SpotLight(
+                   new Color(250, 200, 150),
+                   new Point(-100, 150, 50),
+                   new Vector(2, -3, -4))
+                   .setKl(0.0003).setKq(0.00003)
+   );
 
-      // אור נקודתי משני
-      scene.light.add(
-              new PointLight(
-                      new Color(100, 150, 200),
-                      new Point(120, 80, -40))
-                      .setKl(0.0003).setKq(0.00002)
-      );
+   // אור נקודתי משני
+   scene.light.add(
+           new PointLight(
+                   new Color(100, 150, 200),
+                   new Point(120, 80, -40))
+                   .setKl(0.0003).setKq(0.00002)
+   );
 
-      // אור כיווני רך
-      scene.light.add(
-              new DirectionalLight(
-                      new Color(15, 20, 25),
-                      new Vector(-0.2, -0.6, -1))
-      );
+   // אור כיווני רך
+   scene.light.add(
+           new DirectionalLight(
+                   new Color(15, 20, 25),
+                   new Vector(-0.2, -0.6, -1))
+   );
 
-      // === הגדרת המצלמה ===
-      cameraBuilder
-              .setLocation(new Point(80, 60, 150))
-              .setDirection(new Point(-10, 25, -100), Vector.AXIS_Y)
-              .setVpDistance(200)
-              .setVpSize(240, 240)
-              .setResolution(800, 800)
-              .build()
-              .renderImage()
-              .writeToImage("new_test");
-   }
+   // === הגדרת המצלמה ===
+   cameraBuilder
+           .setLocation(new Point(80, 60, 150))
+           .setDirection(new Point(-10, 25, -100), Vector.AXIS_Y)
+           .setVpDistance(200)
+           .setVpSize(240, 240)
+           .setResolution(800, 800)
+           // הגדרות מולטי-תרדינג
+           .setMultithreading(8)      // שימוש ב-8 תהליכונים
+           .setDebugPrint(5)          // הדפסת התקדמות כל 5%
+           .setRayTracer(scene, RayTracerType.SIMPLE)  // חשוב להגדיר את הריי טרייסר
+           .build()
+           .renderImage()
+           .writeToImage("new_test_multithreaded");
+}
 
-   @Test
-   void dualChainedYMoleculesTest() {
-      // רקע שחור
-      scene.setBackground(new Color(0, 0, 0));
 
-      // חומר לאטומים - שחור יותר אך מבריק מאוד
-      Material atomMaterial = new Material()
-              .setKD(0.15).setKS(0.98).setShininess(1500)  // יותר מבריק, פחות דיפוזי
-              .setKT(0.0).setKR(0.75);  // יותר השתקפות לברק מוגבר
+@Test
+void dualChainedYMoleculesTest() {
+   // רקע שחור
+   scene.setBackground(new Color(0, 0, 0));
 
-      Material bondMaterial = new Material()
-              .setKD(0.1).setKS(0.9).setShininess(200)
-              .setKT(0.0).setKR(0.7);
+   // === חומרים ===
+   Material atomMaterial = new Material()
+           .setKD(0.05).setKS(0.95).setShininess(1000)  // מבריק מאוד
+           .setKT(0.0).setKR(0.9);  // השתקפות גבוהה
 
-      // צבעים - שחור יותר מבריק לאטומים
-      Color atomColor = new Color(8, 8, 10);  // שחור יותר עמוק
-      Color bondColor = new Color(150, 150, 150);  // אפור לקשרים
+   Material bondMaterial = new Material()
+           .setKD(0.1).setKS(0.9).setShininess(200)
+           .setKT(0.0).setKR(0.7);
 
-      // רצפה כהה מבריקה
-      scene.geometries.add(
-              new Plane(new Point(0, -10, 0), new Vector(0, 1, 0))
-                      .setEmission(new Color(20, 20, 20))
-                      .setMaterial(new Material()
-                              .setKD(0.2).setKS(0.8).setShininess(100)
-                              .setKR(0.6))  // השתקפות גבוהה
-      );
+   // צבעים - אפור כהה מבריק
+   Color atomColor = new Color(40, 40, 40);  // כמעט שחור
+   Color bondColor = new Color(150, 150, 150);  // אפור לקשרים
 
-      // === הגדרות הסצנה המקורית ===
-      int numberOfMolecules = 5;   // מספר מולקולות בשרשרת
-      double atomSize = 6.0;       // גודל האטומים
-      double bondThickness = 1.5;  // עובי הקשרים
-      double moleculeSpacing = 30.0;  // מרחק בין מולקולות
+   // רצפה כהה מבריקה
+   scene.geometries.add(
+           new Plane(new Point(0, -10, 0), new Vector(0, 1, 0))
+                   .setEmission(new Color(20, 20, 20))
+                   .setMaterial(new Material()
+                           .setKD(0.2).setKS(0.8).setShininess(100)
+                           .setKR(0.6))  // השתקפות גבוהה
+   );
 
-      // === יצירת שרשרת המולקולות המקורית (רחוקה) ===
-      createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
-              -100, // ערך Z המקורי
-              atomMaterial, atomColor, bondMaterial, bondColor);
+   // === הגדרות הסצנה המקורית ===
+   int numberOfMolecules = 5;   // מספר מולקולות בשרשרת
+   double atomSize = 6.0;       // גודל האטומים
+   double bondThickness = 1.5;  // עובי הקשרים
+   double moleculeSpacing = 30.0;  // מרחק בין מולקולות
 
-      // === יצירת שרשרת מולקולות זהה קרובה יותר למצלמה ===
-      createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
-              -50, // ערך Z קרוב יותר
-              atomMaterial, atomColor, bondMaterial, bondColor);
+   // === יצירת שרשרת המולקולות המקורית (רחוקה) ===
+   createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
+           -100, // ערך Z המקורי
+           atomMaterial, atomColor, bondMaterial, bondColor);
 
-      // === תאורה ===
-      scene.setAmbientLight(new AmbientLight(new Color(0.05, 0.05, 0.05)));
+   // === יצירת שרשרת מולקולות זהה קרובה יותר למצלמה ===
+   createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
+           -50, // ערך Z קרוב יותר
+           atomMaterial, atomColor, bondMaterial, bondColor);
 
-      // אור ספוט חזק מלפנים ומלמעלה
-      scene.light.add(
-              new SpotLight(
-                      new Color(900, 900, 900),
-                      new Point(0, 50, 50),
-                      new Vector(0, -1, -1))
-                      .setKl(0.0001).setKq(0.000005)
-      );
+   // === תאורה ===
+   scene.setAmbientLight(new AmbientLight(new Color(0.05, 0.05, 0.05)));
 
-      // אור נקודתי מימין להארת הצדדים
-      scene.light.add(
-              new PointLight(
-                      new Color(400, 400, 400),
-                      new Point(50, 30, 0))
-                      .setKl(0.0002).setKq(0.00002)
-      );
+   // אור ספוט חזק מלפנים ומלמעלה
+   scene.light.add( // תיקון: lights במקום light
+           new SpotLight(
+                   new Color(900, 900, 900),
+                   new Point(0, 50, 50),
+                   new Vector(0, -1, -1))
+                   .setKl(0.0001).setKq(0.000005)
+   );
 
-      // אור נקודתי משמאל להארת הצדדים השמאליים
-      scene.light.add(
-              new PointLight(
-                      new Color(400, 400, 400),
-                      new Point(-50, 30, 0))
-                      .setKl(0.0002).setKq(0.00002)
-      );
+   // אור נקודתי מימין להארת הצדדים
+   scene.light.add( // תיקון: lights במקום light
+           new PointLight(
+                   new Color(400, 400, 400),
+                   new Point(50, 30, 0))
+                   .setKl(0.0002).setKq(0.00002)
+   );
 
-      // תאורה צבעונית עדינה - תוספת אור בגוון כחול עדין
-      scene.light.add(
-              new PointLight(
-                      new Color(150, 180, 350), // כחול עדין
-                      new Point(-30, 40, -40))
-                      .setKl(0.0002).setKq(0.00003)
-      );
+   // אור נקודתי משמאל להארת הצדדים השמאליים
+   scene.light.add( // תיקון: lights במקום light
+           new PointLight(
+                   new Color(400, 400, 400),
+                   new Point(-50, 30, 0))
+                   .setKl(0.0002).setKq(0.00002)
+   );
 
-      // תאורה צבעונית עדינה - תוספת אור בגוון ירקרק עדין
-      scene.light.add(
-              new PointLight(
-                      new Color(180, 350, 200), // ירקרק עדין
-                      new Point(40, 25, -60))
-                      .setKl(0.0002).setKq(0.00003)
-      );
+   // אור נקודתי קדמי נוסף להארת השרשרת הקדמית
+   scene.light.add(
+           new PointLight(
+                   new Color(300, 300, 300),
+                   new Point(0, 20, -20))
+                   .setKl(0.0002).setKq(0.00002)
+   );
 
-      // תאורה צבעונית עדינה - תוספת אור בגוון סגלגל עדין
-      scene.light.add(
-              new PointLight(
-                      new Color(240, 120, 300), // סגלגל עדין
-                      new Point(10, 15, -120))
-                      .setKl(0.0003).setKq(0.00004)
-      );
-
-      // === המצלמה ===
-      cameraBuilder
-              .setLocation(new Point(-300, 10, 850))  // מצלמה רחוקה
-              .setDirection(new Point(0, 0, -100), Vector.AXIS_Y)
-              .setVpDistance(1000)
-              .setVpSize(200, 100)
-              .setResolution(1600, 800)
-              .build()
-              .renderImage()
-              .writeToImage("dual_molecule_chains");
-   }
+   // === המצלמה ===
+   cameraBuilder
+           .setLocation(new Point(-300, 10, 850))  // מצלמה רחוקה
+           .setDirection(new Point(0, 0, -100), Vector.AXIS_Y)
+           .setVpDistance(1000)
+           .setVpSize(200, 100)
+           .setResolution(1600, 800)
+           .build()
+           .renderImage()
+           .writeToImage("dual_molecule_chains_right_+");
+}
 
    /**
     * יוצר שרשרת מולקולות שלמה במיקום הרצוי
@@ -1731,6 +1840,206 @@ class ReflectionRefractionTests {
                       .setEmission(color)
                       .setMaterial(material)
       );
+   }
+   @Test
+   void cylindricalWonderland() {
+      // === מגדל צילינדרים שקופים ===
+
+
+      scene.geometries.add(
+              new Cylinder(new Ray(new Point(0, -25, -120), new Vector(0, 1, 0)), 28d, 85d)
+                      .setEmission(new Color(5, 5, 7))
+                      .setMaterial(new Material()
+                              .setKD(0.1).setKS(0.9).setShininess(170)
+                              .setKT(0.7).setKR(0.3))
+      );
+
+      // צילינדר ארגמן - גבוה ודק
+      scene.geometries.add(
+              new Cylinder(new Ray(new Point(-55, -25, -100), new Vector(0, 1, 0)), 15d, 110d)
+                      .setEmission(new Color(7, 2, 6))
+                      .setMaterial(new Material()
+                              .setKD(0.2).setKS(0.8).setShininess(130)
+                              .setKT(0.5).setKR(0.4))
+      );
+
+      // צילינדר טורקיז - בינוני
+      scene.geometries.add(
+              new Cylinder(new Ray(new Point(60, -25, -90), new Vector(0, 1, 0)), 18d, 70d)
+                      .setEmission(new Color(2, 7, 8))
+                      .setMaterial(new Material()
+                              .setKD(0.25).setKS(0.75).setShininess(120)
+                              .setKT(0.6).setKR(0.35))
+      );
+
+      // === צינורות מתכתיים מצטלבים ===
+
+      // צינור זהב אופקי
+      scene.geometries.add(
+              new Tube(new Ray(new Point(-90, 20, -120), new Vector(1, 0.1, 0).normalize()), 8d)
+                      .setEmission(new Color(8, 7, 2))
+                      .setMaterial(new Material()
+                              .setKD(0.3).setKS(0.7).setShininess(140)
+                              .setKR(0.6))
+      );
+
+      // צינור כסף אנכי
+      scene.geometries.add(
+              new Tube(new Ray(new Point(-30, -25, -160), new Vector(0, 1, 0)), 6d)
+                      .setEmission(new Color(7, 7, 8))
+                      .setMaterial(new Material()
+                              .setKD(0.2).setKS(0.8).setShininess(150)
+                              .setKR(0.7))
+      );
+
+      // צינור ארד באלכסון
+      scene.geometries.add(
+              new Tube(new Ray(new Point(40, -25, -150), new Vector(1, 3, 1).normalize()), 7d)
+                      .setEmission(new Color(6, 4, 2))
+                      .setMaterial(new Material()
+                              .setKD(0.3).setKS(0.7).setShininess(130)
+                              .setKR(0.5))
+      );
+
+      // === צילינדרים המכילים צינורות ===
+
+      // צילינדר חיצוני שקוף
+      scene.geometries.add(
+              new Cylinder(new Ray(new Point(-15, 15, -80), new Vector(0.2, 1, 0.1).normalize()), 12d, 60d)
+                      .setEmission(new Color(3, 3, 6))
+                      .setMaterial(new Material()
+                              .setKD(0.15).setKS(0.85).setShininess(160)
+                              .setKT(0.85).setKR(0.15))
+      );
+
+      // צינור פנימי מוזהב (בתוך השקוף)
+      scene.geometries.add(
+              new Tube(new Ray(new Point(-15, 15, -80), new Vector(0.2, 1, 0.1).normalize()), 5d)
+                      .setEmission(new Color(9, 8, 3))
+                      .setMaterial(new Material()
+                              .setKD(0.3).setKS(0.7).setShininess(200)
+                              .setKR(0.6))
+      );
+
+      // === מבנה ספירלי מצינורות ===
+
+      // הנקודה המרכזית של הספירלה
+      Point spiralCenter = new Point(35, 10, -110);
+      double spiralRadius = 25;
+      double tubeRadius = 3.5;
+
+      // צינור ספירלי ראשון - טורקיז
+      scene.geometries.add(
+              new Tube(
+                      new Ray(
+                              spiralCenter.add(new Vector(spiralRadius, 0, 0)),
+                              new Vector(0, 1, 0).normalize()),
+                      tubeRadius)
+                      .setEmission(new Color(1, 8, 9))
+                      .setMaterial(new Material()
+                              .setKD(0.2).setKS(0.8).setShininess(100)
+                              .setKT(0.3).setKR(0.3))
+      );
+
+      // צינור ספירלי שני - סגול
+      scene.geometries.add(
+              new Tube(
+                      new Ray(
+                              spiralCenter.add(new Vector(0, 0, spiralRadius)),
+                              new Vector(0, 1, 0).normalize()),
+                      tubeRadius)
+                      .setEmission(new Color(7, 1, 9))
+                      .setMaterial(new Material()
+                              .setKD(0.2).setKS(0.8).setShininess(100)
+                              .setKT(0.4).setKR(0.2))
+      );
+
+      // צינור ספירלי שלישי - ירוק
+      scene.geometries.add(
+              new Tube(
+                      new Ray(
+                              spiralCenter.add(new Vector(-spiralRadius, 0, 0)),
+                              new Vector(0, 1, 0).normalize()),
+                      tubeRadius)
+                      .setEmission(new Color(1, 9, 3))
+                      .setMaterial(new Material()
+                              .setKD(0.2).setKS(0.8).setShininess(100)
+                              .setKT(0.5).setKR(0.2))
+      );
+
+      // === רצפה ורקע ===
+
+      // רצפה משתקפת
+      scene.geometries.add(
+              new Plane(new Point(0, -25, 0), new Vector(0, 1, 0))
+                      .setEmission(new Color(3, 3, 4))
+                      .setMaterial(new Material()
+                              .setKD(0.5).setKS(0.5).setShininess(80)
+                              .setKR(0.4))
+      );
+
+      // קיר אחורי עם גוון עדין
+      scene.geometries.add(
+              new Plane(new Point(0, 0, -200), new Vector(0, 0, 1))
+                      .setEmission(new Color(2, 1, 3))
+                      .setMaterial(new Material()
+                              .setKD(0.8).setKS(0.2).setShininess(10)
+                              .setKR(0.1))
+      );
+
+      // === תאורה ===
+
+      // תאורת סביבה עדינה
+      scene.setAmbientLight(new AmbientLight(new Color(1, 1, 2)));
+
+      // אור ספוט דרמטי - אור ראשי
+      scene.light.add(
+              new SpotLight(
+                      new Color(500, 400, 300),
+                      new Point(-80, 120, 40),
+                      new Vector(2, -3, -5))
+                      .setKl(0.0002).setKq(0.00002)
+      );
+
+      // אור נקודתי לגיוון - כחלחל
+      scene.light.add(
+              new PointLight(
+                      new Color(150, 200, 380),
+                      new Point(100, 70, -30))
+                      .setKl(0.0003).setKq(0.00003)
+      );
+
+      // אור ספוט נוסף - מדגיש את המבנה הספירלי
+      scene.light.add(
+              new SpotLight(
+                      new Color(350, 180, 220),
+                      new Point(50, 100, -20),
+                      new Vector(-0.5, -1, -1))
+                      .setKl(0.0004).setKq(0.00004)
+      );
+
+      // אור כיווני עדין - מילוי צללים
+      scene.light.add(
+              new DirectionalLight(
+                      new Color(20, 35, 45),
+                      new Vector(-0.3, -0.5, -0.8))
+      );
+
+      // === הגדרת המצלמה ===
+      cameraBuilder
+              .setLocation(new Point(90, 70, 130))
+              .setDirection(new Point(0, 15, -110), Vector.AXIS_Y)
+              .setVpDistance(180)
+              .setVpSize(220, 220)
+              .setResolution(900, 900)
+              .setRayTracer(scene, RayTracerType.SIMPLE)
+              // הוספת תמיכה בתהליכונים
+              .setMultithreading(8)        // 8 תהליכונים במקביל
+              .setDebugPrint(5)            // הדפסת התקדמות כל 5%
+              .build()
+              .renderImage()
+              .writeToImage("cylindricalWonderland_multithreaded");
+
    }
 
 }
