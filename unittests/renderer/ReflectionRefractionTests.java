@@ -1481,7 +1481,7 @@ class ReflectionRefractionTests {
               .setDirection(new Point(0, 0, -100), Vector.AXIS_Y)
               .setVpDistance(1000)
               .setVpSize(200, 100)
-              .setResolution(900, 900)
+              .setResolution(1600, 1500)
               .setRayTracer(scene, RayTracerType.SIMPLE)
               // הוספת תמיכה בתהליכונים
               .setMultithreading(-2)
@@ -1712,6 +1712,229 @@ class ReflectionRefractionTests {
                       .setEmission(color)
                       .setMaterial(material)
       );
+   }
+
+
+
+
+
+   @Test
+   void cylindricalWonderland_new() {
+      // === מגדל צילינדרים שקופים ===
+
+      scene.geometries.add(
+              new Cylinder(new Ray(new Point(0, -25, -120), new Vector(0, 1, 0)), 28d, 85d)
+                      .setEmission(new Color(5, 5, 7))
+                      .setMaterial(new Material()
+                              .setKD(0.1).setKS(0.9).setShininess(170)
+                              .setKT(0.7).setKR(0.3))
+      );
+
+      // צילינדר ארגמן - גבוה ודק
+      scene.geometries.add(
+              new Cylinder(new Ray(new Point(-55, -25, -100), new Vector(0, 1, 0)), 15d, 110d)
+                      .setEmission(new Color(7, 2, 6))
+                      .setMaterial(new Material()
+                              .setKD(0.2).setKS(0.8).setShininess(130)
+                              .setKT(0.5).setKR(0.4))
+      );
+
+      // צילינדר טורקיז - בינוני
+      scene.geometries.add(
+              new Cylinder(new Ray(new Point(60, -25, -90), new Vector(0, 1, 0)), 18d, 70d)
+                      .setEmission(new Color(2, 7, 8))
+                      .setMaterial(new Material()
+                              .setKD(0.25).setKS(0.75).setShininess(120)
+                              .setKT(0.6).setKR(0.35))
+      );
+
+      // === צינורות מתכתיים מצטלבים ===
+
+      // צינור זהב אופקי
+      scene.geometries.add(
+              new Tube(new Ray(new Point(-90, 20, -120), new Vector(1, 0.1, 0).normalize()), 8d)
+                      .setEmission(new Color(8, 7, 2))
+                      .setMaterial(new Material()
+                              .setKD(0.3).setKS(0.7).setShininess(140)
+                              .setKR(0.6))
+      );
+
+      // צינור כסף אנכי
+      scene.geometries.add(
+              new Tube(new Ray(new Point(-30, -25, -160), new Vector(0, 1, 0)), 6d)
+                      .setEmission(new Color(7, 7, 8))
+                      .setMaterial(new Material()
+                              .setKD(0.2).setKS(0.8).setShininess(150)
+                              .setKR(0.7))
+      );
+
+      // צינור ארד באלכסון
+      scene.geometries.add(
+              new Tube(new Ray(new Point(40, -25, -150), new Vector(1, 3, 1).normalize()), 7d)
+                      .setEmission(new Color(6, 4, 2))
+                      .setMaterial(new Material()
+                              .setKD(0.3).setKS(0.7).setShininess(130)
+                              .setKR(0.5))
+      );
+
+      // === צילינדרים המכילים צינורות ===
+
+      // צילינדר חיצוני שקוף
+      scene.geometries.add(
+              new Cylinder(new Ray(new Point(-15, 15, -80), new Vector(0.2, 1, 0.1).normalize()), 12d, 60d)
+                      .setEmission(new Color(3, 3, 6))
+                      .setMaterial(new Material()
+                              .setKD(0.15).setKS(0.85).setShininess(160)
+                              .setKT(0.85).setKR(0.15))
+      );
+
+      // צינור פנימי מוזהב (בתוך השקוף)
+      scene.geometries.add(
+              new Tube(new Ray(new Point(-15, 15, -80), new Vector(0.2, 1, 0.1).normalize()), 5d)
+                      .setEmission(new Color(9, 8, 3))
+                      .setMaterial(new Material()
+                              .setKD(0.3).setKS(0.7).setShininess(200)
+                              .setKR(0.6))
+      );
+
+      // === מבנה ספירלי מצינורות ===
+
+      // הנקודה המרכזית של הספירלה
+      Point spiralCenter = new Point(35, 10, -110);
+      double spiralRadius = 25;
+      double tubeRadius = 3.5;
+
+      // צינור ספירלי ראשון - טורקיז
+      scene.geometries.add(
+              new Tube(
+                      new Ray(
+                              spiralCenter.add(new Vector(spiralRadius, 0, 0)),
+                              new Vector(0, 1, 0).normalize()),
+                      tubeRadius)
+                      .setEmission(new Color(1, 8, 9))
+                      .setMaterial(new Material()
+                              .setKD(0.2).setKS(0.8).setShininess(100)
+                              .setKT(0.3).setKR(0.3))
+      );
+
+      // צינור ספירלי שני - סגול
+      scene.geometries.add(
+              new Tube(
+                      new Ray(
+                              spiralCenter.add(new Vector(0, 0, spiralRadius)),
+                              new Vector(0, 1, 0).normalize()),
+                      tubeRadius)
+                      .setEmission(new Color(7, 1, 9))
+                      .setMaterial(new Material()
+                              .setKD(0.2).setKS(0.8).setShininess(100)
+                              .setKT(0.4).setKR(0.2))
+      );
+
+      // צינור ספירלי שלישי - ירוק
+      scene.geometries.add(
+              new Tube(
+                      new Ray(
+                              spiralCenter.add(new Vector(-spiralRadius, 0, 0)),
+                              new Vector(0, 1, 0).normalize()),
+                      tubeRadius)
+                      .setEmission(new Color(1, 9, 3))
+                      .setMaterial(new Material()
+                              .setKD(0.2).setKS(0.8).setShininess(100)
+                              .setKT(0.5).setKR(0.2))
+      );
+
+      // === רצפה ורקע ===
+
+      // רצפה משתקפת
+      scene.geometries.add(
+              new Plane(new Point(0, -25, 0), new Vector(0, 1, 0))
+                      .setEmission(new Color(3, 3, 4))
+                      .setMaterial(new Material()
+                              .setKD(0.5).setKS(0.5).setShininess(80)
+                              .setKR(0.4))
+      );
+
+      // קיר אחורי עם גוון עדין
+      scene.geometries.add(
+              new Plane(new Point(0, 0, -200), new Vector(0, 0, 1))
+                      .setEmission(new Color(2, 1, 3))
+                      .setMaterial(new Material()
+                              .setKD(0.8).setKS(0.2).setShininess(10)
+                              .setKR(0.1))
+      );
+
+      // === תאורה ===
+
+      // תאורת סביבה עדינה
+      scene.setAmbientLight(new AmbientLight(new Color(1, 1, 2)));
+
+      // אור ספוט דרמטי - אור ראשי
+      scene.light.add(
+              new SpotLight(
+                      new Color(500, 400, 300),
+                      new Point(-80, 120, 40),
+                      new Vector(2, -3, -5))
+                      .setKl(0.0002).setKq(0.00002)
+      );
+
+      // אור נקודתי לגיוון - כחלחל
+      scene.light.add(
+              new PointLight(
+                      new Color(150, 200, 380),
+                      new Point(100, 70, -30))
+                      .setKl(0.0003).setKq(0.00003)
+      );
+
+      // אור ספוט נוסף - מדגיש את המבנה הספירלי
+      scene.light.add(
+              new SpotLight(
+                      new Color(350, 180, 220),
+                      new Point(50, 100, -20),
+                      new Vector(-0.5, -1, -1))
+                      .setKl(0.0004).setKq(0.00004)
+      );
+
+      // אור כיווני עדין - מילוי צללים
+      scene.light.add(
+              new DirectionalLight(
+                      new Color(20, 35, 45),
+                      new Vector(-0.3, -0.5, -0.8))
+      );
+
+      // === הגדרת המצלמה ===
+      cameraBuilder
+              .setLocation(new Point(90, 70, 130))
+              .setDirection(new Point(0, 15, -110), Vector.AXIS_Y)
+              .setVpDistance(180)
+              .setVpSize(220, 220)
+              .setResolution(900, 900)
+              .setRayTracer(scene, RayTracerType.SIMPLE)
+              // הוספת תמיכה בתהליכונים
+              .setMultithreading(8)        // 8 תהליכונים במקביל
+              .setDebugPrint(5)            // הדפסת התקדמות כל 5%
+              // הפעלת Adaptive Antialiasing
+              .setAdaptiveAntiAliasing(true)
+              .setAdaptiveAntiAliasingDepth(3)
+              .setAdaptiveAntiAliasingThreshold(0.01)
+              .build()
+              .renderImage()
+              .writeToImage("cylindricalWonderland_adaptive_aa");
+
+      // רינדור נוסף לצורך השוואה - עם אנטיאלייסינג רגיל (לא אדפטיבי)
+      cameraBuilder
+              .setLocation(new Point(90, 70, 130))
+              .setDirection(new Point(0, 15, -110), Vector.AXIS_Y)
+              .setVpDistance(180)
+              .setVpSize(220, 220)
+              .setResolution(900, 900)
+              .setRayTracer(scene, RayTracerType.SIMPLE)
+              .setMultithreading(-2)
+              .setDebugPrint(5)
+              // אנטיאלייסינג רגיל ללא אדפטיבי
+              .setAdaptiveAntiAliasing(true)
+              .build()
+              .renderImage()
+              .writeToImage("2__cylindricalWonderland_regular_aa");
    }
 }
 

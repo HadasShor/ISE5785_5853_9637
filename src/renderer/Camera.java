@@ -14,21 +14,22 @@ import static primitives.Util.isZero;
  */
 public class Camera implements Cloneable {
 
-
     /**
      * Number of threads for rendering the image.
      */
     private int threadsCount = 0;
+
     /**
      * Default number of threads for rendering.
      */
-
     private static final int SPARE_THREADS = 2;
+
     /**
      * Interval for printing debug information in percentage.
      * If set to 0, no debug information will be printed.
      */
     private double printInterval = 0;
+
     /**
      * Pixel manager for supporting:
      * <ul>
@@ -42,7 +43,27 @@ public class Camera implements Cloneable {
      * Flag to enable or disable anti-aliasing.
      */
     private boolean AA_FLAG = true;
-    private int AA_GRID_SIZE = 9; // Default grid size for anti-aliasing
+
+    /**
+     * Default grid size for anti-aliasing
+     */
+    private int AA_GRID_SIZE = 4;
+
+    /**
+     * Flag to enable or disable adaptive anti-aliasing.
+     */
+    private boolean ADAPTIVE_AA_FLAG = false;
+
+    /**
+     * Maximum recursion depth for adaptive antialiasing.
+     */
+    private int AA_MAX_RECURSION_DEPTH = 3;
+
+    /**
+     * Variance threshold for adaptive antialiasing.
+     */
+    private double AA_VARIANCE_THRESHOLD = 0.01;
+
     /**
      * Camera position in 3D space.
      */
@@ -123,7 +144,7 @@ public class Camera implements Cloneable {
      * @param i  y-index of the pixel
      * @return ray from the camera through the pixel
      */
-    public Ray constructRay(int nX, int nY, int j, int i) {
+    public Ray constructRay(int nX, int nY, double j, double i) {
         Point pc = p0.add(vTo.scale(distance));
 
         double yI = -(i - (nY - 1) / 2d) * height / nY;
@@ -138,7 +159,6 @@ public class Camera implements Cloneable {
 
         return new Ray(p0, pIJ.subtract(p0));
     }
-
 
     /**
      * Gets the camera's position.
@@ -196,24 +216,6 @@ public class Camera implements Cloneable {
         return distance;
     }
 
-    /**
-     * Renders the image by casting rays through all pixels and calculating their colors.
-     *
-     * @return this camera instance
-     */
-//    public Camera renderImage() {
-//        for (int i = 0; i < Ny; i++) { // Corrected loop order to match writePixel(j, i)
-//            for (int j = 0; j < Nx; j++) {
-//                if(AA_FLAG)
-//                    castRayJ(Nx, Ny, j, i); // Using the jittered ray casting method
-//                else
-//                    castRay(j, i); // Using the standard ray casting method
-//
-//            }
-//        }
-//        return this;
-//    }
-
     /** This function renders image's pixel color map from the scene
      * included in the ray tracer object
      * @return the camera object itself
@@ -226,7 +228,6 @@ public class Camera implements Cloneable {
             default -> renderImageRawThreads();
         };
     }
-
 
     /**
      * Draws a grid over the image with the specified interval and color.
@@ -269,7 +270,6 @@ public class Camera implements Cloneable {
         imageWriter.writePixel(x, y, color);
     }
 
-
     /**
      * Construct rays through a pixel in the view plane
      *
@@ -308,6 +308,7 @@ public class Camera implements Cloneable {
         }
         return rays;
     }
+
     /**
      * Casts rays for a specific pixel in the image and writes the resulting color.
      *
@@ -324,9 +325,9 @@ public class Camera implements Cloneable {
      * @param i   The vertical coordinate of the pixel (row)
      */
     private void castRayJ(int nX, int nY, int j, int i) {
-        // בדיקה שהקואורדינטות בתוך הגבולות של התמונה
+        // Check if the coordinates are within the image bounds
         if (j < 0 || j >= Nx || i < 0 || i >= Ny) {
-            return;  // אל תכתוב אם מחוץ לגבולות
+            return;  // Don't write if outside bounds
         }
 
         List<Ray> rays = constructRaysJ(nX, nY, j, i);
@@ -340,6 +341,128 @@ public class Camera implements Cloneable {
     }
 
     /**
+     * Helper method to cast a ray through a pixel with adaptive antialiasing and write its color.
+     *
+     * @param nX horizontal resolution
+     * @param nY vertical resolution
+     * @param j  horizontal pixel index
+     * @param i  vertical pixel index
+     */
+    private void castRayAdaptive(int nX, int nY, int j, int i) {
+        // Check if the coordinates are within the image bounds
+        if (j < 0 || j >= Nx || i < 0 || i >= Ny) {
+            return;  // Don't write if outside bounds
+        }
+
+        // Cast adaptive rays
+        Color color = adaptiveCast(nX, nY, j, i, j + 1, i + 1, 0, AA_MAX_RECURSION_DEPTH, AA_VARIANCE_THRESHOLD);
+
+        // Write the result to the image
+        imageWriter.writePixel(j, i, color);
+        pixelManager.pixelDone();
+    }
+
+    /**
+     * Recursively casts rays for adaptive antialiasing.
+     *
+     * @param nX        horizontal resolution
+     * @param nY        vertical resolution
+     * @param minX      minimum X coordinate in pixel space
+     * @param minY      minimum Y coordinate in pixel space
+     * @param maxX      maximum X coordinate in pixel space
+     * @param maxY      maximum Y coordinate in pixel space
+     * @param depth     current recursion depth
+     * @param maxDepth  maximum recursion depth
+     * @param threshold variance threshold to stop subdivision
+     * @return averaged color for the region
+     */
+    private Color adaptiveCast(int nX, int nY, double minX, double minY, double maxX, double maxY,
+                               int depth, int maxDepth, double threshold) {
+        // Base case: maximum depth reached
+        if (depth >= maxDepth) {
+            Ray ray = constructRay(nX, nY, (minX + maxX) / 2, (minY + maxY) / 2);
+            return rayTracer.traceRay(ray);
+        }
+
+        // Sample at corners and center of the region
+        Ray rayTopLeft = constructRay(nX, nY, minX, minY);
+        Ray rayTopRight = constructRay(nX, nY, maxX, minY);
+        Ray rayBottomLeft = constructRay(nX, nY, minX, maxY);
+        Ray rayBottomRight = constructRay(nX, nY, maxX, maxY);
+        Ray rayCenter = constructRay(nX, nY, (minX + maxX) / 2, (minY + maxY) / 2);
+
+        // Get colors for the five sample points
+        Color colorTopLeft = rayTracer.traceRay(rayTopLeft);
+        Color colorTopRight = rayTracer.traceRay(rayTopRight);
+        Color colorBottomLeft = rayTracer.traceRay(rayBottomLeft);
+        Color colorBottomRight = rayTracer.traceRay(rayBottomRight);
+        Color colorCenter = rayTracer.traceRay(rayCenter);
+
+        // Calculate the average color of the five samples
+        Color averageColor = colorTopLeft.add(colorTopRight)
+                .add(colorBottomLeft)
+                .add(colorBottomRight)
+                .add(colorCenter)
+                .scale(0.2);
+
+        // Calculate the variance (measure of color differences)
+        double variance = calculateColorVariance(
+                new Color[]{colorTopLeft, colorTopRight, colorBottomLeft, colorBottomRight, colorCenter},
+                averageColor);
+
+        // If variance is low, we can stop subdividing
+        if (variance < threshold) {
+            return averageColor;
+        }
+
+        // Otherwise, recursively subdivide the region into four quadrants
+        double midX = (minX + maxX) / 2;
+        double midY = (minY + maxY) / 2;
+
+        Color topLeftQuad = adaptiveCast(nX, nY, minX, minY, midX, midY,
+                depth + 1, maxDepth, threshold);
+        Color topRightQuad = adaptiveCast(nX, nY, midX, minY, maxX, midY,
+                depth + 1, maxDepth, threshold);
+        Color bottomLeftQuad = adaptiveCast(nX, nY, minX, midY, midX, maxY,
+                depth + 1, maxDepth, threshold);
+        Color bottomRightQuad = adaptiveCast(nX, nY, midX, midY, maxX, maxY,
+                depth + 1, maxDepth, threshold);
+
+        // Return the average color of the four quadrants
+        return topLeftQuad.add(topRightQuad)
+                .add(bottomLeftQuad)
+                .add(bottomRightQuad)
+                .scale(0.25);
+    }
+
+    /**
+     * Calculate the variance of colors compared to their average.
+     *
+     * @param colors array of colors
+     * @param average the average color
+     * @return the variance value
+     */
+    private double calculateColorVariance(Color[] colors, Color average) {
+        double variance = 0;
+
+        for (Color color : colors) {
+            // Calculate the color difference
+            Color diff = color.subtract(average);
+
+            // Since subtract clamps at 0, we need to handle negative values too
+            Color diffNeg = average.subtract(color);
+
+            // Use the lengthSquared method which computes the squared distance in RGB space
+            double distanceSquared = diff.lengthSquared() + diffNeg.lengthSquared();
+
+            variance += distanceSquared;
+        }
+
+        // Return average variance
+        return variance / colors.length;
+    }
+
+    /**
      * Render image using multi-threading by parallel streaming
      * @return the camera object itself
      */
@@ -347,13 +470,18 @@ public class Camera implements Cloneable {
         IntStream.range(0, Ny).parallel()
                 .forEach(i -> IntStream.range(0, Nx).parallel()
                         .forEach(j -> {
-                            if (AA_FLAG)
-                                castRayJ(Nx, Ny, j, i);  // העברת אינדקסי הפיקסל
+                            if (AA_FLAG) {
+                                if (ADAPTIVE_AA_FLAG)
+                                    castRayAdaptive(Nx, Ny, j, i);
+                                else
+                                    castRayJ(Nx, Ny, j, i);
+                            }
                             else
                                 castRay(j, i);
                         }));
         return this;
     }
+
     /**
      * Render image without multi-threading
      * @return the camera object itself
@@ -361,12 +489,17 @@ public class Camera implements Cloneable {
     private Camera renderImageNoThreads() {
         for (int i = 0; i < Ny; ++i)
             for (int j = 0; j < Nx; ++j)
-                if (AA_FLAG)
-                    castRayJ(Nx, Ny, j, i);  // העברת אינדקסי הפיקסל
+                if (AA_FLAG) {
+                    if (ADAPTIVE_AA_FLAG)
+                        castRayAdaptive(Nx, Ny, j, i);
+                    else
+                        castRayJ(Nx, Ny, j, i);
+                }
                 else
                     castRay(j, i);
         return this;
     }
+
     /**
      * Render image using multi-threading by creating and running raw threads
      * @return the camera object itself
@@ -377,8 +510,12 @@ public class Camera implements Cloneable {
             threads.add(new Thread(() -> {
                 Pixel pixel;
                 while ((pixel = pixelManager.nextPixel()) != null)
-                    if (AA_FLAG)
-                        castRayJ(Nx, Ny, pixel.col(), pixel.row());  // להשתמש באנטי-אליאסינג
+                    if (AA_FLAG) {
+                        if (ADAPTIVE_AA_FLAG)
+                            castRayAdaptive(Nx, Ny, pixel.col(), pixel.row());
+                        else
+                            castRayJ(Nx, Ny, pixel.col(), pixel.row());
+                    }
                     else
                         castRay(pixel.col(), pixel.row());
             }));
@@ -388,7 +525,6 @@ public class Camera implements Cloneable {
         } catch (InterruptedException ignored) {}
         return this;
     }
-
 
     /**
      * Builder class for constructing a Camera instance.
@@ -518,6 +654,47 @@ public class Camera implements Cloneable {
         }
 
         /**
+         * Enables or disables adaptive antialiasing.
+         *
+         * @param enable true to enable adaptive antialiasing
+         * @return this builder
+         */
+        public Builder setAdaptiveAntiAliasing(boolean enable) {
+            camera.ADAPTIVE_AA_FLAG = enable;
+            return this;
+        }
+
+        /**
+         * Sets the maximum recursion depth for adaptive antialiasing.
+         * Higher values produce better quality but take longer to render.
+         *
+         * @param depth the maximum recursion depth
+         * @return this builder
+         */
+        public Builder setAdaptiveAntiAliasingDepth(int depth) {
+            if (depth < 1) {
+                throw new IllegalArgumentException("Recursion depth must be at least 1");
+            }
+            camera.AA_MAX_RECURSION_DEPTH = depth;
+            return this;
+        }
+
+        /**
+         * Sets the variance threshold for adaptive antialiasing.
+         * Lower values produce higher quality but take longer to render.
+         *
+         * @param threshold the variance threshold
+         * @return this builder
+         */
+        public Builder setAdaptiveAntiAliasingThreshold(double threshold) {
+            if (threshold <= 0) {
+                throw new IllegalArgumentException("Threshold must be positive");
+            }
+            camera.AA_VARIANCE_THRESHOLD = threshold;
+            return this;
+        }
+
+        /**
          * Builds the final {@link Camera} instance, validating all required fields.
          *
          * @return cloned camera instance
@@ -599,6 +776,7 @@ public class Camera implements Cloneable {
                 camera.threadsCount = threads;
             return this;
         }
+
         /**
          * Set debug printing interval. If it's zero - there won't be printing at all
          * @param interval printing interval in %
@@ -610,5 +788,4 @@ public class Camera implements Cloneable {
             return this;
         }
     }
-
 }
