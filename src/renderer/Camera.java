@@ -1,13 +1,11 @@
 package renderer;
-
+import java.util.stream.*;
 import primitives.*;
+import primitives.Vector;
 import scene.Scene;
 
-import javax.imageio.ImageIO;
-import java.util.MissingResourceException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+
 import static primitives.Util.isZero;
 
 /**
@@ -16,6 +14,33 @@ import static primitives.Util.isZero;
  */
 public class Camera implements Cloneable {
 
+
+    /**
+     * Number of threads for rendering the image.
+     */
+    private int threadsCount = 0;
+    /**
+     * Default number of threads for rendering.
+     */
+
+    private static final int SPARE_THREADS = 2;
+    /**
+     * Interval for printing debug information in percentage.
+     * If set to 0, no debug information will be printed.
+     */
+    private double printInterval = 0;
+    /**
+     * Pixel manager for supporting:
+     * <ul>
+     * <li>multi-threading</li>
+     * <li>debug print of progress percentage in Console window/tab</li>
+     * </ul>
+     */
+    private PixelManager pixelManager;
+
+    /**
+     * Flag to enable or disable anti-aliasing.
+     */
     private boolean AA_FLAG = false;
     private int AA_GRID_SIZE = 9; // Default grid size for anti-aliasing
     /**
@@ -98,7 +123,7 @@ public class Camera implements Cloneable {
      * @param i  y-index of the pixel
      * @return ray from the camera through the pixel
      */
-    public Ray constructRay(int nX, int nY, double j, double i) {
+    public Ray constructRay(int nX, int nY, int j, int i) {
         Point pc = p0.add(vTo.scale(distance));
 
         double yI = -(i - (nY - 1) / 2d) * height / nY;
@@ -176,26 +201,30 @@ public class Camera implements Cloneable {
      *
      * @return this camera instance
      */
-    public Camera renderImage() {
-        for (int i = 0; i < Ny; i++) { // Corrected loop order to match writePixel(j, i)
-            for (int j = 0; j < Nx; j++) {
-                if(AA_FLAG)
-                    castRayAdaptive(Nx, Ny, j, i); // Using the adaptive ray casting method
-                    //castRayJ(Nx, Ny, j, i); // Using the jittered ray casting method
-                else
-                    castRay(j, i); // Using the standard ray casting method
+//    public Camera renderImage() {
+//        for (int i = 0; i < Ny; i++) { // Corrected loop order to match writePixel(j, i)
+//            for (int j = 0; j < Nx; j++) {
+//                if(AA_FLAG)
+//                    castRayJ(Nx, Ny, j, i); // Using the jittered ray casting method
+//                else
+//                    castRay(j, i); // Using the standard ray casting method
+//
+//            }
+//        }
+//        return this;
+//    }
 
-            }
-        }
-        return this;
-    }
-    private void castRayAdaptive(int nX, int nY, int j, int i) {
-        Color color = adaptiveCast(
-                nX, nY, j, i,
-                j, i, j + 1, i + 1,
-                0, 3, 0.0001 // start level, max depth, variance threshold
-        );
-        imageWriter.writePixel(j, i, color);
+    /** This function renders image's pixel color map from the scene
+     * included in the ray tracer object
+     * @return the camera object itself
+     */
+    public Camera renderImage() {
+        pixelManager = new PixelManager(Nx, Ny, printInterval);
+        return switch (threadsCount) {
+            case 0 -> renderImageNoThreads();
+            case -1 -> renderImageStream();
+            default -> renderImageRawThreads();
+        };
     }
 
 
@@ -241,47 +270,6 @@ public class Camera implements Cloneable {
     }
 
 
-    private Color adaptiveCast(int nX, int nY, int j, int i,
-                               double minX, double minY,
-                               double maxX, double maxY,
-                               int level, int maxLevel, double threshold) {
-        if (level >= maxLevel) {
-            Ray ray = constructRay(nX, nY, (minX + maxX) / 2, (minY + maxY) / 2);
-            return rayTracer.traceRay(ray);
-        }
-
-        Ray r1 = constructRay(nX, nY, minX, minY);
-        Ray r2 = constructRay(nX, nY, maxX, minY);
-        Ray r3 = constructRay(nX, nY, minX, maxY);
-        Ray r4 = constructRay(nX, nY, maxX, maxY);
-
-        Color c1 = rayTracer.traceRay(r1);
-        Color c2 = rayTracer.traceRay(r2);
-        Color c3 = rayTracer.traceRay(r3);
-        Color c4 = rayTracer.traceRay(r4);
-
-        Color avg = c1.add(c2).add(c3).add(c4).scale(0.25);
-
-        double variance = Math.max(
-                Math.max(c1.subtract(avg).lengthSquared(), c2.subtract(avg).lengthSquared()),
-                Math.max(c3.subtract(avg).lengthSquared(), c4.subtract(avg).lengthSquared())
-        );
-
-        if (variance < threshold) {
-            return avg;
-        }
-
-        double midX = (minX + maxX) / 2;
-        double midY = (minY + maxY) / 2;
-
-        Color q1 = adaptiveCast(nX, nY, j, i, minX, minY, midX, midY, level + 1, maxLevel, threshold);
-        Color q2 = adaptiveCast(nX, nY, j, i, midX, minY, maxX, midY, level + 1, maxLevel, threshold);
-        Color q3 = adaptiveCast(nX, nY, j, i, minX, midY, midX, maxY, level + 1, maxLevel, threshold);
-        Color q4 = adaptiveCast(nX, nY, j, i, midX, midY, maxX, maxY, level + 1, maxLevel, threshold);
-
-        return q1.add(q2).add(q3).add(q4).scale(0.25);
-    }
-
     /**
      * Construct rays through a pixel in the view plane
      *
@@ -321,14 +309,25 @@ public class Camera implements Cloneable {
         return rays;
     }
     /**
-     * Cast a ray through a pixel in the view plane
+     * Casts rays for a specific pixel in the image and writes the resulting color.
      *
-     * @param nX the number of pixels in the x direction
-     * @param nY the number of pixels in the y direction
-     * @param j  the x index of the pixel
-     * @param i  the y index of the pixel
+     * This method handles the ray casting process for an individual pixel (j,i) in the image:
+     * 1. Constructs multiple rays for the pixel (for anti-aliasing or supersampling)
+     * 2. Traces each ray to determine its color contribution
+     * 3. Averages all color contributions from the rays
+     * 4. Writes the final color to the output image
+     * 5. Updates the pixel processing manager
+     *
+     * @param nX  The horizontal resolution of the image
+     * @param nY  The vertical resolution of the image
+     * @param j   The horizontal coordinate of the pixel (column)
+     * @param i   The vertical coordinate of the pixel (row)
      */
     private void castRayJ(int nX, int nY, int j, int i) {
+        // בדיקה שהקואורדינטות בתוך הגבולות של התמונה
+        if (j < 0 || j >= Nx || i < 0 || i >= Ny) {
+            return;  // אל תכתוב אם מחוץ לגבולות
+        }
 
         List<Ray> rays = constructRaysJ(nX, nY, j, i);
         Color color = Color.BLACK;
@@ -337,8 +336,59 @@ public class Camera implements Cloneable {
         }
         color = color.scale(1d / rays.size());
         imageWriter.writePixel(j, i, color);
+        pixelManager.pixelDone();
+    }
 
-}
+    /**
+     * Render image using multi-threading by parallel streaming
+     * @return the camera object itself
+     */
+    private Camera renderImageStream() {
+        IntStream.range(0, Ny).parallel()
+                .forEach(i -> IntStream.range(0, Nx).parallel()
+                        .forEach(j -> {
+                            if (AA_FLAG)
+                                castRayJ(Nx, Ny, j, i);  // העברת אינדקסי הפיקסל
+                            else
+                                castRay(j, i);
+                        }));
+        return this;
+    }
+    /**
+     * Render image without multi-threading
+     * @return the camera object itself
+     */
+    private Camera renderImageNoThreads() {
+        for (int i = 0; i < Ny; ++i)
+            for (int j = 0; j < Nx; ++j)
+                if (AA_FLAG)
+                    castRayJ(Nx, Ny, j, i);  // העברת אינדקסי הפיקסל
+                else
+                    castRay(j, i);
+        return this;
+    }
+    /**
+     * Render image using multi-threading by creating and running raw threads
+     * @return the camera object itself
+     */
+    private Camera renderImageRawThreads() {
+        var threads = new LinkedList<Thread>();
+        while (threadsCount-- > 0)
+            threads.add(new Thread(() -> {
+                Pixel pixel;
+                while ((pixel = pixelManager.nextPixel()) != null)
+                    if (AA_FLAG)
+                        castRayJ(Nx, Ny, pixel.col(), pixel.row());  // להשתמש באנטי-אליאסינג
+                    else
+                        castRay(pixel.col(), pixel.row());
+            }));
+        for (var thread : threads) thread.start();
+        try {
+            for (var thread : threads) thread.join();
+        } catch (InterruptedException ignored) {}
+        return this;
+    }
+
 
     /**
      * Builder class for constructing a Camera instance.
@@ -526,5 +576,39 @@ public class Camera implements Cloneable {
                 return null;
             }
         }
+
+        /**
+         * Set multi-threading <br>
+         * Parameter value meaning:
+         * <ul>
+         * <li>-2 - number of threads is number of logical processors less 2</li>
+         * <li>-1 - stream processing parallelization (implicit multi-threading) is used</li>
+         * <li>0 - multi-threading is not activated</li>
+         * <li>1 and more - literally number of threads</li>
+         * </ul>
+         * @param threads number of threads
+         * @return builder object itself
+         */
+        public Builder setMultithreading(int threads) {
+            if (threads < -3)
+                throw new IllegalArgumentException("Multithreading parameter must be -2 or higher");
+            if (threads == -2) {
+                int cores = Runtime.getRuntime().availableProcessors() - SPARE_THREADS;
+                camera.threadsCount = cores <= 2 ? 1 : cores;
+            } else
+                camera.threadsCount = threads;
+            return this;
+        }
+        /**
+         * Set debug printing interval. If it's zero - there won't be printing at all
+         * @param interval printing interval in %
+         * @return builder object itself
+         */
+        public Builder setDebugPrint(double interval) {
+            if (interval < 0) throw new IllegalArgumentException("interval parameter must be non-negative");
+            camera.printInterval = interval;
+            return this;
+        }
     }
+
 }

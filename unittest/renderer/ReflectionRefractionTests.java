@@ -2042,4 +2042,1198 @@ void dualChainedYMoleculesTest() {
 
    }
 
+
+
+   /////
+
+
+//
+//   @Test
+//   void minimalisticStaircaseTest() {
+//      // === Set scene background and ambient light ===
+//      // Soft cream (off-white) background color
+//      scene.setBackground(new Color(245, 240, 230));
+//
+//      // Soft ambient light for subtle illumination
+//      scene.setAmbientLight(new AmbientLight(new Color(0.4, 0.4, 0.4)));
+//
+//      // === Create materials ===
+//      // Solid opaque material for the staircase (warm light brown)
+//      Material stairMaterial = new Material()
+//              .setKD(0.9).setKS(0.1).setShininess(30)
+//              .setKT(0).setKR(0.05); // Minimal reflection for wooden appearance
+//
+//      // Material for neutral walls
+//      Material wallMaterial = new Material()
+//              .setKD(0.95).setKS(0.05).setShininess(10)
+//              .setKT(0).setKR(0.02);
+//
+//      // Material for floor
+//      Material floorMaterial = new Material()
+//              .setKD(0.9).setKS(0.1).setShininess(20)
+//              .setKT(0).setKR(0.1);
+//
+//      // Material for dark pastel objects - matte finish with minimal reflection
+//      Material darkPastelMaterial = new Material()
+//              .setKD(0.85).setKS(0.15).setShininess(50)
+//              .setKT(0).setKR(0.05);
+//
+//      // Enhanced material for better shadow interaction
+//      Material enhancedMaterial = new Material()
+//              .setKD(0.88).setKS(0.12).setShininess(60)
+//              .setKT(0).setKR(0.03);
+//
+//      // === Create the staircase (10 steps, consistent warm light brown color) ===
+//      double stepWidth = 30;
+//      double stepHeight = 15;
+//      double stepDepth = 45;
+//
+//      // Warm light brown color for stairs
+//      //Color stairColor = new Color(180, 140, 100); // Light brown with warm undertones
+//      Color stairColor = new Color(230, 150, 180); // Warm pink / Rose pink
+//      // Neutral colors for walls
+//      Color wallColor = new Color(220, 215, 205); // Light gray with warm undertones
+//      Color floorColor = new Color(210, 200, 190); // Slightly darker cream for floor
+//
+//      // First, create the base structure that supports the staircase
+//      // Using the exact same warm brown color as the stairs for consistency
+//      addBaseStructure(scene, -150, 0, -stepDepth/2, 150, -20, stepDepth/2, stairColor, stairMaterial);
+//
+//      // Fill in the sides of the staircase to ensure there are no gaps
+//      // Left side wall of the staircase structure (same color as stairs)
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(-150, -20, -stepDepth/2),
+//                      new Point(-150, -20, stepDepth/2),
+//                      new Point(-150, 10*stepHeight, stepDepth/2),
+//                      new Point(-150, 10*stepHeight, -stepDepth/2))
+//                      .setEmission(stairColor)
+//                      .setMaterial(stairMaterial)
+//      );
+//
+//      // Right side wall of the staircase structure (same color as stairs)
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(150, -20, -stepDepth/2),
+//                      new Point(150, -20, stepDepth/2),
+//                      new Point(150, 10*stepHeight, stepDepth/2),
+//                      new Point(150, 10*stepHeight, -stepDepth/2))
+//                      .setEmission(stairColor)
+//                      .setMaterial(stairMaterial)
+//      );
+//
+//      // Back wall connecting base to the back of steps (same color as stairs)
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(-150, -20, stepDepth/2),
+//                      new Point(150, -20, stepDepth/2),
+//                      new Point(150, 10*stepHeight, stepDepth/2),
+//                      new Point(-150, 10*stepHeight, stepDepth/2))
+//                      .setEmission(stairColor)
+//                      .setMaterial(stairMaterial)
+//      );
+//
+//      // Front wall connecting base to the front of steps (same color as stairs)
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(-150, -20, -stepDepth/2),
+//                      new Point(150, -20, -stepDepth/2),
+//                      new Point(150, 0, -stepDepth/2),
+//                      new Point(-150, 0, -stepDepth/2))
+//                      .setEmission(stairColor)
+//                      .setMaterial(stairMaterial)
+//      );
+//
+//      for (int i = 0; i < 10; i++) {
+//         double x = -150 + i * stepWidth;
+//         double y = i * stepHeight;
+//
+//         // Add each stair step - horizontal part (top surface)
+//         scene.geometries.add(
+//                 new Polygon(
+//                         new Point(x, y, -stepDepth/2),
+//                         new Point(x + stepWidth, y, -stepDepth/2),
+//                         new Point(x + stepWidth, y, stepDepth/2),
+//                         new Point(x, y, stepDepth/2))
+//                         .setEmission(stairColor)
+//                         .setMaterial(stairMaterial)
+//         );
+//
+//         // Add the vertical part of the step (front face)
+//         if (i < 9) {
+//            scene.geometries.add(
+//                    new Polygon(
+//                            new Point(x + stepWidth, y, -stepDepth/2),
+//                            new Point(x + stepWidth, y + stepHeight, -stepDepth/2),
+//                            new Point(x + stepWidth, y + stepHeight, stepDepth/2),
+//                            new Point(x + stepWidth, y, stepDepth/2))
+//                            .setEmission(stairColor) // Same color for consistency
+//                            .setMaterial(stairMaterial)
+//            );
+//         }
+//
+//         // Fill in the space behind each step to ensure consistency
+//         if (i > 0) {
+//            scene.geometries.add(
+//                    new Polygon(
+//                            new Point(x, y - stepHeight, stepDepth/2),
+//                            new Point(x, y, stepDepth/2),
+//                            new Point(x, y, -stepDepth/2),
+//                            new Point(x, y - stepHeight, -stepDepth/2))
+//                            .setEmission(stairColor) // Same color for consistency
+//                            .setMaterial(stairMaterial)
+//            );
+//         }
+//
+//         // Fill in the underneath of each step to ensure it's fully enclosed
+//         if (i > 0) {
+//            scene.geometries.add(
+//                    new Polygon(
+//                            new Point(x, y - stepHeight, -stepDepth/2),
+//                            new Point(x + stepWidth, y - stepHeight, -stepDepth/2),
+//                            new Point(x + stepWidth, y - stepHeight, stepDepth/2),
+//                            new Point(x, y - stepHeight, stepDepth/2))
+//                            .setEmission(stairColor) // Same color for consistency
+//                            .setMaterial(stairMaterial)
+//            );
+//         }
+//      }
+//
+//      // === Add room walls with neutral color ===
+//      // Left wall of the room
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(-200, -20, -100),
+//                      new Point(-200, -20, 100),
+//                      new Point(-200, 200, 100),
+//                      new Point(-200, 200, -100))
+//                      .setEmission(wallColor)
+//                      .setMaterial(wallMaterial)
+//      );
+//
+//      // Back wall of the room
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(-200, -20, 100),
+//                      new Point(200, -20, 100),
+//                      new Point(200, 200, 100),
+//                      new Point(-200, 200, 100))
+//                      .setEmission(wallColor)
+//                      .setMaterial(wallMaterial)
+//      );
+//
+//      // Floor with slightly different tone
+//      scene.geometries.add(
+//              new Plane(new Point(0, -20, 0), new Vector(0, 1, 0))  // Floor at level -20
+//                      .setEmission(floorColor)
+//                      .setMaterial(floorMaterial)
+//      );
+//
+//      // === Add dark pastel-colored objects on the staircase ===
+//
+//      // --- Add 3 Spheres in dark pastel colors ---
+//
+//      // Dark dusty blue sphere on step 2 - placed much lower
+//      double sphere1Radius = 7;
+//      double step2Y = 2 * stepHeight; // Y-coordinate of step 2
+//      scene.geometries.add(
+//              new Sphere(sphere1Radius, new Point(-110, step2Y -8, 0)) // מונמך כמעט בגובה הרדיוס כך שיגע במדרגה
+//                      .setEmission(new Color(80, 110, 130))  // Dark dusty blue
+//                      .setMaterial(darkPastelMaterial)
+//      );
+//
+//      // Dark mauve sphere on step 5 - placed much lower
+//      double sphere2Radius = 8;
+//      double step5Y = 5 * stepHeight; // Y-coordinate of step 5
+//      scene.geometries.add(
+//              new Sphere(sphere2Radius, new Point(-45, step5Y - 22, -10)) // מונמך כמעט בגובה הרדיוס כך שיגע במדרגה
+//                      .setEmission(new Color(110, 90, 120))  // Dark mauve
+//                      .setMaterial(darkPastelMaterial)
+//      );
+//
+//      // Dark sage green sphere on step 9 - already correctly placed on step
+//      double sphere3Radius = 6.5;
+//      double step9Y = 9 * stepHeight; // Y-coordinate of step 9
+//      scene.geometries.add(
+//              new Sphere(sphere3Radius, new Point(110, step9Y - sphere3Radius -2, 0))
+//                      .setEmission(new Color(100, 120, 90))  // Dark sage green
+//                      .setMaterial(darkPastelMaterial)
+//      );
+//
+//      // --- Add 2 Pyramids in dark pastel colors ---
+//
+//      // Dark terracotta pyramid on step 3 - placed much lower
+//      double step3Y = 3 * stepHeight;
+//      createPyramid(scene,
+//              new Point(-75, step3Y - 15, 10),  // בסיס הפירמידה מונמך משמעותית
+//              12, 18,                     // Base size and height
+//              new Color(130, 90, 80),     // Dark terracotta
+//              enhancedMaterial
+//      );
+//
+//      // Dark slate pyramid on step 7 - placed much lower
+//      double step7Y = 7 * stepHeight;
+//      createPyramid(scene,
+//              new Point(50, step7Y -15, -7),  // בסיס הפירמידה מונמך משמעותית
+//              14, 20,                     // Base size and height
+//              new Color(90, 100, 110),    // Dark slate
+//              enhancedMaterial
+//      );
+//
+//      // --- Add 2 Cylinders in dark pastel colors ---
+//
+//      // Dark olive cylinder on step 1 - placed much lower
+//      double step1Y = 1 * stepHeight;
+//      scene.geometries.add(
+//              new Cylinder(
+//                      new Ray(new Point(-140, step1Y +8, 20), new Vector(0, 1, 0)), // בסיס הגליל מונמך משמעותית
+//                      5, 20)                                                      // Radius and height
+//                      .setEmission(new Color(110, 115, 70))                      // Dark olive
+//                      .setMaterial(darkPastelMaterial)
+//      );
+//
+//      // Dark rust cylinder on step 8 - already correctly placed on step
+//      double step8Y = 8 * stepHeight;
+//      scene.geometries.add(
+//              new Cylinder(
+//                      new Ray(new Point(80, step8Y , -10), new Vector(0, 1, 0)),
+//                      4.5, 22)                                                  // Radius and height
+//                      .setEmission(new Color(120, 80, 70))                     // Dark rust
+//                      .setMaterial(darkPastelMaterial)
+//      );
+//
+//      // === Add soft, architectural lighting ===
+//      // Main directional light for soft shadows
+//      scene.light.add(
+//              new DirectionalLight(
+//                      new Color(180, 170, 160), // Warm white light
+//                      new Vector(-0.5, -0.7, -0.5))
+//      );
+//
+//      // Soft fill light from opposite direction
+//      scene.light.add(
+//              new DirectionalLight(
+//                      new Color(120, 120, 140), // Cool fill light for contrast
+//                      new Vector(0.5, -0.2, -0.8))
+//      );
+//
+//      // Ambient accent light from above
+//      scene.light.add(
+//              new SpotLight(
+//                      new Color(250, 240, 220), // Warm accent light
+//                      new Point(0, 200, -50), // From above
+//                      new Vector(0, -1, 0.2)) // Pointing slightly forward
+//                      .setKl(0.0003).setKq(0.00002)
+//      );
+//
+//      // === Set up and render with camera ===
+//      // Camera positioned to showcase the staircase architecture
+//      Camera.getBuilder()
+//              .setLocation(new Point(-400, 120, -600))  // Set back to see full staircase
+//              .setDirection(new Point(0, 50, 0), Vector.AXIS_Y)  // Looking at middle of staircase
+//              .setVpDistance(1000)
+//              .setVpSize(300, 300)
+//              .setResolution(800, 800)
+//              // Multithreading setup
+//              .setMultithreading(8)
+//              .setDebugPrint(5)
+//              .setRayTracer(scene, RayTracerType.SIMPLE)
+//              .build()
+//              .renderImage()
+//              .writeToImage("minimalistic_staircase_dark_objects");
+//   }
+//
+//   /**
+//    * Helper method to create a pyramid at a specific position
+//    */
+//   private void createPyramid(Scene scene, Point base, double baseSize, double height,
+//                              Color color, Material material) {
+//      Point p1 = base.add(new Vector(-baseSize/2, 0, -baseSize/2));
+//      Point p2 = base.add(new Vector(baseSize/2, 0, -baseSize/2));
+//      Point p3 = base.add(new Vector(baseSize/2, 0, baseSize/2));
+//      Point p4 = base.add(new Vector(-baseSize/2, 0, baseSize/2));
+//      Point apex = base.add(new Vector(0, height, 0));
+//
+//      // Add base/bottom of pyramid
+//      scene.geometries.add(
+//              new Polygon(p1, p2, p3, p4)
+//                      .setEmission(color.scale(0.9))
+//                      .setMaterial(material)
+//      );
+//
+//      // Add pyramid sides
+//      scene.geometries.add(
+//              new Triangle(p1, p2, apex)
+//                      .setEmission(color)
+//                      .setMaterial(material),
+//              new Triangle(p2, p3, apex)
+//                      .setEmission(color)
+//                      .setMaterial(material),
+//              new Triangle(p3, p4, apex)
+//                      .setEmission(color)
+//                      .setMaterial(material),
+//              new Triangle(p4, p1, apex)
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//   }
+//
+//   /**
+//    * Helper method to add a base structure under the stairs
+//    */
+//   private void addBaseStructure(Scene scene, double minX, double minY, double minZ,
+//                                 double maxX, double maxY, double maxZ,
+//                                 Color color, Material material) {
+//      // Create a solid block under the stairs with consistent color
+//      // Front face
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, minY, minZ),
+//                      new Point(maxX, minY, minZ),
+//                      new Point(maxX, maxY, minZ),
+//                      new Point(minX, maxY, minZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//
+//      // Back face
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, minY, maxZ),
+//                      new Point(maxX, minY, maxZ),
+//                      new Point(maxX, maxY, maxZ),
+//                      new Point(minX, maxY, maxZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//
+//      // Left face
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, minY, minZ),
+//                      new Point(minX, minY, maxZ),
+//                      new Point(minX, maxY, maxZ),
+//                      new Point(minX, maxY, minZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//
+//      // Right face
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(maxX, minY, minZ),
+//                      new Point(maxX, minY, maxZ),
+//                      new Point(maxX, maxY, maxZ),
+//                      new Point(maxX, maxY, minZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//
+//      // Top face - should match bottom of first stair
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, minY, minZ),
+//                      new Point(maxX, minY, minZ),
+//                      new Point(maxX, minY, maxZ),
+//                      new Point(minX, minY, maxZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//
+//      // Bottom face
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, maxY, minZ),
+//                      new Point(maxX, maxY, minZ),
+//                      new Point(maxX, maxY, maxZ),
+//                      new Point(minX, maxY, maxZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//   }
+
+
+   /// //2code
+//   @Test
+//   void minimalisticStaircaseTest() {
+//      // === Set scene background and ambient light ===
+//      // Soft cream (off-white) background color
+//      scene.setBackground(new Color(245, 240, 230));
+//
+//      // Soft ambient light for subtle illumination
+//      //scene.setAmbientLight(new AmbientLight(new Color(0.1, 0.1, 0.1)));
+//
+//      // === Create materials ===
+//      // Solid opaque material for the staircase (warm light brown)
+//      Material stairMaterial = new Material()
+//              .setKD(0.9).setKS(0.1).setShininess(30)
+//              .setKT(0).setKR(0.05); // Minimal reflection for wooden appearance
+//
+//      // Material for neutral walls
+//      Material wallMaterial = new Material()
+//              .setKD(0.95).setKS(0.05).setShininess(10)
+//              .setKT(0).setKR(0.02);
+//
+//      // Material for floor
+//      Material floorMaterial = new Material()
+//              .setKD(0.9).setKS(0.1).setShininess(20)
+//              .setKT(0).setKR(0.1);
+//
+//      // Material for dark pastel objects - matte finish with minimal reflection
+//      Material darkPastelMaterial = new Material()
+//              .setKD(0.85).setKS(0.15).setShininess(50)
+//              .setKT(0).setKR(0.05);
+//
+//      // Enhanced material for better shadow interaction
+//      Material enhancedMaterial = new Material()
+//              .setKD(0.88).setKS(0.12).setShininess(60)
+//              .setKT(0).setKR(0.03);
+//
+//      // === Create the staircase (10 steps, consistent warm light brown color) ===
+//      double stepWidth = 30;
+//      double stepHeight = 15;
+//      double stepDepth = 45;
+//
+//      // Warm light brown color for stairs
+//      //Color stairColor = new Color(180, 140, 100); // Light brown with warm undertones
+//      Color stairColor = new Color(230, 150, 180); // Warm pink / Rose pink
+//      // Neutral colors for walls
+//      Color wallColor = new Color(220, 215, 205); // Light gray with warm undertones
+//      Color floorColor = new Color(210, 200, 190); // Slightly darker cream for floor
+//
+//      // First, create the base structure that supports the staircase
+//      // Using the exact same warm brown color as the stairs for consistency
+//      addBaseStructure(scene, -150, 0, -stepDepth/2, 150, -20, stepDepth/2, stairColor, stairMaterial);
+//
+//      // Fill in the sides of the staircase to ensure there are no gaps
+//      // Left side wall of the staircase structure (same color as stairs)
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(-150, -20, -stepDepth/2),
+//                      new Point(-150, -20, stepDepth/2),
+//                      new Point(-150, 10*stepHeight, stepDepth/2),
+//                      new Point(-150, 10*stepHeight, -stepDepth/2))
+//                      .setEmission(stairColor)
+//                      .setMaterial(stairMaterial)
+//      );
+//
+//      // Right side wall of the staircase structure (same color as stairs)
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(150, -20, -stepDepth/2),
+//                      new Point(150, -20, stepDepth/2),
+//                      new Point(150, 10*stepHeight, stepDepth/2),
+//                      new Point(150, 10*stepHeight, -stepDepth/2))
+//                      .setEmission(stairColor)
+//                      .setMaterial(stairMaterial)
+//      );
+//
+//      // Back wall connecting base to the back of steps (same color as stairs)
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(-150, -20, stepDepth/2),
+//                      new Point(150, -20, stepDepth/2),
+//                      new Point(150, 10*stepHeight, stepDepth/2),
+//                      new Point(-150, 10*stepHeight, stepDepth/2))
+//                      .setEmission(stairColor)
+//                      .setMaterial(stairMaterial)
+//      );
+//
+//      // Front wall connecting base to the front of steps (same color as stairs)
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(-150, -20, -stepDepth/2),
+//                      new Point(150, -20, -stepDepth/2),
+//                      new Point(150, 0, -stepDepth/2),
+//                      new Point(-150, 0, -stepDepth/2))
+//                      .setEmission(stairColor)
+//                      .setMaterial(stairMaterial)
+//      );
+//
+//      for (int i = 0; i < 10; i++) {
+//         double x = -150 + i * stepWidth;
+//         double y = i * stepHeight;
+//
+//         // Add each stair step - horizontal part (top surface)
+//         scene.geometries.add(
+//                 new Polygon(
+//                         new Point(x, y, -stepDepth/2),
+//                         new Point(x + stepWidth, y, -stepDepth/2),
+//                         new Point(x + stepWidth, y, stepDepth/2),
+//                         new Point(x, y, stepDepth/2))
+//                         .setEmission(stairColor)
+//                         .setMaterial(stairMaterial)
+//         );
+//
+//         // Add the vertical part of the step (front face)
+//         if (i < 9) {
+//            scene.geometries.add(
+//                    new Polygon(
+//                            new Point(x + stepWidth, y, -stepDepth/2),
+//                            new Point(x + stepWidth, y + stepHeight, -stepDepth/2),
+//                            new Point(x + stepWidth, y + stepHeight, stepDepth/2),
+//                            new Point(x + stepWidth, y, stepDepth/2))
+//                            .setEmission(stairColor) // Same color for consistency
+//                            .setMaterial(stairMaterial)
+//            );
+//         }
+//
+//         // Fill in the space behind each step to ensure consistency
+//         if (i > 0) {
+//            scene.geometries.add(
+//                    new Polygon(
+//                            new Point(x, y - stepHeight, stepDepth/2),
+//                            new Point(x, y, stepDepth/2),
+//                            new Point(x, y, -stepDepth/2),
+//                            new Point(x, y - stepHeight, -stepDepth/2))
+//                            .setEmission(stairColor) // Same color for consistency
+//                            .setMaterial(stairMaterial)
+//            );
+//         }
+//
+//         // Fill in the underneath of each step to ensure it's fully enclosed
+//         if (i > 0) {
+//            scene.geometries.add(
+//                    new Polygon(
+//                            new Point(x, y - stepHeight, -stepDepth/2),
+//                            new Point(x + stepWidth, y - stepHeight, -stepDepth/2),
+//                            new Point(x + stepWidth, y - stepHeight, stepDepth/2),
+//                            new Point(x, y - stepHeight, stepDepth/2))
+//                            .setEmission(stairColor) // Same color for consistency
+//                            .setMaterial(stairMaterial)
+//            );
+//         }
+//      }
+//
+//      // === Add room walls with neutral color ===
+//      // Left wall of the room
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(-200, -20, -100),
+//                      new Point(-200, -20, 100),
+//                      new Point(-200, 200, 100),
+//                      new Point(-200, 200, -100))
+//                      .setEmission(wallColor)
+//                      .setMaterial(wallMaterial)
+//      );
+//
+//      // Back wall of the room
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(-200, -20, 100),
+//                      new Point(200, -20, 100),
+//                      new Point(200, 200, 100),
+//                      new Point(-200, 200, 100))
+//                      .setEmission(wallColor)
+//                      .setMaterial(wallMaterial)
+//      );
+//
+//      // Floor with slightly different tone
+//      scene.geometries.add(
+//              new Plane(new Point(0, -20, 0), new Vector(0, 1, 0))  // Floor at level -20
+//                      .setEmission(floorColor)
+//                      .setMaterial(floorMaterial)
+//      );
+//
+//      // === Add dark pastel-colored objects on the staircase ===
+//
+//      // --- Add 3 Spheres in dark pastel colors ---
+//
+//      // Dark dusty blue sphere on step 2 - placed much lower
+//      double sphere1Radius = 7;
+//      double step2Y = 2 * stepHeight; // Y-coordinate of step 2
+//      scene.geometries.add(
+//              new Sphere(sphere1Radius, new Point(-110, step2Y -8, 0)) // מונמך כמעט בגובה הרדיוס כך שיגע במדרגה
+//                      .setEmission(new Color(80, 110, 130))  // Dark dusty blue
+//                      .setMaterial(darkPastelMaterial)
+//      );
+//
+//      // Dark mauve sphere on step 5 - placed much lower
+//      double sphere2Radius = 8;
+//      double step5Y = 5 * stepHeight; // Y-coordinate of step 5
+//      scene.geometries.add(
+//              new Sphere(sphere2Radius, new Point(-45, step5Y - 22, -10)) // מונמך כמעט בגובה הרדיוס כך שיגע במדרגה
+//                      .setEmission(new Color(110, 90, 120))  // Dark mauve
+//                      .setMaterial(darkPastelMaterial)
+//      );
+//
+//      // Dark sage green sphere on step 9 - already correctly placed on step
+//      double sphere3Radius = 6.5;
+//      double step9Y = 9 * stepHeight; // Y-coordinate of step 9
+//      scene.geometries.add(
+//              new Sphere(sphere3Radius, new Point(110, step9Y - sphere3Radius -2, 0))
+//                      .setEmission(new Color(100, 120, 90))  // Dark sage green
+//                      .setMaterial(darkPastelMaterial)
+//      );
+//
+//      // --- Add 2 Pyramids in dark pastel colors ---
+//
+//      // Dark terracotta pyramid on step 3 - placed much lower
+//      double step3Y = 3 * stepHeight;
+//      createPyramid(scene,
+//              new Point(-75, step3Y - 15, 10),  // בסיס הפירמידה מונמך משמעותית
+//              12, 18,                     // Base size and height
+//              new Color(130, 90, 80),     // Dark terracotta
+//              enhancedMaterial
+//      );
+//
+//      // Dark slate pyramid on step 7 - placed much lower
+//      double step7Y = 7 * stepHeight;
+//      createPyramid(scene,
+//              new Point(50, step7Y -15, -7),  // בסיס הפירמידה מונמך משמעותית
+//              14, 20,                     // Base size and height
+//              new Color(90, 100, 110),    // Dark slate
+//              enhancedMaterial
+//      );
+//
+//      // --- Add 2 Cylinders in dark pastel colors ---
+//
+//      // Dark olive cylinder on step 1 - placed much lower
+//      double step1Y = 1 * stepHeight;
+//      scene.geometries.add(
+//              new Cylinder(
+//                      new Ray(new Point(-140, step1Y +8, 20), new Vector(0, 1, 0)), // בסיס הגליל מונמך משמעותית
+//                      5, 20)                                                      // Radius and height
+//                      .setEmission(new Color(110, 115, 70))                      // Dark olive
+//                      .setMaterial(darkPastelMaterial)
+//      );
+//
+//      // Dark rust cylinder on step 8 - already correctly placed on step
+//      double step8Y = 8 * stepHeight;
+//      scene.geometries.add(
+//              new Cylinder(
+//                      new Ray(new Point(80, step8Y , -10), new Vector(0, 1, 0)),
+//                      4.5, 22)                                                  // Radius and height
+//                      .setEmission(new Color(120, 80, 70))                     // Dark rust
+//                      .setMaterial(darkPastelMaterial)
+//      );
+//
+//      // === Set up and render with camera ===
+//      // Camera positioned to showcase the staircase architecture
+//      Camera.getBuilder()
+//              .setLocation(new Point(-400, 120, -600))  // Set back to see full staircase
+//              .setDirection(new Point(0, 50, 0), Vector.AXIS_Y)  // Looking at middle of staircase
+//              .setVpDistance(1000)
+//              .setVpSize(300, 300)
+//              .setResolution(800, 800)
+//              // Multithreading setup
+//              .setMultithreading(8)
+//              .setDebugPrint(5)
+//              .setRayTracer(scene, RayTracerType.SIMPLE)
+//              .build()
+//              .renderImage()
+//              .writeToImage("minimalistic_staircase_no_lights");
+//   }
+//
+//   /**
+//    * Helper method to create a pyramid at a specific position
+//    */
+//   private void createPyramid(Scene scene, Point base, double baseSize, double height,
+//                              Color color, Material material) {
+//      Point p1 = base.add(new Vector(-baseSize/2, 0, -baseSize/2));
+//      Point p2 = base.add(new Vector(baseSize/2, 0, -baseSize/2));
+//      Point p3 = base.add(new Vector(baseSize/2, 0, baseSize/2));
+//      Point p4 = base.add(new Vector(-baseSize/2, 0, baseSize/2));
+//      Point apex = base.add(new Vector(0, height, 0));
+//
+//      // Add base/bottom of pyramid
+//      scene.geometries.add(
+//              new Polygon(p1, p2, p3, p4)
+//                      .setEmission(color.scale(0.9))
+//                      .setMaterial(material)
+//      );
+//
+//      // Add pyramid sides
+//      scene.geometries.add(
+//              new Triangle(p1, p2, apex)
+//                      .setEmission(color)
+//                      .setMaterial(material),
+//              new Triangle(p2, p3, apex)
+//                      .setEmission(color)
+//                      .setMaterial(material),
+//              new Triangle(p3, p4, apex)
+//                      .setEmission(color)
+//                      .setMaterial(material),
+//              new Triangle(p4, p1, apex)
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//   }
+//
+//   /**
+//    * Helper method to add a base structure under the stairs
+//    */
+//   private void addBaseStructure(Scene scene, double minX, double minY, double minZ,
+//                                 double maxX, double maxY, double maxZ,
+//                                 Color color, Material material) {
+//      // Create a solid block under the stairs with consistent color
+//      // Front face
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, minY, minZ),
+//                      new Point(maxX, minY, minZ),
+//                      new Point(maxX, maxY, minZ),
+//                      new Point(minX, maxY, minZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//
+//      // Back face
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, minY, maxZ),
+//                      new Point(maxX, minY, maxZ),
+//                      new Point(maxX, maxY, maxZ),
+//                      new Point(minX, maxY, maxZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//
+//      // Left face
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, minY, minZ),
+//                      new Point(minX, minY, maxZ),
+//                      new Point(minX, maxY, maxZ),
+//                      new Point(minX, maxY, minZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//
+//      // Right face
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(maxX, minY, minZ),
+//                      new Point(maxX, minY, maxZ),
+//                      new Point(maxX, maxY, maxZ),
+//                      new Point(maxX, maxY, minZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//
+//      // Top face - should match bottom of first stair
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, minY, minZ),
+//                      new Point(maxX, minY, minZ),
+//                      new Point(maxX, minY, maxZ),
+//                      new Point(minX, minY, maxZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//
+//      // Bottom face
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, maxY, minZ),
+//                      new Point(maxX, maxY, minZ),
+//                      new Point(maxX, maxY, maxZ),
+//                      new Point(minX, maxY, maxZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//   }
+
+
+   /// 3
+   @Test
+   void minimalisticStaircaseTest() {
+      // === Set scene background and ambient light ===
+      // Very dark background color - almost black with slight blue tint
+      scene.setBackground(new Color(2, 2, 4));
+
+      // Minimal ambient light but enough to see colors
+      scene.setAmbientLight(new AmbientLight(new Color(0.04, 0.04, 0.06)));
+
+      // === Create materials ===
+      // Material for the staircase
+      Material stairMaterial = new Material()
+              .setKD(0.85).setKS(0.15).setShininess(30)
+              .setKT(0).setKR(0.05);
+
+      // Material for neutral walls
+      Material wallMaterial = new Material()
+              .setKD(0.85).setKS(0.15).setShininess(10)
+              .setKT(0).setKR(0.02);
+
+      // Material for floor
+      Material floorMaterial = new Material()
+              .setKD(0.85).setKS(0.15).setShininess(20)
+              .setKT(0).setKR(0.1);
+
+      // Material for objects - medium shine
+      Material objectMaterial = new Material()
+              .setKD(0.7).setKS(0.3).setShininess(100)
+              .setKT(0.1).setKR(0.1);  // Slight transparency for better light effect
+
+      // === Create the staircase (10 steps) ===
+      double stepWidth = 30;
+      double stepHeight = 15;
+      double stepDepth = 45;
+
+      // Colors from the preferred image but with better visibility
+      Color stairColor = new Color(70, 40, 60);      // Dark pink-mauve, visible in shadows
+      Color wallColor = new Color(50, 50, 60);       // Dark blue-gray
+      Color floorColor = new Color(40, 45, 50);      // Dark blue-gray floor
+
+      // First, create the base structure that supports the staircase
+      addBaseStructure(scene, -150, 0, -stepDepth/2, 150, -20, stepDepth/2, stairColor, stairMaterial);
+
+      // Fill in the sides of the staircase to ensure there are no gaps
+      // Left side wall of the staircase structure (same color as stairs)
+      scene.geometries.add(
+              new Polygon(
+                      new Point(-150, -20, -stepDepth/2),
+                      new Point(-150, -20, stepDepth/2),
+                      new Point(-150, 10*stepHeight, stepDepth/2),
+                      new Point(-150, 10*stepHeight, -stepDepth/2))
+                      .setEmission(stairColor)
+                      .setMaterial(stairMaterial)
+      );
+
+      // Right side wall of the staircase structure (same color as stairs)
+      scene.geometries.add(
+              new Polygon(
+                      new Point(150, -20, -stepDepth/2),
+                      new Point(150, -20, stepDepth/2),
+                      new Point(150, 10*stepHeight, stepDepth/2),
+                      new Point(150, 10*stepHeight, -stepDepth/2))
+                      .setEmission(stairColor)
+                      .setMaterial(stairMaterial)
+      );
+
+      // Back wall connecting base to the back of steps (same color as stairs)
+      scene.geometries.add(
+              new Polygon(
+                      new Point(-150, -20, stepDepth/2),
+                      new Point(150, -20, stepDepth/2),
+                      new Point(150, 10*stepHeight, stepDepth/2),
+                      new Point(-150, 10*stepHeight, stepDepth/2))
+                      .setEmission(stairColor)
+                      .setMaterial(stairMaterial)
+      );
+
+      // Front wall connecting base to the front of steps (same color as stairs)
+      scene.geometries.add(
+              new Polygon(
+                      new Point(-150, -20, -stepDepth/2),
+                      new Point(150, -20, -stepDepth/2),
+                      new Point(150, 0, -stepDepth/2),
+                      new Point(-150, 0, -stepDepth/2))
+                      .setEmission(stairColor)
+                      .setMaterial(stairMaterial)
+      );
+
+      for (int i = 0; i < 10; i++) {
+         double x = -150 + i * stepWidth;
+         double y = i * stepHeight;
+
+         // Add each stair step - horizontal part (top surface)
+         scene.geometries.add(
+                 new Polygon(
+                         new Point(x, y, -stepDepth/2),
+                         new Point(x + stepWidth, y, -stepDepth/2),
+                         new Point(x + stepWidth, y, stepDepth/2),
+                         new Point(x, y, stepDepth/2))
+                         .setEmission(stairColor)
+                         .setMaterial(stairMaterial)
+         );
+
+         // Add the vertical part of the step (front face)
+         if (i < 9) {
+            scene.geometries.add(
+                    new Polygon(
+                            new Point(x + stepWidth, y, -stepDepth/2),
+                            new Point(x + stepWidth, y + stepHeight, -stepDepth/2),
+                            new Point(x + stepWidth, y + stepHeight, stepDepth/2),
+                            new Point(x + stepWidth, y, stepDepth/2))
+                            .setEmission(stairColor)
+                            .setMaterial(stairMaterial)
+            );
+         }
+
+         // Fill in the space behind each step to ensure consistency
+         if (i > 0) {
+            scene.geometries.add(
+                    new Polygon(
+                            new Point(x, y - stepHeight, stepDepth/2),
+                            new Point(x, y, stepDepth/2),
+                            new Point(x, y, -stepDepth/2),
+                            new Point(x, y - stepHeight, -stepDepth/2))
+                            .setEmission(stairColor)
+                            .setMaterial(stairMaterial)
+            );
+         }
+
+         // Fill in the underneath of each step to ensure it's fully enclosed
+         if (i > 0) {
+            scene.geometries.add(
+                    new Polygon(
+                            new Point(x, y - stepHeight, -stepDepth/2),
+                            new Point(x + stepWidth, y - stepHeight, -stepDepth/2),
+                            new Point(x + stepWidth, y - stepHeight, stepDepth/2),
+                            new Point(x, y - stepHeight, stepDepth/2))
+                            .setEmission(stairColor)
+                            .setMaterial(stairMaterial)
+            );
+         }
+      }
+
+      // === Add room walls with neutral color ===
+      // Left wall of the room
+      scene.geometries.add(
+              new Polygon(
+                      new Point(-200, -20, -100),
+                      new Point(-200, -20, 100),
+                      new Point(-200, 200, 100),
+                      new Point(-200, 200, -100))
+                      .setEmission(wallColor)
+                      .setMaterial(wallMaterial)
+      );
+
+      // Back wall of the room
+      scene.geometries.add(
+              new Polygon(
+                      new Point(-200, -20, 100),
+                      new Point(200, -20, 100),
+                      new Point(200, 200, 100),
+                      new Point(-200, 200, 100))
+                      .setEmission(wallColor)
+                      .setMaterial(wallMaterial)
+      );
+
+      // Floor with slightly different tone
+      scene.geometries.add(
+              new Plane(new Point(0, -20, 0), new Vector(0, 1, 0))  // Floor at level -20
+                      .setEmission(floorColor)
+                      .setMaterial(floorMaterial)
+      );
+
+      // === Add geometric objects with nice pastel colors like in the preferred image ===
+      // Colors similar to the preferred image
+      Color sphereColor1 = new Color(160, 200, 180);  // Light mint green
+      Color sphereColor2 = new Color(210, 170, 190);  // Light pink/mauve
+      Color sphereColor3 = new Color(170, 190, 220);  // Light blue
+
+      Color pyramidColor1 = new Color(180, 200, 230); // Light periwinkle blue
+      Color pyramidColor2 = new Color(220, 210, 170); // Light cream/beige
+
+      Color cylinderColor1 = new Color(190, 220, 190); // Light sage
+      Color cylinderColor2 = new Color(220, 180, 160); // Light terracotta
+
+      // Sphere on step 2
+      double sphere1Radius = 7;
+      double step2Y = 2 * stepHeight;
+      scene.geometries.add(
+              new Sphere(sphere1Radius, new Point(-110, step2Y -8, 0))
+                      .setEmission(sphereColor1)
+                      .setMaterial(objectMaterial)
+      );
+
+      // Sphere on step 5
+      double sphere2Radius = 8;
+      double step5Y = 5 * stepHeight;
+      scene.geometries.add(
+              new Sphere(sphere2Radius, new Point(-45, step5Y - 22, -10))
+                      .setEmission(sphereColor2)
+                      .setMaterial(objectMaterial)
+      );
+
+      // Sphere on step 9
+      double sphere3Radius = 6.5;
+      double step9Y = 9 * stepHeight;
+      scene.geometries.add(
+              new Sphere(sphere3Radius, new Point(110, step9Y - sphere3Radius -2, 0))
+                      .setEmission(sphereColor3)
+                      .setMaterial(objectMaterial)
+      );
+
+      // Pyramid on step 3
+      double step3Y = 3 * stepHeight;
+      createPyramid(scene,
+              new Point(-75, step3Y - 15, 10),
+              12, 18,
+              pyramidColor1,
+              objectMaterial
+      );
+
+      // Pyramid on step 7
+      double step7Y = 7 * stepHeight;
+      createPyramid(scene,
+              new Point(50, step7Y -15, -7),
+              14, 20,
+              pyramidColor2,
+              objectMaterial
+      );
+
+      // Cylinder on step 1
+      double step1Y = 1 * stepHeight;
+      scene.geometries.add(
+              new Cylinder(
+                      new Ray(new Point(-140, step1Y +8, 20), new Vector(0, 1, 0)),
+                      5, 20)
+                      .setEmission(cylinderColor1)
+                      .setMaterial(objectMaterial)
+      );
+
+      // Cylinder on step 8
+      double step8Y = 8 * stepHeight;
+      scene.geometries.add(
+              new Cylinder(
+                      new Ray(new Point(80, step8Y , -10), new Vector(0, 1, 0)),
+                      4.5, 22)
+                      .setEmission(cylinderColor2)
+                      .setMaterial(objectMaterial)
+      );
+
+      // === Add lighting from top of staircase ===
+      // Clear any existing lights
+      scene.light.clear();
+
+      // Precise coordinates for top of staircase
+      double topStairY = 9 * stepHeight;
+      double topStairX = -150 + 9 * stepWidth; // X-coordinate of the last step
+
+      // Spotlight from top of stairs with better lighting
+      scene.light.add(
+              new SpotLight(
+                      new Color(220, 215, 210), // Warm white light
+                      new Point(topStairX - 5, topStairY + 35, 0), // Positioned at top of stairs
+                      new Vector(-0.8, -0.6, 0)) // Vector pointing down along the stairs
+                      .setKl(0.0004).setKq(0.00004) // Moderate attenuation for better reach
+      );
+
+      // Add subtle fill light for better color visibility
+      scene.light.add(
+              new DirectionalLight(
+                      new Color(20, 18, 30), // Very dim purple-blue fill light
+                      new Vector(0.3, -0.5, -0.3))
+      );
+
+      // === Set up and render with camera ===
+      // Camera positioned to showcase the staircase architecture
+      Camera.getBuilder()
+              .setLocation(new Point(-400, 120, -600))  // Set back to see full staircase
+              .setDirection(new Point(0, 50, 0), Vector.AXIS_Y)  // Looking at middle of staircase
+              .setVpDistance(1000)
+              .setVpSize(300, 300)
+              .setResolution(800, 800)
+              // Multithreading setup
+              .setMultithreading(8)
+              .setDebugPrint(5)
+              .setRayTracer(scene, RayTracerType.SIMPLE)
+              .build()
+              .renderImage()
+              .writeToImage("minimalistic_staircase_enhanced_colors");
+   }
+
+   /**
+    * Helper method to create a pyramid at a specific position
+    */
+   private void createPyramid(Scene scene, Point base, double baseSize, double height,
+                              Color color, Material material) {
+      Point p1 = base.add(new Vector(-baseSize/2, 0, -baseSize/2));
+      Point p2 = base.add(new Vector(baseSize/2, 0, -baseSize/2));
+      Point p3 = base.add(new Vector(baseSize/2, 0, baseSize/2));
+      Point p4 = base.add(new Vector(-baseSize/2, 0, baseSize/2));
+      Point apex = base.add(new Vector(0, height, 0));
+
+      // Add base/bottom of pyramid
+      scene.geometries.add(
+              new Polygon(p1, p2, p3, p4)
+                      .setEmission(color.scale(0.9))
+                      .setMaterial(material)
+      );
+
+      // Add pyramid sides
+      scene.geometries.add(
+              new Triangle(p1, p2, apex)
+                      .setEmission(color)
+                      .setMaterial(material),
+              new Triangle(p2, p3, apex)
+                      .setEmission(color)
+                      .setMaterial(material),
+              new Triangle(p3, p4, apex)
+                      .setEmission(color)
+                      .setMaterial(material),
+              new Triangle(p4, p1, apex)
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+   }
+
+   /**
+    * Helper method to add a base structure under the stairs
+    */
+   private void addBaseStructure(Scene scene, double minX, double minY, double minZ,
+                                 double maxX, double maxY, double maxZ,
+                                 Color color, Material material) {
+      // Create a solid block under the stairs with consistent color
+      // Front face
+      scene.geometries.add(
+              new Polygon(
+                      new Point(minX, minY, minZ),
+                      new Point(maxX, minY, minZ),
+                      new Point(maxX, maxY, minZ),
+                      new Point(minX, maxY, minZ))
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+
+      // Back face
+      scene.geometries.add(
+              new Polygon(
+                      new Point(minX, minY, maxZ),
+                      new Point(maxX, minY, maxZ),
+                      new Point(maxX, maxY, maxZ),
+                      new Point(minX, maxY, maxZ))
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+
+      // Left face
+      scene.geometries.add(
+              new Polygon(
+                      new Point(minX, minY, minZ),
+                      new Point(minX, minY, maxZ),
+                      new Point(minX, maxY, maxZ),
+                      new Point(minX, maxY, minZ))
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+
+      // Right face
+      scene.geometries.add(
+              new Polygon(
+                      new Point(maxX, minY, minZ),
+                      new Point(maxX, minY, maxZ),
+                      new Point(maxX, maxY, maxZ),
+                      new Point(maxX, maxY, minZ))
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+
+      // Top face - should match bottom of first stair
+      scene.geometries.add(
+              new Polygon(
+                      new Point(minX, minY, minZ),
+                      new Point(maxX, minY, minZ),
+                      new Point(maxX, minY, maxZ),
+                      new Point(minX, minY, maxZ))
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+
+      // Bottom face
+      scene.geometries.add(
+              new Polygon(
+                      new Point(minX, maxY, minZ),
+                      new Point(maxX, maxY, minZ),
+                      new Point(maxX, maxY, maxZ),
+                      new Point(minX, maxY, maxZ))
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+   }
+
 }
