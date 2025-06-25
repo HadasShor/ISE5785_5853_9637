@@ -10,6 +10,8 @@ import lighting.*;
 import primitives.*;
 import scene.Scene;
 
+import java.util.Random;
+
 /**
  * Tests for reflection and transparency functionality, test for partial
  * shadows
@@ -1481,10 +1483,10 @@ class ReflectionRefractionTests {
               .setDirection(new Point(0, 0, -100), Vector.AXIS_Y)
               .setVpDistance(1000)
               .setVpSize(200, 100)
-              .setResolution(1600, 1500)
+              .setResolution(1600, 1600)
               .setRayTracer(scene, RayTracerType.SIMPLE)
               // הוספת תמיכה בתהליכונים
-              .setMultithreading(-2)
+              .setMultithreading(6)
               .setDebugPrint(5)
               .build()
               .renderImage()
@@ -1936,6 +1938,177 @@ class ReflectionRefractionTests {
               .renderImage()
               .writeToImage("2__cylindricalWonderland_regular_aa");
    }
+
+
+   @Test
+   void thousandSpectacularCylindersAndTubes() {
+      // === אלף גופים מרהיבים ושקופים ===
+
+      int CYLINDERS = 500;
+      int TUBES = 500;
+      double spiralLayers = 10;
+      double spiralTurns = 6;
+      double spiralHeight = 150;
+      double baseRadius = 60;
+      double tubeBaseRadius = 3.5;
+      double cylinderMinRad = 7, cylinderMaxRad = 19;
+      double cylinderMinHeight = 35, cylinderMaxHeight = 120;
+
+      Random rand = new Random(2025);
+
+      // === צילינדרים בספירלות מרובות ===
+      for (int i = 0; i < CYLINDERS; i++) {
+         double theta = 2 * Math.PI * spiralTurns * i / CYLINDERS;
+         double layer = (i % spiralLayers);
+         double y = -25 + spiralHeight * (layer / spiralLayers);
+         double r = baseRadius + 25 * Math.sin(layer + theta * 0.5);
+
+         double x = r * Math.cos(theta);
+         double z = -120 + r * Math.sin(theta);
+
+         double height = cylinderMinHeight + rand.nextDouble() * (cylinderMaxHeight - cylinderMinHeight);
+         double rad = cylinderMinRad + rand.nextDouble() * (cylinderMaxRad - cylinderMinRad);
+
+         Color color = new Color(
+                 2 + rand.nextInt(8),
+                 2 + rand.nextInt(8),
+                 2 + rand.nextInt(8)
+         );
+
+         Material mat = new Material()
+                 .setKD(0.15 + 0.15 * rand.nextDouble())
+                 .setKS(0.7 + 0.2 * rand.nextDouble())
+                 .setShininess(100 + rand.nextInt(120))
+                 .setKT(0.4 + 0.5 * rand.nextDouble())
+                 .setKR(0.2 + 0.3 * rand.nextDouble());
+
+         scene.geometries.add(
+                 new Cylinder(
+                         new Ray(
+                                 new Point(x, y, z),
+                                 new Vector(
+                                         0.1 * (rand.nextDouble()-0.5),
+                                         1,
+                                         0.1 * (rand.nextDouble()-0.5)).normalize()),
+                         rad,
+                         height)
+                         .setEmission(color)
+                         .setMaterial(mat)
+         );
+      }
+
+      // === צינורות באשכולות וכדורים ===
+      for (int i = 0; i < TUBES; i++) {
+         double phi = 2 * Math.PI * i / TUBES;
+         double cluster = i % 40;
+         double clusterAngle = 2 * Math.PI * cluster / 40;
+         double r = 70 + 35 * Math.sin(clusterAngle + phi);
+
+         double y = -25 + spiralHeight * Math.abs(Math.sin(phi * spiralLayers));
+         double x = r * Math.cos(phi + clusterAngle);
+         double z = -120 + r * Math.sin(phi + clusterAngle);
+
+         Color color = new Color(
+                 6 + rand.nextInt(4),
+                 rand.nextInt(10),
+                 5 + rand.nextInt(6)
+         );
+
+         Material mat = new Material()
+                 .setKD(0.18 + 0.16 * rand.nextDouble())
+                 .setKS(0.7 + 0.2 * rand.nextDouble())
+                 .setShininess(120 + rand.nextInt(130))
+                 .setKT(0.3 + 0.6 * rand.nextDouble())
+                 .setKR(0.2 + 0.5 * rand.nextDouble());
+
+         scene.geometries.add(
+                 new Tube(
+                         new Ray(
+                                 new Point(x, y, z),
+                                 new Vector(
+                                         Math.cos(phi + clusterAngle + 0.7),
+                                         Math.sin(phi * 2) + 0.2,
+                                         Math.sin(phi + clusterAngle - 0.7)).normalize()),
+                         tubeBaseRadius + rand.nextDouble() * 3)
+                         .setEmission(color)
+                         .setMaterial(mat)
+         );
+      }
+
+      // === רקע ורצפה ===
+
+      // רצפה מתוחכמת - שקיפות/השתקפות
+      scene.geometries.add(
+              new Plane(new Point(0, -25, 0), new Vector(0, 1, 0))
+                      .setEmission(new Color(4, 4, 6))
+                      .setMaterial(new Material()
+                              .setKD(0.5).setKS(0.5).setShininess(100)
+                              .setKR(0.45).setKT(0.15))
+      );
+
+      // קיר אחורי - גוון צבעוני
+      scene.geometries.add(
+              new Plane(new Point(0, 0, -250), new Vector(0, 0, 1))
+                      .setEmission(new Color(3, 2, 6))
+                      .setMaterial(new Material()
+                              .setKD(0.8).setKS(0.2).setShininess(25)
+                              .setKR(0.12))
+      );
+
+      // === תאורה מרובת מקורות ===
+
+      scene.setAmbientLight(new AmbientLight(new Color(2, 2, 5)));
+
+      // מקור ראשי - אור דרמטי
+      scene.light.add(
+              new SpotLight(
+                      new Color(800, 700, 900),
+                      new Point(0, 150, 90),
+                      new Vector(0, -1, -1))
+                      .setKl(0.0001).setKq(0.00001)
+      );
+
+      // אורות צבעוניים נוספים
+      scene.light.add(
+              new PointLight(
+                      new Color(320, 250, 560),
+                      new Point(200, 100, 0))
+                      .setKl(0.0004).setKq(0.00004)
+      );
+      scene.light.add(
+              new PointLight(
+                      new Color(100, 450, 200),
+                      new Point(-200, 60, -135))
+                      .setKl(0.0005).setKq(0.00005)
+      );
+      scene.light.add(
+              new SpotLight(
+                      new Color(470, 180, 320),
+                      new Point(50, 250, -40),
+                      new Vector(-0.4, -1, -1))
+                      .setKl(0.0003).setKq(0.00003)
+      );
+      scene.light.add(
+              new DirectionalLight(
+                      new Color(25, 60, 80),
+                      new Vector(-0.35, -0.7, -0.7))
+      );
+
+      // === הגדרת המצלמה ===
+      cameraBuilder
+              .setLocation(new Point(160, 180, 220))
+              .setDirection(new Point(0, 15, -130), Vector.AXIS_Y)
+              .setVpDistance(370)
+              .setVpSize(380, 380)
+              .setResolution(800, 800)
+              .setRayTracer(scene, RayTracerType.SIMPLE)
+              .setMultithreading(6)
+              .setDebugPrint(5)
+              .build()
+              .renderImage()
+              .writeToImage("thousandSpectacularCylindersAndTubes");
+   }
+
 }
 
 
