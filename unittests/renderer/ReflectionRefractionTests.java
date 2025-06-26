@@ -124,6 +124,7 @@ class ReflectionRefractionTests {
               .renderImage() //
               .writeToImage("refractionShadow");
    }
+
    /**
     * Creates a complex scene with a constellation of crystals.
     * Includes mirror pyramids, transparent and semi-transparent crystal spheres,
@@ -298,6 +299,7 @@ class ReflectionRefractionTests {
               .renderImage()
               .writeToImage("crystalConstellation");
    }
+
    /**
     * Creates a scene with crystalline prism surfaces featuring colorful reflections.
     * Includes transparent triangles, transparent and semi-transparent spheres, and a reflective floor.
@@ -371,6 +373,7 @@ class ReflectionRefractionTests {
               .renderImage()
               .writeToImage("crystalPrismReflections");
    }
+
    /**
     * Creates a scene with a metallic green pyramid and crystal spheres.
     * A simpler version of the etherealGallery with fewer objects.
@@ -518,7 +521,6 @@ class ReflectionRefractionTests {
               .renderImage()
               .writeToImage("etherealGallery_piramudandsphere");
    }
-
 
 
    /**
@@ -1371,355 +1373,351 @@ class ReflectionRefractionTests {
 
    /**
     * Creates a 3D scene with dual chains of Y-shaped molecules in a visually appealing arrangement.
-    *
+    * <p>
     * This test demonstrates advanced 3D rendering techniques including:
     * - Creation of complex molecular structures with precise spatial positioning
     * - Implementation of multiple material properties (reflection, shininess)
     * - Strategic light placement with multiple colored light sources for dramatic effect
     * - Multi-threaded rendering for improved performance
-    *
+    * <p>
     * The scene contains two parallel chains of Y-shaped molecules positioned at different depths,
     * placed on a reflective dark surface, and illuminated by various light sources to create
     * a visually striking scientific visualization.
     */
-   @Test
-   void dualChainedYMoleculesTest() {
-      // רקע שחור
-      scene.setBackground(new Color(0, 0, 0));
-
-      // חומר לאטומים - שחור יותר אך מבריק מאוד
-      Material atomMaterial = new Material()
-              .setKD(0.15).setKS(0.98).setShininess(1500)  // יותר מבריק, פחות דיפוזי
-              .setKT(0.0).setKR(0.75);  // יותר השתקפות לברק מוגבר
-
-      Material bondMaterial = new Material()
-              .setKD(0.1).setKS(0.9).setShininess(200)
-              .setKT(0.0).setKR(0.7);
-
-      // צבעים - שחור יותר מבריק לאטומים
-      Color atomColor = new Color(8, 8, 10);  // שחור יותר עמוק
-      Color bondColor = new Color(150, 150, 150);  // אפור לקשרים
-
-      // רצפה כהה מבריקה
-      scene.geometries.add(
-              new Plane(new Point(0, -10, 0), new Vector(0, 1, 0))
-                      .setEmission(new Color(20, 20, 20))
-                      .setMaterial(new Material()
-                              .setKD(0.2).setKS(0.8).setShininess(100)
-                              .setKR(0.6))  // השתקפות גבוהה
-      );
-
-      // === הגדרות הסצנה המקורית ===
-      int numberOfMolecules = 5;   // מספר מולקולות בשרשרת
-      double atomSize = 6.0;       // גודל האטומים
-      double bondThickness = 1.5;  // עובי הקשרים
-      double moleculeSpacing = 30.0;  // מרחק בין מולקולות
-
-      // === יצירת שרשרת המולקולות המקורית (רחוקה) ===
-      createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
-              -100, // ערך Z המקורי
-              atomMaterial, atomColor, bondMaterial, bondColor);
-
-      // === יצירת שרשרת מולקולות זהה קרובה יותר למצלמה ===
-      createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
-              -50, // ערך Z קרוב יותר
-              atomMaterial, atomColor, bondMaterial, bondColor);
-
-      // === תאורה ===
-      scene.setAmbientLight(new AmbientLight(new Color(0.05, 0.05, 0.05)));
-
-      // אור ספוט חזק מלפנים ומלמעלה
-      scene.light.add(
-              new SpotLight(
-                      new Color(900, 900, 900),
-                      new Point(0, 50, 50),
-                      new Vector(0, -1, -1))
-                      .setKl(0.0001).setKq(0.000005)
-      );
-
-      // אור נקודתי מימין להארת הצדדים
-      scene.light.add(
-              new PointLight(
-                      new Color(400, 400, 400),
-                      new Point(50, 30, 0))
-                      .setKl(0.0002).setKq(0.00002)
-      );
-
-      // אור נקודתי משמאל להארת הצדדים השמאליים
-      scene.light.add(
-              new PointLight(
-                      new Color(400, 400, 400),
-                      new Point(-50, 30, 0))
-                      .setKl(0.0002).setKq(0.00002)
-      );
-
-      // תאורה צבעונית עדינה - תוספת אור בגוון כחול עדין
-      scene.light.add(
-              new PointLight(
-                      new Color(150, 180, 350), // כחול עדין
-                      new Point(-30, 40, -40))
-                      .setKl(0.0002).setKq(0.00003)
-      );
-
-      // תאורה צבעונית עדינה - תוספת אור בגוון ירקרק עדין
-      scene.light.add(
-              new PointLight(
-                      new Color(180, 350, 200), // ירקרק עדין
-                      new Point(40, 25, -60))
-                      .setKl(0.0002).setKq(0.00003)
-      );
-
-      // תאורה צבעונית עדינה - תוספת אור בגוון סגלגל עדין
-      scene.light.add(
-              new PointLight(
-                      new Color(240, 120, 300), // סגלגל עדין
-                      new Point(10, 15, -120))
-                      .setKl(0.0003).setKq(0.00004)
-      );
-
-      // === המצלמה ===
-      cameraBuilder
-              .setLocation(new Point(-300, 10, 850))  // מצלמה רחוקה
-              .setDirection(new Point(0, 0, -100), Vector.AXIS_Y)
-              .setVpDistance(1000)
-              .setVpSize(200, 100)
-              .setResolution(1600, 1600)
-              .setRayTracer(scene, RayTracerType.SIMPLE)
-              // הוספת תמיכה בתהליכונים
-              .setMultithreading(6)
-              .setDebugPrint(5)
-              .build()
-              .renderImage()
-              .writeToImage("dual_molecule_chains_red_light");
-   }
-
-   /**
-    * Creates a complete chain of molecules at the specified position in 3D space.
-    *
-    * This method handles the placement of multiple Y-shaped molecules in a chain formation,
-    * with each molecule slightly rotated for visual variety. It also creates bonds between
-    * consecutive molecules in the chain.
-    *
-    * @param scene              The scene to which the molecule chain will be added
-    * @param numberOfMolecules  Number of molecules in the chain
-    * @param atomSize           Size (radius) of each atom sphere
-    * @param bondThickness      Thickness (radius) of the bonds between atoms
-    * @param moleculeSpacing    Distance between consecutive molecules in the chain
-    * @param zPosition          Z-axis position of the entire chain
-    * @param atomMaterial       Material properties for the atoms
-    * @param atomColor          Color of the atoms
-    * @param bondMaterial       Material properties for the bonds
-    * @param bondColor          Color of the bonds
-    */
-   private void createMoleculeChain(
-           Scene scene,
-           int numberOfMolecules,  // מספר מולקולות בשרשרת
-           double atomSize,        // גודל האטומים
-           double bondThickness,   // עובי הקשרים
-           double moleculeSpacing, // מרחק בין מולקולות
-           double zPosition,       // מיקום ציר Z של השרשרת
-           Material atomMaterial, Color atomColor,
-           Material bondMaterial, Color bondColor
-   ) {
-      // מיקום התחלתי - המולקולה השמאלית ביותר בשרשרת
-      double startX = -(numberOfMolecules-1) * moleculeSpacing/2;
-
-      // מערך לשמירת נקודות חיבור בין המולקולות
-      Point[] connectionPoints = new Point[numberOfMolecules];
-
-      // יצירת כל המולקולות Y עם נטייה שונה
-      for (int i = 0; i < numberOfMolecules; i++) {
-         double xPos = startX + i * moleculeSpacing;
-
-         // יצירת זוויות סיבוב שונות לכל מולקולה
-         double rotateY = 5 * Math.sin(i * 2.1);      // סיבוב סביב ציר Y
-         double rotateX = 8 * Math.cos(i * 1.7 + 1);  // סיבוב סביב ציר X
-         double rotateZ = 4 * Math.sin(i * 1.3 + 2);  // סיבוב סביב ציר Z
-
-         // נקודת הבסיס למולקולה הזו
-         Point basePoint = new Point(xPos,
-                 -5 + Math.sin(i * 0.8) * 3,
-                 zPosition + Math.cos(i * 0.9) * 10);
-
-         // יצירת מולקולה Y עם הנטייה המוגדרת
-         Point connectionPoint = createRotatedYMolecule(scene, basePoint, atomSize, bondThickness,
-                 rotateX, rotateY, rotateZ,
-                 atomMaterial, atomColor, bondMaterial, bondColor);
-
-         // שמירת נקודת החיבור למולקולה הבאה
-         connectionPoints[i] = connectionPoint;
-      }
-
-      // הוספת הקשרים (גלילים) בין המולקולות
-      for (int i = 0; i < numberOfMolecules - 1; i++) {
-         addBond(scene, connectionPoints[i], connectionPoints[i+1], bondThickness, bondColor, bondMaterial);
-      }
-   }
-
-   /**
-    * Creates a Y-shaped molecule with specified rotation angles in 3D space.
-    *
-    * This method builds a Y-shaped molecular structure consisting of four atoms connected by bonds:
-    * - A base atom at the bottom
-    * - A middle atom connected vertically to the base atom
-    * - Two upper atoms connected diagonally to the middle atom
-    *
-    * The entire structure can be rotated around all three axes to create variety in the molecule chain.
-    *
-    * @param scene          The scene to which the molecule will be added
-    * @param basePoint      The 3D point where the base atom will be positioned
-    * @param atomSize       Size (radius) of each atom sphere
-    * @param bondThickness  Thickness (radius) of the bonds between atoms
-    * @param rotateX        Rotation angle around X axis in degrees
-    * @param rotateY        Rotation angle around Y axis in degrees
-    * @param rotateZ        Rotation angle around Z axis in degrees
-    * @param atomMaterial   Material properties for the atoms
-    * @param atomColor      Color of the atoms
-    * @param bondMaterial   Material properties for the bonds
-    * @param bondColor      Color of the bonds
-    * @return               The 3D point of the top-right atom, used as connection point to the next molecule
-    */
-   private Point createRotatedYMolecule(
-           Scene scene, Point basePoint, double atomSize, double bondThickness,
-           double rotateX, double rotateY, double rotateZ,
-           Material atomMaterial, Color atomColor, Material bondMaterial, Color bondColor
-   ) {
-      // יצירת האטום התחתון
-      scene.geometries.add(
-              new Sphere(atomSize, basePoint)
-                      .setEmission(atomColor)
-                      .setMaterial(atomMaterial)
-      );
-
-      // חישוב וקטור מעלה עם הסיבוב המבוקש
-      Vector upVector = new Vector(0, 1, 0);
-      upVector = rotateVector(upVector, rotateX, rotateY, rotateZ);
-
-      // מרחק אנכי סטנדרטי
-      double verticalDistance = 15.0;
-
-      // חישוב מיקום האטום האמצעי
-      Point middlePoint = basePoint.add(upVector.scale(verticalDistance));
-      scene.geometries.add(
-              new Sphere(atomSize, middlePoint)
-                      .setEmission(atomColor)
-                      .setMaterial(atomMaterial)
-      );
-
-      // קשר בין האטום התחתון לאטום האמצעי
-      addBond(scene, basePoint, middlePoint, bondThickness, bondColor, bondMaterial);
-
-      // חישוב הוקטורים האלכסוניים עם הסיבוב
-      Vector baseRightDiag = new Vector(0.7, 0.7, 0).normalize();
-      Vector baseLeftDiag = new Vector(-0.7, 0.7, 0).normalize();
-
-      // הפעלת אותו סיבוב על הוקטורים האלכסוניים
-      Vector rightDiagonal = rotateVector(baseRightDiag, rotateX, rotateY, rotateZ);
-      Vector leftDiagonal = rotateVector(baseLeftDiag, rotateX, rotateY, rotateZ);
-
-      // מרחק אלכסוני
-      double diagonalDistance = 18.0;
-
-      // יצירת האטום הימני העליון
-      Point topRightPoint = middlePoint.add(rightDiagonal.scale(diagonalDistance));
-      scene.geometries.add(
-              new Sphere(atomSize, topRightPoint)
-                      .setEmission(atomColor)
-                      .setMaterial(atomMaterial)
-      );
-
-      // קשר לאטום הימני העליון
-      addBond(scene, middlePoint, topRightPoint, bondThickness, bondColor, bondMaterial);
-
-      // יצירת האטום השמאלי העליון
-      Point topLeftPoint = middlePoint.add(leftDiagonal.scale(diagonalDistance));
-      scene.geometries.add(
-              new Sphere(atomSize, topLeftPoint)
-                      .setEmission(atomColor)
-                      .setMaterial(atomMaterial)
-      );
-
-      // קשר לאטום השמאלי העליון
-      addBond(scene, middlePoint, topLeftPoint, bondThickness, bondColor, bondMaterial);
-
-      // מחזיר את האטום הימני העליון כנקודת חיבור למולקולה הבאה
-      return topRightPoint;
-   }
-
-   /**
-    * Performs rotation of a vector around all three axes.
-    * Applies sequential rotations: first around X axis, then Y axis, and finally Z axis.
-    *
-    * @param v        The original vector to be rotated
-    * @param angleX   Rotation angle around the X axis in degrees
-    * @param angleY   Rotation angle around the Y axis in degrees
-    * @param angleZ   Rotation angle around the Z axis in degrees
-    * @return         A new vector resulting from the applied rotations
-    */
-   private Vector rotateVector(Vector v, double angleX, double angleY, double angleZ) {
-      // המרת מעלות לרדיאנים
-      double radX = Math.toRadians(angleX);
-      double radY = Math.toRadians(angleY);
-      double radZ = Math.toRadians(angleZ);
-
-      // קריאת ערכי הוקטור המקורי
-      double x = v.xyz.d1();
-      double y = v.xyz.d2();
-      double z = v.xyz.d3();
-
-      // סיבוב סביב ציר X
-      double yNew = y * Math.cos(radX) - z * Math.sin(radX);
-      double zNew = y * Math.sin(radX) + z * Math.cos(radX);
-      y = yNew;
-      z = zNew;
-
-      // סיבוב סביב ציר Y
-      double xNew = x * Math.cos(radY) + z * Math.sin(radY);
-      zNew = -x * Math.sin(radY) + z * Math.cos(radY);
-      x = xNew;
-      z = zNew;
-
-      // סיבוב סביב ציר Z
-      xNew = x * Math.cos(radZ) - y * Math.sin(radZ);
-      yNew = x * Math.sin(radZ) + y * Math.cos(radZ);
-      x = xNew;
-      y = yNew;
-
-      // החזרת וקטור מסובב חדש
-      return new Vector(x, y, z);
-   }
-
-   /**
-    * Adds a bond (cylinder) between two atoms in 3D space.
-    * The bond is represented as a cylinder stretching between two points with defined radius and material.
-    *
-    * @param scene    The scene instance to which the cylinder will be added
-    * @param atom1    The point representing the first atom's position
-    * @param atom2    The point representing the second atom's position
-    * @param radius   The radius of the cylinder representing the bond
-    * @param color    The color of the cylinder
-    * @param material The material of the cylinder with reflection, transparency, and shininess properties
-    */
-   private void addBond(
-           Scene scene,
-           Point atom1, Point atom2,
-           double radius,
-           Color color, Material material
-   ) {
-      Vector direction = atom2.subtract(atom1);
-      double length = direction.length();
-
-      scene.geometries.add(
-              new Cylinder(new Ray(atom1, direction), radius, length)
-                      .setEmission(color)
-                      .setMaterial(material)
-      );
-   }
-
-
-
-
-
+//   @Test
+//   void dualChainedYMoleculesTest() {
+//      // רקע שחור
+//      scene.setBackground(new Color(0, 0, 0));
+//
+//      /
+//      / חומר לאטומים - שחור יותר אך מבריק מאוד
+//      Material atomMaterial = new Material()
+//              .setKD(0.15).setKS(0.98).setShininess(1500)  // יותר מבריק, פחות דיפוזי
+//              .setKT(0.0).setKR(0.75);  // יותר השתקפות לברק מוגבר
+//
+//      Material bondMaterial = new Material()
+//              .setKD(0.1).setKS(0.9).setShininess(200)
+//              .setKT(0.0).setKR(0.7);
+//
+//      // צבעים - שחור יותר מבריק לאטומים
+//      Color atomColor = new Color(8, 8, 10);  // שחור יותר עמוק
+//      Color bondColor = new Color(150, 150, 150);  // אפור לקשרים
+//
+//      // רצפה כהה מבריקה
+//      scene.geometries.add(
+//              new Plane(new Point(0, -10, 0), new Vector(0, 1, 0))
+//                      .setEmission(new Color(20, 20, 20))
+//                      .setMaterial(new Material()
+//                              .setKD(0.2).setKS(0.8).setShininess(100)
+//                              .setKR(0.6))  // השתקפות גבוהה
+//      );
+//
+//      // === הגדרות הסצנה המקורית ===
+//      int numberOfMolecules = 5;   // מספר מולקולות בשרשרת
+//      double atomSize = 6.0;       // גודל האטומים
+//      double bondThickness = 1.5;  // עובי הקשרים
+//      double moleculeSpacing = 30.0;  // מרחק בין מולקולות
+//
+//      // === יצירת שרשרת המולקולות המקורית (רחוקה) ===
+//      createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
+//              -100, // ערך Z המקורי
+//              atomMaterial, atomColor, bondMaterial, bondColor);
+//
+//      // === יצירת שרשרת מולקולות זהה קרובה יותר למצלמה ===
+//      createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
+//              -50, // ערך Z קרוב יותר
+//              atomMaterial, atomColor, bondMaterial, bondColor);
+//
+//      // === תאורה ===
+//      scene.setAmbientLight(new AmbientLight(new Color(0.05, 0.05, 0.05)));
+//
+//      // אור ספוט חזק מלפנים ומלמעלה
+//      scene.light.add(
+//              new SpotLight(
+//                      new Color(900, 900, 900),
+//                      new Point(0, 50, 50),
+//                      new Vector(0, -1, -1))
+//                      .setKl(0.0001).setKq(0.000005)
+//      );
+//
+//      // אור נקודתי מימין להארת הצדדים
+//      scene.light.add(
+//              new PointLight(
+//                      new Color(400, 400, 400),
+//                      new Point(50, 30, 0))
+//                      .setKl(0.0002).setKq(0.00002)
+//      );
+//
+//      // אור נקודתי משמאל להארת הצדדים השמאליים
+//      scene.light.add(
+//              new PointLight(
+//                      new Color(400, 400, 400),
+//                      new Point(-50, 30, 0))
+//                      .setKl(0.0002).setKq(0.00002)
+//      );
+//
+//      // תאורה צבעונית עדינה - תוספת אור בגוון כחול עדין
+//      scene.light.add(
+//              new PointLight(
+//                      new Color(150, 180, 350), // כחול עדין
+//                      new Point(-30, 40, -40))
+//                      .setKl(0.0002).setKq(0.00003)
+//      );
+//
+//      // תאורה צבעונית עדינה - תוספת אור בגוון ירקרק עדין
+//      scene.light.add(
+//              new PointLight(
+//                      new Color(180, 350, 200), // ירקרק עדין
+//                      new Point(40, 25, -60))
+//                      .setKl(0.0002).setKq(0.00003)
+//      );
+//
+//      // תאורה צבעונית עדינה - תוספת אור בגוון סגלגל עדין
+//      scene.light.add(
+//              new PointLight(
+//                      new Color(240, 120, 300), // סגלגל עדין
+//                      new Point(10, 15, -120))
+//                      .setKl(0.0003).setKq(0.00004)
+//      );
+//
+//      // === המצלמה ===
+//      cameraBuilder
+//              .setLocation(new Point(-300, 10, 850))  // מצלמה רחוקה
+//              .setDirection(new Point(0, 0, -100), Vector.AXIS_Y)
+//              .setVpDistance(1000)
+//              .setVpSize(200, 100)
+//              .setResolution(1600, 1600)
+//              .setRayTracer(scene, RayTracerType.SIMPLE)
+//              // הוספת תמיכה בתהליכונים
+//              .setMultithreading(7)
+//              .setDebugPrint(5)
+//              .build()
+//              .renderImage()
+//              .writeToImage("NEW_dual_molecule_chains_red_light");
+//   }
+//
+//   /**
+//    * Creates a complete chain of molecules at the specified position in 3D space.
+//    *
+//    * This method handles the placement of multiple Y-shaped molecules in a chain formation,
+//    * with each molecule slightly rotated for visual variety. It also creates bonds between
+//    * consecutive molecules in the chain.
+//    *
+//    * @param scene              The scene to which the molecule chain will be added
+//    * @param numberOfMolecules  Number of molecules in the chain
+//    * @param atomSize           Size (radius) of each atom sphere
+//    * @param bondThickness      Thickness (radius) of the bonds between atoms
+//    * @param moleculeSpacing    Distance between consecutive molecules in the chain
+//    * @param zPosition          Z-axis position of the entire chain
+//    * @param atomMaterial       Material properties for the atoms
+//    * @param atomColor          Color of the atoms
+//    * @param bondMaterial       Material properties for the bonds
+//    * @param bondColor          Color of the bonds
+//    */
+//   private void createMoleculeChain(
+//           Scene scene,
+//           int numberOfMolecules,  // מספר מולקולות בשרשרת
+//           double atomSize,        // גודל האטומים
+//           double bondThickness,   // עובי הקשרים
+//           double moleculeSpacing, // מרחק בין מולקולות
+//           double zPosition,       // מיקום ציר Z של השרשרת
+//           Material atomMaterial, Color atomColor,
+//           Material bondMaterial, Color bondColor
+//   ) {
+//      // מיקום התחלתי - המולקולה השמאלית ביותר בשרשרת
+//      double startX = -(numberOfMolecules-1) * moleculeSpacing/2;
+//
+//      // מערך לשמירת נקודות חיבור בין המולקולות
+//      Point[] connectionPoints = new Point[numberOfMolecules];
+//
+//      // יצירת כל המולקולות Y עם נטייה שונה
+//      for (int i = 0; i < numberOfMolecules; i++) {
+//         double xPos = startX + i * moleculeSpacing;
+//
+//         // יצירת זוויות סיבוב שונות לכל מולקולה
+//         double rotateY = 5 * Math.sin(i * 2.1);      // סיבוב סביב ציר Y
+//         double rotateX = 8 * Math.cos(i * 1.7 + 1);  // סיבוב סביב ציר X
+//         double rotateZ = 4 * Math.sin(i * 1.3 + 2);  // סיבוב סביב ציר Z
+//
+//         // נקודת הבסיס למולקולה הזו
+//         Point basePoint = new Point(xPos,
+//                 -5 + Math.sin(i * 0.8) * 3,
+//                 zPosition + Math.cos(i * 0.9) * 10);
+//
+//         // יצירת מולקולה Y עם הנטייה המוגדרת
+//         Point connectionPoint = createRotatedYMolecule(scene, basePoint, atomSize, bondThickness,
+//                 rotateX, rotateY, rotateZ,
+//                 atomMaterial, atomColor, bondMaterial, bondColor);
+//
+//         // שמירת נקודת החיבור למולקולה הבאה
+//         connectionPoints[i] = connectionPoint;
+//      }
+//
+//      // הוספת הקשרים (גלילים) בין המולקולות
+//      for (int i = 0; i < numberOfMolecules - 1; i++) {
+//         addBond(scene, connectionPoints[i], connectionPoints[i+1], bondThickness, bondColor, bondMaterial);
+//      }
+//   }
+//
+//   /**
+//    * Creates a Y-shaped molecule with specified rotation angles in 3D space.
+//    *
+//    * This method builds a Y-shaped molecular structure consisting of four atoms connected by bonds:
+//    * - A base atom at the bottom
+//    * - A middle atom connected vertically to the base atom
+//    * - Two upper atoms connected diagonally to the middle atom
+//    *
+//    * The entire structure can be rotated around all three axes to create variety in the molecule chain.
+//    *
+//    * @param scene          The scene to which the molecule will be added
+//    * @param basePoint      The 3D point where the base atom will be positioned
+//    * @param atomSize       Size (radius) of each atom sphere
+//    * @param bondThickness  Thickness (radius) of the bonds between atoms
+//    * @param rotateX        Rotation angle around X axis in degrees
+//    * @param rotateY        Rotation angle around Y axis in degrees
+//    * @param rotateZ        Rotation angle around Z axis in degrees
+//    * @param atomMaterial   Material properties for the atoms
+//    * @param atomColor      Color of the atoms
+//    * @param bondMaterial   Material properties for the bonds
+//    * @param bondColor      Color of the bonds
+//    * @return               The 3D point of the top-right atom, used as connection point to the next molecule
+//    */
+//   private Point createRotatedYMolecule(
+//           Scene scene, Point basePoint, double atomSize, double bondThickness,
+//           double rotateX, double rotateY, double rotateZ,
+//           Material atomMaterial, Color atomColor, Material bondMaterial, Color bondColor
+//   ) {
+//      // יצירת האטום התחתון
+//      scene.geometries.add(
+//              new Sphere(atomSize, basePoint)
+//                      .setEmission(atomColor)
+//                      .setMaterial(atomMaterial)
+//      );
+//
+//      // חישוב וקטור מעלה עם הסיבוב המבוקש
+//      Vector upVector = new Vector(0, 1, 0);
+//      upVector = rotateVector(upVector, rotateX, rotateY, rotateZ);
+//
+//      // מרחק אנכי סטנדרטי
+//      double verticalDistance = 15.0;
+//
+//      // חישוב מיקום האטום האמצעי
+//      Point middlePoint = basePoint.add(upVector.scale(verticalDistance));
+//      scene.geometries.add(
+//              new Sphere(atomSize, middlePoint)
+//                      .setEmission(atomColor)
+//                      .setMaterial(atomMaterial)
+//      );
+//
+//      // קשר בין האטום התחתון לאטום האמצעי
+//      addBond(scene, basePoint, middlePoint, bondThickness, bondColor, bondMaterial);
+//
+//      // חישוב הוקטורים האלכסוניים עם הסיבוב
+//      Vector baseRightDiag = new Vector(0.7, 0.7, 0).normalize();
+//      Vector baseLeftDiag = new Vector(-0.7, 0.7, 0).normalize();
+//
+//      // הפעלת אותו סיבוב על הוקטורים האלכסוניים
+//      Vector rightDiagonal = rotateVector(baseRightDiag, rotateX, rotateY, rotateZ);
+//      Vector leftDiagonal = rotateVector(baseLeftDiag, rotateX, rotateY, rotateZ);
+//
+//      // מרחק אלכסוני
+//      double diagonalDistance = 18.0;
+//
+//      // יצירת האטום הימני העליון
+//      Point topRightPoint = middlePoint.add(rightDiagonal.scale(diagonalDistance));
+//      scene.geometries.add(
+//              new Sphere(atomSize, topRightPoint)
+//                      .setEmission(atomColor)
+//                      .setMaterial(atomMaterial)
+//      );
+//
+//      // קשר לאטום הימני העליון
+//      addBond(scene, middlePoint, topRightPoint, bondThickness, bondColor, bondMaterial);
+//
+//      // יצירת האטום השמאלי העליון
+//      Point topLeftPoint = middlePoint.add(leftDiagonal.scale(diagonalDistance));
+//      scene.geometries.add(
+//              new Sphere(atomSize, topLeftPoint)
+//                      .setEmission(atomColor)
+//                      .setMaterial(atomMaterial)
+//      );
+//
+//      // קשר לאטום השמאלי העליון
+//      addBond(scene, middlePoint, topLeftPoint, bondThickness, bondColor, bondMaterial);
+//
+//      // מחזיר את האטום הימני העליון כנקודת חיבור למולקולה הבאה
+//      return topRightPoint;
+//   }
+//
+//   /**
+//    * Performs rotation of a vector around all three axes.
+//    * Applies sequential rotations: first around X axis, then Y axis, and finally Z axis.
+//    *
+//    * @param v        The original vector to be rotated
+//    * @param angleX   Rotation angle around the X axis in degrees
+//    * @param angleY   Rotation angle around the Y axis in degrees
+//    * @param angleZ   Rotation angle around the Z axis in degrees
+//    * @return         A new vector resulting from the applied rotations
+//    */
+//   private Vector rotateVector(Vector v, double angleX, double angleY, double angleZ) {
+//      // המרת מעלות לרדיאנים
+//      double radX = Math.toRadians(angleX);
+//      double radY = Math.toRadians(angleY);
+//      double radZ = Math.toRadians(angleZ);
+//
+//      // קריאת ערכי הוקטור המקורי
+//      double x = v.xyz.d1();
+//      double y = v.xyz.d2();
+//      double z = v.xyz.d3();
+//
+//      // סיבוב סביב ציר X
+//      double yNew = y * Math.cos(radX) - z * Math.sin(radX);
+//      double zNew = y * Math.sin(radX) + z * Math.cos(radX);
+//      y = yNew;
+//      z = zNew;
+//
+//      // סיבוב סביב ציר Y
+//      double xNew = x * Math.cos(radY) + z * Math.sin(radY);
+//      zNew = -x * Math.sin(radY) + z * Math.cos(radY);
+//      x = xNew;
+//      z = zNew;
+//
+//      // סיבוב סביב ציר Z
+//      xNew = x * Math.cos(radZ) - y * Math.sin(radZ);
+//      yNew = x * Math.sin(radZ) + y * Math.cos(radZ);
+//      x = xNew;
+//      y = yNew;
+//
+//      // החזרת וקטור מסובב חדש
+//      return new Vector(x, y, z);
+//   }
+//
+//   /**
+//    * Adds a bond (cylinder) between two atoms in 3D space.
+//    * The bond is represented as a cylinder stretching between two points with defined radius and material.
+//    *
+//    * @param scene    The scene instance to which the cylinder will be added
+//    * @param atom1    The point representing the first atom's position
+//    * @param atom2    The point representing the second atom's position
+//    * @param radius   The radius of the cylinder representing the bond
+//    * @param color    The color of the cylinder
+//    * @param material The material of the cylinder with reflection, transparency, and shininess properties
+//    */
+//   private void addBond(
+//           Scene scene,
+//           Point atom1, Point atom2,
+//           double radius,
+//           Color color, Material material
+//   ) {
+//      Vector direction = atom2.subtract(atom1);
+//      double length = direction.length();
+//
+//      scene.geometries.add(
+//              new Cylinder(new Ray(atom1, direction), radius, length)
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//   }
    @Test
    void cylindricalWonderland_new() {
       // === מגדל צילינדרים שקופים ===
@@ -1903,6 +1901,7 @@ class ReflectionRefractionTests {
                       new Vector(-0.3, -0.5, -0.8))
       );
 
+
       // === הגדרת המצלמה ===
       cameraBuilder
               .setLocation(new Point(90, 70, 130))
@@ -1912,7 +1911,7 @@ class ReflectionRefractionTests {
               .setResolution(900, 900)
               .setRayTracer(scene, RayTracerType.SIMPLE)
               // הוספת תמיכה בתהליכונים
-              .setMultithreading(8)        // 8 תהליכונים במקביל
+              .setMultithreading(7)        // 8 תהליכונים במקביל
               .setDebugPrint(5)            // הדפסת התקדמות כל 5%
               // הפעלת Adaptive Antialiasing
               .setAdaptiveAntiAliasing(true)
@@ -1922,193 +1921,1138 @@ class ReflectionRefractionTests {
               .renderImage()
               .writeToImage("cylindricalWonderland_adaptive_aa");
 
-      // רינדור נוסף לצורך השוואה - עם אנטיאלייסינג רגיל (לא אדפטיבי)
-      cameraBuilder
-              .setLocation(new Point(90, 70, 130))
-              .setDirection(new Point(0, 15, -110), Vector.AXIS_Y)
-              .setVpDistance(180)
-              .setVpSize(220, 220)
-              .setResolution(900, 900)
-              .setRayTracer(scene, RayTracerType.SIMPLE)
-              .setMultithreading(-2)
-              .setDebugPrint(5)
-              // אנטיאלייסינג רגיל ללא אדפטיבי
-              .setAdaptiveAntiAliasing(true)
-              .build()
-              .renderImage()
-              .writeToImage("2__cylindricalWonderland_regular_aa");
+
    }
 
-
+   //#####################################################################################################################
    @Test
-   void thousandSpectacularCylindersAndTubes() {
-      // === אלף גופים מרהיבים ושקופים ===
+   void dualChainedYMoleculesTest() {
+      // רקע שחור עמוק
+      scene.setBackground(new Color(5, 5, 15));
 
-      int CYLINDERS = 500;
-      int TUBES = 500;
-      double spiralLayers = 10;
-      double spiralTurns = 6;
-      double spiralHeight = 150;
-      double baseRadius = 60;
-      double tubeBaseRadius = 3.5;
-      double cylinderMinRad = 7, cylinderMaxRad = 19;
-      double cylinderMinHeight = 35, cylinderMaxHeight = 120;
+      // חומר לאטומים - ירוק/כחול מבריק עם שקיפות מתונה
+      Material atomMaterial = new Material()
+              .setKD(0.25).setKS(0.6).setShininess(100)
+              .setKT(0.45).setKR(0.08);
 
-      Random rand = new Random(2025);
+// חומר לקשרים - גם קשרים שקופים
+      Material bondMaterial = new Material()
+              .setKD(0.22).setKS(0.5).setShininess(80)
+              .setKT(0.4).setKR(0.05);
 
-      // === צילינדרים בספירלות מרובות ===
-      for (int i = 0; i < CYLINDERS; i++) {
-         double theta = 2 * Math.PI * spiralTurns * i / CYLINDERS;
-         double layer = (i % spiralLayers);
-         double y = -25 + spiralHeight * (layer / spiralLayers);
-         double r = baseRadius + 25 * Math.sin(layer + theta * 0.5);
+// צבעים ירוקים וכחולים חיים ועדינים
+      // Color atomColor = new Color(60, 170, 190);   // טורקיז-כחול-ירקרק
+      // Color bondColor = new Color(80, 220, 140);   // ירוק בהיר-שקוף
 
-         double x = r * Math.cos(theta);
-         double z = -120 + r * Math.sin(theta);
+// או אפשרות לגוונים יותר כחולים
+      Color atomColor = new Color(70, 150, 240);   // כחול עז
+      Color bondColor = new Color(40, 200, 180);   // טורקיז-ירוק
 
-         double height = cylinderMinHeight + rand.nextDouble() * (cylinderMaxHeight - cylinderMinHeight);
-         double rad = cylinderMinRad + rand.nextDouble() * (cylinderMaxRad - cylinderMinRad);
-
-         Color color = new Color(
-                 2 + rand.nextInt(8),
-                 2 + rand.nextInt(8),
-                 2 + rand.nextInt(8)
-         );
-
-         Material mat = new Material()
-                 .setKD(0.15 + 0.15 * rand.nextDouble())
-                 .setKS(0.7 + 0.2 * rand.nextDouble())
-                 .setShininess(100 + rand.nextInt(120))
-                 .setKT(0.4 + 0.5 * rand.nextDouble())
-                 .setKR(0.2 + 0.3 * rand.nextDouble());
-
-         scene.geometries.add(
-                 new Cylinder(
-                         new Ray(
-                                 new Point(x, y, z),
-                                 new Vector(
-                                         0.1 * (rand.nextDouble()-0.5),
-                                         1,
-                                         0.1 * (rand.nextDouble()-0.5)).normalize()),
-                         rad,
-                         height)
-                         .setEmission(color)
-                         .setMaterial(mat)
-         );
-      }
-
-      // === צינורות באשכולות וכדורים ===
-      for (int i = 0; i < TUBES; i++) {
-         double phi = 2 * Math.PI * i / TUBES;
-         double cluster = i % 40;
-         double clusterAngle = 2 * Math.PI * cluster / 40;
-         double r = 70 + 35 * Math.sin(clusterAngle + phi);
-
-         double y = -25 + spiralHeight * Math.abs(Math.sin(phi * spiralLayers));
-         double x = r * Math.cos(phi + clusterAngle);
-         double z = -120 + r * Math.sin(phi + clusterAngle);
-
-         Color color = new Color(
-                 6 + rand.nextInt(4),
-                 rand.nextInt(10),
-                 5 + rand.nextInt(6)
-         );
-
-         Material mat = new Material()
-                 .setKD(0.18 + 0.16 * rand.nextDouble())
-                 .setKS(0.7 + 0.2 * rand.nextDouble())
-                 .setShininess(120 + rand.nextInt(130))
-                 .setKT(0.3 + 0.6 * rand.nextDouble())
-                 .setKR(0.2 + 0.5 * rand.nextDouble());
-
-         scene.geometries.add(
-                 new Tube(
-                         new Ray(
-                                 new Point(x, y, z),
-                                 new Vector(
-                                         Math.cos(phi + clusterAngle + 0.7),
-                                         Math.sin(phi * 2) + 0.2,
-                                         Math.sin(phi + clusterAngle - 0.7)).normalize()),
-                         tubeBaseRadius + rand.nextDouble() * 3)
-                         .setEmission(color)
-                         .setMaterial(mat)
-         );
-      }
-
-      // === רקע ורצפה ===
-
-      // רצפה מתוחכמת - שקיפות/השתקפות
       scene.geometries.add(
-              new Plane(new Point(0, -25, 0), new Vector(0, 1, 0))
-                      .setEmission(new Color(4, 4, 6))
+              new Plane(new Point(0, -15, 0), new Vector(0, 1, 0))
+                      .setEmission(new Color(3, 3, 4))
                       .setMaterial(new Material()
-                              .setKD(0.5).setKS(0.5).setShininess(100)
-                              .setKR(0.45).setKT(0.15))
+                              .setKD(0.5).setKS(0.5).setShininess(80)
+                              .setKR(0.4))
       );
 
-      // קיר אחורי - גוון צבעוני
-      scene.geometries.add(
-              new Plane(new Point(0, 0, -250), new Vector(0, 0, 1))
-                      .setEmission(new Color(3, 2, 6))
-                      .setMaterial(new Material()
-                              .setKD(0.8).setKS(0.2).setShininess(25)
-                              .setKR(0.12))
-      );
+      // === יצירת פירמידות ברקע ===
+      createBackgroundPyramids(scene);
 
-      // === תאורה מרובת מקורות ===
+      // === הגדרות הסצנה המקורית ===
+      int numberOfMolecules = 3;   // יותר מולקולות
+      double atomSize = 8.0;       // אטומים קצת יותר גדולים
+      double bondThickness = 3.5;  // קשרים עבים יותר
+      double moleculeSpacing = 35.0;  // מרחק מעט גדול יותר
 
-      scene.setAmbientLight(new AmbientLight(new Color(2, 2, 5)));
+      // === יצירת שרשרת המולקולות המקורית (רחוקה) ===
+      createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
+              -150, // ערך Z רחוק יותר
+              atomMaterial, atomColor, bondMaterial, bondColor);
 
-      // מקור ראשי - אור דרמטי
+      // === יצירת שרשרת מולקולות זהה קרובה יותר למצלמה ===
+      createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
+              -80, // ערך Z קרוב יותר
+              atomMaterial, atomColor, bondMaterial, bondColor);
+
+      // === יצירת שרשרת שלישית באמצע עם צבעים שונים ===
+      createMoleculeChain(scene, numberOfMolecules, atomSize, bondThickness, moleculeSpacing,
+              -110, // ערך Z באמצע
+              atomMaterial, new Color(180, 80, 220), bondMaterial, new Color(130, 100, 180));
+
+
+      scene.setAmbientLight(new AmbientLight(new Color(10, 10, 20)));
+
+      // אור ספוט דרמטי - אור ראשי (פחות עוצמה)
       scene.light.add(
               new SpotLight(
-                      new Color(800, 700, 900),
-                      new Point(0, 150, 90),
-                      new Vector(0, -1, -1))
-                      .setKl(0.0001).setKq(0.00001)
+                      new Color(180, 140, 110),
+                      new Point(-80, 120, 40),
+                      new Vector(2, -3, -5))
+                      .setKl(0.0002).setKq(0.00002)
       );
 
-      // אורות צבעוניים נוספים
+      // אור נקודתי לגיוון - פחות עוצמה
       scene.light.add(
               new PointLight(
-                      new Color(320, 250, 560),
-                      new Point(200, 100, 0))
-                      .setKl(0.0004).setKq(0.00004)
-      );
-      scene.light.add(
-              new PointLight(
-                      new Color(100, 450, 200),
-                      new Point(-200, 60, -135))
-                      .setKl(0.0005).setKq(0.00005)
-      );
-      scene.light.add(
-              new SpotLight(
-                      new Color(470, 180, 320),
-                      new Point(50, 250, -40),
-                      new Vector(-0.4, -1, -1))
+                      new Color(60, 70, 120),
+                      new Point(100, 70, -30))
                       .setKl(0.0003).setKq(0.00003)
       );
+
+      // אור ספוט נוסף - פחות עוצמה
       scene.light.add(
-              new DirectionalLight(
-                      new Color(25, 60, 80),
-                      new Vector(-0.35, -0.7, -0.7))
+              new SpotLight(
+                      new Color(90, 60, 80),
+                      new Point(50, 100, -20),
+                      new Vector(-0.5, -1, -1))
+                      .setKl(0.0004).setKq(0.00004)
       );
 
-      // === הגדרת המצלמה ===
+      // אור כיווני עדין - מילוי צללים
+      scene.light.add(
+              new DirectionalLight(
+                      new Color(10, 18, 22),
+                      new Vector(-0.3, -0.5, -0.8))
+      );
+
+      // === המצלמה רחוקה משמעותית ===
       cameraBuilder
-              .setLocation(new Point(160, 180, 220))
-              .setDirection(new Point(0, 15, -130), Vector.AXIS_Y)
-              .setVpDistance(370)
-              .setVpSize(380, 380)
-              .setResolution(800, 800)
+              .setLocation(new Point(-500, 50, 1200))  // מצלמה רחוקה הרבה יותר
+              .setDirection(new Point(0, 0, -100), Vector.AXIS_Y)
+              .setVpDistance(1200)
+              .setVpSize(300, 200)  // שדה ראייה רחב יותר
+              .setResolution(800, 800)  // רזולוציה גבוהה יותר
               .setRayTracer(scene, RayTracerType.SIMPLE)
-              .setMultithreading(6)
-              .setDebugPrint(5)
+              .setMultithreading(7)
+              .setDebugPrint(3)
               .build()
               .renderImage()
-              .writeToImage("thousandSpectacularCylindersAndTubes");
+              .writeToImage("ENHANCED_dual_molecule_chains_purple_pyramids_dimmed");
    }
 
+   /**
+    * Creates impressive background pyramids to enhance the scene with transparency
+    */
+   private void createBackgroundPyramids(Scene scene) {
+      Material pyramidMaterial = new Material()
+              .setKD(0.4).setKS(0.6).setShininess(100)
+              .setKT(0.3).setKR(0.6);
+
+      // פירמידות גדולות ברקע
+      double pyramidSize = 40.0;
+
+      // פירמידה ימנית ברקע
+      createPyramid(scene, new Point(200, -15, -300), pyramidSize,
+              new Color(50, 30, 80), pyramidMaterial);
+
+      // פירמידה שמאלית ברקע
+      createPyramid(scene, new Point(-200, -15, -300), pyramidSize,
+              new Color(70, 40, 100), pyramidMaterial);
+
+      // פירמידה מרכזית רחוקה
+      createPyramid(scene, new Point(0, -15, -400), pyramidSize * 1.5,
+              new Color(40, 25, 70), pyramidMaterial);
+
+      // פירמידות קטנות יותר בצדדים
+      createPyramid(scene, new Point(300, -15, -250), pyramidSize * 0.7,
+              new Color(60, 35, 90), pyramidMaterial);
+
+      createPyramid(scene, new Point(-300, -15, -250), pyramidSize * 0.7,
+              new Color(60, 35, 90), pyramidMaterial);
+
+      // פירמידות קטנות נוספות לעומק
+      createPyramid(scene, new Point(100, -15, -350), pyramidSize * 0.5,
+              new Color(35, 20, 60), pyramidMaterial);
+
+      createPyramid(scene, new Point(-100, -15, -350), pyramidSize * 0.5,
+              new Color(35, 20, 60), pyramidMaterial);
+   }
+
+   /**
+    * Creates a single pyramid at the specified location
+    */
+   private void createPyramid(Scene scene, Point baseCenter, double size, Color color, Material material) {
+      double halfSize = size / 2;
+
+      // נקודות הבסיס של הפירמידה (ריבוע)
+      Point p1 = new Point(baseCenter.xyz.d1() - halfSize, baseCenter.xyz.d2(), baseCenter.xyz.d3() - halfSize);
+      Point p2 = new Point(baseCenter.xyz.d1() + halfSize, baseCenter.xyz.d2(), baseCenter.xyz.d3() - halfSize);
+      Point p3 = new Point(baseCenter.xyz.d1() + halfSize, baseCenter.xyz.d2(), baseCenter.xyz.d3() + halfSize);
+      Point p4 = new Point(baseCenter.xyz.d1() - halfSize, baseCenter.xyz.d2(), baseCenter.xyz.d3() + halfSize);
+
+      // נקודת הפסגה
+      Point apex = new Point(baseCenter.xyz.d1(), baseCenter.xyz.d2() + size, baseCenter.xyz.d3());
+
+      // בסיס הפירמידה
+      scene.geometries.add(
+              new Polygon(p1, p2, p3, p4)
+                      .setEmission(color.scale(0.8))
+                      .setMaterial(material)
+      );
+
+      // הצלעות של הפירמידה
+      scene.geometries.add(
+              new Triangle(p1, p2, apex)
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+
+      scene.geometries.add(
+              new Triangle(p2, p3, apex)
+                      .setEmission(color.scale(1.1))
+                      .setMaterial(material)
+      );
+
+      scene.geometries.add(
+              new Triangle(p3, p4, apex)
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+
+      scene.geometries.add(
+              new Triangle(p4, p1, apex)
+                      .setEmission(color.scale(0.9))
+                      .setMaterial(material)
+      );
+   }
+
+   /**
+    * Creates a complete chain of molecules at the specified position in 3D space.
+    */
+   private void createMoleculeChain(
+           Scene scene,
+           int numberOfMolecules,
+           double atomSize,
+           double bondThickness,
+           double moleculeSpacing,
+           double zPosition,
+           Material atomMaterial, Color atomColor,
+           Material bondMaterial, Color bondColor
+   ) {
+      double startX = -(numberOfMolecules - 1) * moleculeSpacing / 2;
+      Point[] connectionPoints = new Point[numberOfMolecules];
+
+      for (int i = 0; i < numberOfMolecules; i++) {
+         double xPos = startX + i * moleculeSpacing;
+
+         // יצירת זוויות סיבוב שונות לכל מולקולה
+         double rotateY = 8 * Math.sin(i * 2.3);
+         double rotateX = 12 * Math.cos(i * 1.9 + 1);
+         double rotateZ = 6 * Math.sin(i * 1.5 + 2);
+
+         Point basePoint = new Point(xPos,
+                 -10 + Math.sin(i * 0.9) * 4,
+                 zPosition + Math.cos(i * 1.1) * 15);
+
+         Point connectionPoint = createRotatedYMolecule(scene, basePoint, atomSize, bondThickness,
+                 rotateX, rotateY, rotateZ,
+                 atomMaterial, atomColor, bondMaterial, bondColor);
+
+         connectionPoints[i] = connectionPoint;
+      }
+
+      // הוספת הקשרים בין המולקולות
+      for (int i = 0; i < numberOfMolecules - 1; i++) {
+         addBond(scene, connectionPoints[i], connectionPoints[i + 1], bondThickness, bondColor, bondMaterial);
+      }
+   }
+
+   /**
+    * Creates a Y-shaped molecule with specified rotation angles in 3D space.
+    */
+   private Point createRotatedYMolecule(
+           Scene scene, Point basePoint, double atomSize, double bondThickness,
+           double rotateX, double rotateY, double rotateZ,
+           Material atomMaterial, Color atomColor, Material bondMaterial, Color bondColor
+   ) {
+      // יצירת האטום התחתון
+      scene.geometries.add(
+              new Sphere(atomSize, basePoint)
+                      .setEmission(atomColor)
+                      .setMaterial(atomMaterial)
+      );
+
+      Vector upVector = new Vector(0, 1, 0);
+      upVector = rotateVector(upVector, rotateX, rotateY, rotateZ);
+
+      double verticalDistance = 15.0;  // מרחק קצת יותר גדול
+
+      Point middlePoint = basePoint.add(upVector.scale(verticalDistance));
+      scene.geometries.add(
+              new Sphere(atomSize, middlePoint)
+                      .setEmission(atomColor)
+                      .setMaterial(atomMaterial)
+      );
+
+      addBond(scene, basePoint, middlePoint, bondThickness, bondColor, bondMaterial);
+
+      Vector baseRightDiag = new Vector(0.7, 0.7, 0).normalize();
+      Vector baseLeftDiag = new Vector(-0.7, 0.7, 0).normalize();
+
+      Vector rightDiagonal = rotateVector(baseRightDiag, rotateX, rotateY, rotateZ);
+      Vector leftDiagonal = rotateVector(baseLeftDiag, rotateX, rotateY, rotateZ);
+
+      double diagonalDistance = 13.0;  // מרחק קצת יותר גדול
+
+      Point topRightPoint = middlePoint.add(rightDiagonal.scale(diagonalDistance));
+      scene.geometries.add(
+              new Sphere(atomSize, topRightPoint)
+                      .setEmission(atomColor)
+                      .setMaterial(atomMaterial)
+      );
+
+      addBond(scene, middlePoint, topRightPoint, bondThickness, bondColor, bondMaterial);
+
+      Point topLeftPoint = middlePoint.add(leftDiagonal.scale(diagonalDistance));
+      scene.geometries.add(
+              new Sphere(atomSize, topLeftPoint)
+                      .setEmission(atomColor)
+                      .setMaterial(atomMaterial)
+      );
+
+      addBond(scene, middlePoint, topLeftPoint, bondThickness, bondColor, bondMaterial);
+
+      return topRightPoint;
+   }
+
+   /**
+    * Performs rotation of a vector around all three axes.
+    */
+   private Vector rotateVector(Vector v, double angleX, double angleY, double angleZ) {
+      double radX = Math.toRadians(angleX);
+      double radY = Math.toRadians(angleY);
+      double radZ = Math.toRadians(angleZ);
+
+      double x = v.xyz.d1();
+      double y = v.xyz.d2();
+      double z = v.xyz.d3();
+
+      // סיבוב סביב ציר X
+      double yNew = y * Math.cos(radX) - z * Math.sin(radX);
+      double zNew = y * Math.sin(radX) + z * Math.cos(radX);
+      y = yNew;
+      z = zNew;
+
+      // סיבוב סביב ציר Y
+      double xNew = x * Math.cos(radY) + z * Math.sin(radY);
+      zNew = -x * Math.sin(radY) + z * Math.cos(radY);
+      x = xNew;
+      z = zNew;
+
+      // סיבוב סביב ציר Z
+      xNew = x * Math.cos(radZ) - y * Math.sin(radZ);
+      yNew = x * Math.sin(radZ) + y * Math.cos(radZ);
+      x = xNew;
+      y = yNew;
+
+      return new Vector(x, y, z);
+   }
+
+   /**
+    * Adds a bond (cylinder) between two atoms in 3D space.
+    */
+   private void addBond(
+           Scene scene,
+           Point atom1, Point atom2,
+           double radius,
+           Color color, Material material
+   ) {
+      Vector direction = atom2.subtract(atom1);
+      double length = direction.length();
+
+      scene.geometries.add(
+              new Cylinder(new Ray(atom1, direction), radius, length)
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+   }
+
+//////////////////////////////////////////////////////////////////////////
+///
+///
+///
+///
+///
+///
+///
+///
+///
+///
+///
+///
+///
+///
+///
+///
+///
+///
+///qqqqqqqqqqqqqqqqqqqqqqqqq
+
+
+//
+//@Test
+//void minimalisticStaircaseWithSpotlightTest() {
+//   // === Set scene background and ambient light ===
+//   // Dark blue-gray background for a moody, dramatic effect
+//   scene.setBackground(new Color(5, 5, 5)); // Dark blue-gray like in the image
+//
+//   // Very soft ambient light for subtle detail visibility
+//   scene.setAmbientLight(new AmbientLight(new Color(0.15, 0.15, 0.18)));
+//
+//   // === Create materials ===
+//   Material stairMaterial = new Material()
+//           .setKD(0.4).setKS(0.6).setShininess(80)   // מטאלי עדין
+//           .setKT(0).setKR(0.4);
+//
+//   Material wallMaterial = new Material()
+//           .setKD(0.8).setKS(0.2).setShininess(30)
+//           .setKT(0.4).setKR(0.05);
+//
+//   Material floorMaterial = new Material()
+//           .setKD(0.1).setKS(0.2).setShininess(300)
+//           .setKT(0).setKR(0.8);
+//
+//   // Sphere materials - balanced for soft lighting
+//   Material sphereMaterial = new Material()
+//           .setKD(0.4).setKS(0.6).setShininess(80)
+//           .setKT(0).setKR(0.4);
+//
+//   double stepWidth = 30;
+//   double stepHeight = 15;
+//   double stepDepth = 45;
+//
+//   Color stairColor = new Color(140, 130, 110); // Lighter, more neutral stairs
+//   Color wallColor = new Color(40, 45, 55); // Dark blue-gray for walls
+//   Color floorColor = new Color(20, 25, 30);
+//
+//   // --- Base structure under the stairs ---
+//   addBaseStructure(scene, -150, 0, -stepDepth/2, 150, -20, stepDepth/2, stairColor, stairMaterial);
+//
+//   // --- Side and back walls of staircase structure ---
+//   scene.geometries.add(
+//           new Polygon(
+//                   new Point(-150, -20, -stepDepth/2),
+//                   new Point(-150, -20, stepDepth/2),
+//                   new Point(-150, 10*stepHeight, stepDepth/2),
+//                   new Point(-150, 10*stepHeight, -stepDepth/2))
+//                   .setEmission(stairColor)
+//                   .setMaterial(stairMaterial)
+//   );
+//   scene.geometries.add(
+//           new Polygon(
+//                   new Point(150, -20, -stepDepth/2),
+//                   new Point(150, -20, stepDepth/2),
+//                   new Point(150, 10*stepHeight, stepDepth/2),
+//                   new Point(150, 10*stepHeight, -stepDepth/2))
+//                   .setEmission(stairColor)
+//                   .setMaterial(stairMaterial)
+//   );
+//   scene.geometries.add(
+//           new Polygon(
+//                   new Point(-150, -20, stepDepth/2),
+//                   new Point(150, -20, stepDepth/2),
+//                   new Point(150, 10*stepHeight, stepDepth/2),
+//                   new Point(-150, 10*stepHeight, stepDepth/2))
+//                   .setEmission(stairColor)
+//                   .setMaterial(stairMaterial)
+//   );
+//   scene.geometries.add(
+//           new Polygon(
+//                   new Point(-150, -20, -stepDepth/2),
+//                   new Point(150, -20, -stepDepth/2),
+//                   new Point(150, 0, -stepDepth/2),
+//                   new Point(-150, 0, -stepDepth/2))
+//                   .setEmission(stairColor)
+//                   .setMaterial(stairMaterial)
+//   );
+//
+//   // --- Stairs ---
+//   for (int i = 0; i < 10; i++) {
+//      double x = -150 + i * stepWidth;
+//      double y = i * stepHeight;
+//
+//      // Horizontal step
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(x, y, -stepDepth/2),
+//                      new Point(x + stepWidth, y, -stepDepth/2),
+//                      new Point(x + stepWidth, y, stepDepth/2),
+//                      new Point(x, y, stepDepth/2))
+//                      .setEmission(stairColor)
+//                      .setMaterial(stairMaterial)
+//      );
+//      // Vertical riser
+//      if (i < 9) {
+//         scene.geometries.add(
+//                 new Polygon(
+//                         new Point(x + stepWidth, y, -stepDepth/2),
+//                         new Point(x + stepWidth, y + stepHeight, -stepDepth/2),
+//                         new Point(x + stepWidth, y + stepHeight, stepDepth/2),
+//                         new Point(x + stepWidth, y, stepDepth/2))
+//                         .setEmission(stairColor)
+//                         .setMaterial(stairMaterial)
+//         );
+//      }
+//      // Side/back/under fills for full enclosure
+//      if (i > 0) {
+//         scene.geometries.add(
+//                 new Polygon(
+//                         new Point(x, y - stepHeight, stepDepth/2),
+//                         new Point(x, y, stepDepth/2),
+//                         new Point(x, y, -stepDepth/2),
+//                         new Point(x, y - stepHeight, -stepDepth/2))
+//                         .setEmission(stairColor)
+//                         .setMaterial(stairMaterial)
+//         );
+//         scene.geometries.add(
+//                 new Polygon(
+//                         new Point(x, y - stepHeight, -stepDepth/2),
+//                         new Point(x + stepWidth, y - stepHeight, -stepDepth/2),
+//                         new Point(x + stepWidth, y - stepHeight, stepDepth/2),
+//                         new Point(x, y - stepHeight, stepDepth/2))
+//                         .setEmission(stairColor)
+//                         .setMaterial(stairMaterial)
+//         );
+//      }
+//   }
+//
+//   // === Add colorful spheres - with softer, more natural colors ===
+//   Color[] sphereColors = {
+//           new Color(150, 45, 45),   // Soft Red
+//           new Color(45, 45, 150),   // Soft Blue
+//           new Color(150, 100, 45),  // Soft Orange
+//           new Color(100, 45, 150),  // Soft Purple
+//           new Color(45, 150, 100),  // Soft Green
+//           new Color(150, 150, 45),  // Soft Yellow
+//           new Color(150, 80, 100),  // Soft Pink
+//           new Color(45, 120, 150),  // Soft Cyan
+//           new Color(120, 150, 45),  // Soft Lime
+//           new Color(150, 60, 90)    // Soft Magenta
+//   };
+//
+//   double sphereRadius = 8;
+//
+//   // Add spheres on each step - with random positioning
+//   Random random = new Random(42); // fixed seed for consistent results
+//   for (int i = 0; i < 10; i++) {
+//      double baseX = -150 + i * stepWidth;
+//      double y = i * stepHeight + sphereRadius; // On top of step
+//
+//      // Random position within the step boundaries
+//      double x = baseX + stepWidth * (0.2 + random.nextDouble() * 0.6); // 20%-80% of step width
+//      double z = (random.nextDouble() - 0.5) * stepDepth * 0.6; // random depth within step
+//
+//      scene.geometries.add(
+//              new Sphere(sphereRadius, new Point(x, y, z))
+//                      .setEmission(sphereColors[i])
+//                      .setMaterial(sphereMaterial)
+//      );
+//   }
+//
+//   // Add a couple of spheres on the floor (like in the image)
+//   scene.geometries.add(
+//           new Sphere(12, new Point(-180, -8, -15))
+//                   .setEmission(new Color(150, 45, 45))
+//                   .setMaterial(sphereMaterial)
+//   );
+//
+//   scene.geometries.add(
+//           new Sphere(10, new Point(-200, -10, 10))
+//                   .setEmission(new Color(45, 45, 130))
+//                   .setMaterial(sphereMaterial)
+//   );
+//
+//   // === הוספת פירמידה מלאה לפני המדרגות במקום משולש ===
+//   // נקודות הבסיס של הפירמידה (ריבוע)
+//// נקודות הבסיס של הפירמידה (ריבוע) - מעבירים קרוב למצלמה
+//   Point pyramidBase1 = new Point(-180, -20, -15);
+//   Point pyramidBase2 = new Point(-130, -20, -15);
+//   Point pyramidBase3 = new Point(-130, -20, 15);
+//   Point pyramidBase4 = new Point(-180, -20, 15);
+//   Point pyramidApex = new Point(-155, 25, 0);
+//
+//   Material pyramidMaterial = new Material()
+//           .setKD(0.2).setKS(0.8).setShininess(130)
+//           .setKT(0.5).setKR(0.4);
+//
+//   Color pyramidColor = new Color(7, 2, 6);
+//
+//   // בסיס הפירמידה
+//   scene.geometries.add(
+//           new Polygon(pyramidBase1, pyramidBase2, pyramidBase3, pyramidBase4)
+//                   .setEmission(pyramidColor.scale(0.8))
+//                   .setMaterial(pyramidMaterial)
+//   );
+//
+//   // פאות הפירמידה
+//   scene.geometries.add(
+//           new Triangle(pyramidBase1, pyramidBase2, pyramidApex)
+//                   .setEmission(pyramidColor)
+//                   .setMaterial(pyramidMaterial)
+//   );
+//
+//   scene.geometries.add(
+//           new Triangle(pyramidBase2, pyramidBase3, pyramidApex)
+//                   .setEmission(pyramidColor.scale(1.1))
+//                   .setMaterial(pyramidMaterial)
+//   );
+//
+//   scene.geometries.add(
+//           new Triangle(pyramidBase3, pyramidBase4, pyramidApex)
+//                   .setEmission(pyramidColor)
+//                   .setMaterial(pyramidMaterial)
+//   );
+//
+//   scene.geometries.add(
+//           new Triangle(pyramidBase4, pyramidBase1, pyramidApex)
+//                   .setEmission(pyramidColor.scale(0.9))
+//                   .setMaterial(pyramidMaterial)
+//   );
+//
+//   // === הוספת צילינדר בצבע תכלת מטאלי לפני המדרגות ===
+//   scene.geometries.add(
+//           new Cylinder(new Ray(new Point(-110, -20, 0), new Vector(0, 1, 0)), 18d, 45d)
+//                   .setEmission(new Color(2, 150, 160))
+//                   .setMaterial(new Material()
+//                           .setKD(0.2).setKS(0.8).setShininess(150)
+//                           .setKR(0.7))
+//   );
+//
+//   // --- Room walls (dark to not distract from stairs) ---
+//   scene.geometries.add(
+//           new Polygon(
+//                   new Point(-250, -20, -100),
+//                   new Point(-250, -20, 100),
+//                   new Point(-250, 250, 100),
+//                   new Point(-250, 250, -100))
+//                   .setEmission(wallColor)
+//                   .setMaterial(wallMaterial)
+//   );
+//   scene.geometries.add(
+//           new Polygon(
+//                   new Point(-250, -20, 100),
+//                   new Point(200, -20, 100),
+//                   new Point(200, 250, 100),
+//                   new Point(-250, 250, 100))
+//                   .setEmission(wallColor)
+//                   .setMaterial(wallMaterial)
+//   );
+//   scene.geometries.add(
+//           new Plane(new Point(0, -20, 0), new Vector(0, 1, 0))
+//                   .setEmission(floorColor)
+//                   .setMaterial(floorMaterial)
+//   );
+//
+//   // === Soft, balanced lighting setup like in the image ===
+//
+//   // Main soft spotlight - רך ומאוזן
+//   scene.light.add(
+//           new SpotLight(
+//                   new Color(300, 280, 250), // Soft warm light
+//                   new Point(-150, 150, -60),
+//                   new Vector(1, -1, 0.5).normalize())
+//                   .setKl(0.0005).setKq(0.00001)
+//                   .setNarrowBeam(35)
+//   );
+//
+//   // Secondary fill light - אור מילוי עדין
+//   scene.light.add(
+//           new SpotLight(
+//                   new Color(180, 160, 140), // Softer fill
+//                   new Point(50, 100, -40),
+//                   new Vector(-0.8, -0.6, 0.3).normalize())
+//                   .setKl(0.001).setKq(0.00002)
+//                   .setNarrowBeam(45)
+//   );
+//
+//   // Directional light for even softer shadows - אור כיווני עדין
+//   scene.light.add(
+//           new DirectionalLight(
+//                   new Color(40, 45, 50), // Very soft blue-gray
+//                   new Vector(0.3, -0.7, -0.6))
+//   );
+//
+//   // Point light for sphere highlighting - נקודת אור לכדורים
+//   scene.light.add(
+//           new PointLight(
+//                   new Color(120, 110, 100), // Gentle point light
+//                   new Point(-100, 80, 20))
+//                   .setKl(0.002).setKq(0.0001)
+//   );
+//
+//   // === Camera setup ===
+//   Camera.getBuilder()
+//           .setLocation(new Point(-400, 80, -700)) // Adjusted for better angle
+//           .setDirection(new Point(-50, 60, 0), Vector.AXIS_Y) // Looking toward the stairs
+//           .setVpDistance(1000)
+//           .setVpSize(400, 400)
+//           .setResolution(1000, 1000) // Higher resolution for better quality
+//           .setMultithreading(8)
+//           .setDebugPrint(5)
+//           .setRayTracer(scene, RayTracerType.SIMPLE)
+//           .build()
+//           .renderImage()
+//           .writeToImage("pyramid_and_turquoise_cylinder_staircase");
+//}
+//
+//   /**
+//    * Helper method to add a base structure under the stairs
+//    */
+//   private void addBaseStructure(Scene scene, double minX, double minY, double minZ,
+//                                 double maxX, double maxY, double maxZ,
+//                                 Color color, Material material) {
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, minY, minZ),
+//                      new Point(maxX, minY, minZ),
+//                      new Point(maxX, maxY, minZ),
+//                      new Point(minX, maxY, minZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, minY, maxZ),
+//                      new Point(maxX, minY, maxZ),
+//                      new Point(maxX, maxY, maxZ),
+//                      new Point(minX, maxY, maxZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, minY, minZ),
+//                      new Point(minX, minY, maxZ),
+//                      new Point(minX, maxY, maxZ),
+//                      new Point(minX, maxY, minZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(maxX, minY, minZ),
+//                      new Point(maxX, minY, maxZ),
+//                      new Point(maxX, maxY, maxZ),
+//                      new Point(maxX, maxY, minZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, minY, minZ),
+//                      new Point(maxX, minY, minZ),
+//                      new Point(maxX, minY, maxZ),
+//                      new Point(minX, minY, maxZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//      scene.geometries.add(
+//              new Polygon(
+//                      new Point(minX, maxY, minZ),
+//                      new Point(maxX, maxY, minZ),
+//                      new Point(maxX, maxY, maxZ),
+//                      new Point(minX, maxY, maxZ))
+//                      .setEmission(color)
+//                      .setMaterial(material)
+//      );
+//   }
+@Test
+void minimalisticStaircaseWithSpotlightTest1() {
+   // === Set scene background and ambient light - MUCH DARKER ===
+   scene.setBackground(new Color(1, 1, 1)); // Very dark background
+
+   // === Create materials ===
+   // MATTE stairs material - not shiny
+   Material stairMaterial = new Material()
+           .setKD(0.9)     // High diffuse = matte
+           .setKS(0.05)    // Low specular = no shine
+           .setShininess(1) // Very low shininess = rough surface
+           .setKR(0.0);    // No reflection = not shiny
+
+   Material wallMaterial = new Material()
+           .setKD(0.8).setKS(0.2).setShininess(30)
+           .setKT(0.4).setKR(0.05);
+
+   Material floorMaterial = new Material()
+           .setKD(0.6).setKS(0.4).setShininess(80)
+           .setKT(0.5).setKR(0.2);
+
+   // Sphere materials - HIGHLY REFLECTIVE like mirrors
+   Material sphereMaterial = new Material()
+           .setKD(0.1).setKS(0.2).setShininess(500)
+           .setKR(0.95);  // Very high reflection like the example
+
+   double stepWidth = 30;
+   double stepHeight = 15;
+   double stepDepth = 45;
+
+   Color stairColor = new Color(140, 130, 110); // Lighter, more neutral stairs
+   Color wallColor = new Color(40, 45, 55); // Dark blue-gray for walls
+   Color floorColor = new Color(35, 40, 50); // Dark blue-gray floor
+
+   // --- Base structure under the stairs ---
+   addBaseStructure1(scene, -150, 0, -stepDepth/2, 150, -20, stepDepth/2, stairColor, stairMaterial);
+
+   // --- פירמידה גדולה ליד הצילינדר בצד שמאל-למטה של התמונה, ליד המדרגות ---
+   Point pyramidBase1 = new Point(60, -20, -80);
+   Point pyramidBase2 = new Point(105, -20, -80);
+   Point pyramidBase3 = new Point(105, -20, -30);
+   Point pyramidBase4 = new Point(60, -20, -30);
+   Point pyramidApex = new Point(42.5, 35, -55); // גבוה ומשמעותי
+
+   Material pyramidMaterial = new Material()
+           .setKD(0.2).setKS(0.8).setShininess(130)
+           .setKT(0.5).setKR(0.4);
+
+   Color pyramidColor = new Color(7, 2, 6);
+
+   // בסיס הפירמידה (ריבוע)
+   scene.geometries.add(
+           new Polygon(pyramidBase1, pyramidBase2, pyramidBase3, pyramidBase4)
+                   .setEmission(pyramidColor.scale(0.8))
+                   .setMaterial(pyramidMaterial)
+   );
+
+   // פאות הפירמידה (ארבעה משולשים)
+   scene.geometries.add(
+           new Triangle(pyramidBase1, pyramidBase2, pyramidApex)
+                   .setEmission(pyramidColor)
+                   .setMaterial(pyramidMaterial)
+   );
+   scene.geometries.add(
+           new Triangle(pyramidBase2, pyramidBase3, pyramidApex)
+                   .setEmission(pyramidColor.scale(1.1))
+                   .setMaterial(pyramidMaterial)
+   );
+   scene.geometries.add(
+           new Triangle(pyramidBase3, pyramidBase4, pyramidApex)
+                   .setEmission(pyramidColor)
+                   .setMaterial(pyramidMaterial)
+   );
+   scene.geometries.add(
+           new Triangle(pyramidBase4, pyramidBase1, pyramidApex)
+                   .setEmission(pyramidColor.scale(0.9))
+                   .setMaterial(pyramidMaterial)
+   );
+
+   // --- Side and back walls of staircase structure ---
+   scene.geometries.add(
+           new Polygon(
+                   new Point(-150, -20, -stepDepth/2),
+                   new Point(-150, -20, stepDepth/2),
+                   new Point(-150, 10*stepHeight, stepDepth/2),
+                   new Point(-150, 10*stepHeight, -stepDepth/2))
+                   .setEmission(stairColor)
+                   .setMaterial(stairMaterial)
+   );
+   scene.geometries.add(
+           new Polygon(
+                   new Point(150, -20, -stepDepth/2),
+                   new Point(150, -20, stepDepth/2),
+                   new Point(150, 10*stepHeight, stepDepth/2),
+                   new Point(150, 10*stepHeight, -stepDepth/2))
+                   .setEmission(stairColor)
+                   .setMaterial(stairMaterial)
+   );
+   scene.geometries.add(
+           new Polygon(
+                   new Point(-150, -20, stepDepth/2),
+                   new Point(150, -20, stepDepth/2),
+                   new Point(150, 10*stepHeight, stepDepth/2),
+                   new Point(-150, 10*stepHeight, stepDepth/2))
+                   .setEmission(stairColor)
+                   .setMaterial(stairMaterial)
+   );
+   scene.geometries.add(
+           new Polygon(
+                   new Point(-150, -20, -stepDepth/2),
+                   new Point(150, -20, -stepDepth/2),
+                   new Point(150, 0, -stepDepth/2),
+                   new Point(-150, 0, -stepDepth/2))
+                   .setEmission(stairColor)
+                   .setMaterial(stairMaterial)
+   );
+
+   // --- Stairs ---
+   for (int i = 0; i < 10; i++) {
+      double x = -150 + i * stepWidth;
+      double y = i * stepHeight;
+
+      // Horizontal step
+      scene.geometries.add(
+              new Polygon(
+                      new Point(x, y, -stepDepth/2),
+                      new Point(x + stepWidth, y, -stepDepth/2),
+                      new Point(x + stepWidth, y, stepDepth/2),
+                      new Point(x, y, stepDepth/2))
+                      .setEmission(stairColor)
+                      .setMaterial(stairMaterial)
+      );
+      // Vertical riser
+      if (i < 9) {
+         scene.geometries.add(
+                 new Polygon(
+                         new Point(x + stepWidth, y, -stepDepth/2),
+                         new Point(x + stepWidth, y + stepHeight, -stepDepth/2),
+                         new Point(x + stepWidth, y + stepHeight, stepDepth/2),
+                         new Point(x + stepWidth, y, stepDepth/2))
+                         .setEmission(stairColor)
+                         .setMaterial(stairMaterial)
+         );
+      }
+      // Side/back/under fills for full enclosure
+      if (i > 0) {
+         scene.geometries.add(
+                 new Polygon(
+                         new Point(x, y - stepHeight, stepDepth/2),
+                         new Point(x, y, stepDepth/2),
+                         new Point(x, y, -stepDepth/2),
+                         new Point(x, y - stepHeight, -stepDepth/2))
+                         .setEmission(stairColor)
+                         .setMaterial(stairMaterial)
+         );
+         scene.geometries.add(
+                 new Polygon(
+                         new Point(x, y - stepHeight, -stepDepth/2),
+                         new Point(x + stepWidth, y - stepHeight, -stepDepth/2),
+                         new Point(x + stepWidth, y - stepHeight, stepDepth/2),
+                         new Point(x, y - stepHeight, stepDepth/2))
+                         .setEmission(stairColor)
+                         .setMaterial(stairMaterial)
+         );
+      }
+   }
+
+   // === For VIBRANT colorful spheres ===
+   Color[] sphereColors = {
+           new Color(50, 50, 120),     // Very vibrant blue
+           new Color(100, 100, 70),    // Very bright gold
+           new Color(90, 30, 150),     // Very rich purple
+           new Color(50, 120, 50),     // Very bright green
+           new Color(150, 90, 30),     // Very vibrant orange
+           new Color(120, 120, 30),    // Very bright yellow
+           new Color(150, 30, 90),     // Very vibrant magenta
+           new Color(30, 90, 150),     // Very bright cyan
+           new Color(90, 150, 30),     // Very vibrant lime
+           new Color(120, 60, 90)      // Very bright pink
+   };
+
+   // Colorful light colors - REDUCED for darker scene
+   Color[] lightColors = {
+           new Color(20, 20, 35),    // Blue light - reduced
+           new Color(90, 90, 60),    // Metallic light - reduced
+           new Color(75, 25, 100),   // Purple light - reduced
+           new Color(40, 75, 40),    // Green light - reduced
+           new Color(100, 60, 25),   // Bronze/orange light - reduced
+           new Color(100, 100, 40),  // Yellow light - reduced
+           new Color(100, 25, 60),   // Magenta light - reduced
+           new Color(25, 60, 100),   // Cyan light - reduced
+           new Color(60, 100, 25),   // Lime light - reduced
+           new Color(90, 40, 60)     // Pink light - reduced
+   };
+
+   double sphereRadius = 8;
+
+   // Add spheres on each step WITH colorful lights nearby
+   Random random = new Random(42); // fixed seed for consistent results
+   for (int i = 0; i < 10; i++) {
+      double baseX = -150 + i * stepWidth;
+      double y = i * stepHeight + sphereRadius; // On top of step
+
+      // Random position within the step boundaries
+      double x = baseX + stepWidth * (0.2 + random.nextDouble() * 0.6); // 20%-80% of step width
+      double z = (random.nextDouble() - 0.5) * stepDepth * 0.6; // random depth within step
+
+      // Add the sphere
+      scene.geometries.add(
+              new Sphere(sphereRadius, new Point(x, y, z))
+                      .setEmission(sphereColors[i])
+                      .setMaterial(sphereMaterial)  // Using the highly reflective material
+      );
+
+      // Add colorful point light near each sphere - WITH MORE ATTENUATION
+      scene.light.add(
+              new PointLight(
+                      lightColors[i], // Matching colorful light
+                      new Point(x - 15, y + 25, z + 10)) // Positioned above and to the side of sphere
+                      .setKl(0.008).setKq(0.0008) // Increased attenuation
+      );
+
+      // Add secondary smaller light for extra color effect - WITH MORE ATTENUATION
+      scene.light.add(
+              new PointLight(
+                      lightColors[i].scale(0.6), // Dimmer version of the same color
+                      new Point(x + 10, y + 15, z - 8)) // Different angle
+                      .setKl(0.012).setKq(0.0012) // Increased attenuation
+      );
+   }
+
+   // Add a couple of spheres on the floor WITH their colorful lights
+   scene.geometries.add(
+           new Sphere(12, new Point(-180, -8, -15))
+                   .setEmission(new Color(25, 5, 5))  // Dark red
+                   .setMaterial(sphereMaterial)       // Highly reflective
+   );
+   // Red light for floor sphere
+   scene.light.add(
+           new PointLight(
+                   new Color(100, 25, 25), // Reduced red light
+                   new Point(-165, 15, -5)) // Above the red sphere
+                   .setKl(0.004).setKq(0.0002)
+   );
+
+   scene.geometries.add(
+           new Sphere(10, new Point(-200, -10, 10))
+                   .setEmission(new Color(5, 5, 25))  // Dark blue
+                   .setMaterial(sphereMaterial)       // Highly reflective
+   );
+   // Blue light for floor sphere
+   scene.light.add(
+           new PointLight(
+                   new Color(25, 25, 100), // Reduced blue light
+                   new Point(-185, 12, 20)) // Above the blue sphere
+                   .setKl(0.004).setKq(0.0002)
+   );
+
+   // --- Room walls (dark to not distract from stairs) ---
+   scene.geometries.add(
+           new Polygon(
+                   new Point(-250, -20, -100),
+                   new Point(-250, -20, 100),
+                   new Point(-250, 250, 100),
+                   new Point(-250, 250, -100))
+                   .setEmission(wallColor)
+                   .setMaterial(wallMaterial)
+   );
+   scene.geometries.add(
+           new Polygon(
+                   new Point(-250, -20, 100),
+                   new Point(200, -20, 100),
+                   new Point(200, 250, 100),
+                   new Point(-250, 250, 100))
+                   .setEmission(wallColor)
+                   .setMaterial(wallMaterial)
+   );
+   scene.geometries.add(
+           new Plane(new Point(0, -20, 0), new Vector(0, 1, 0))
+                   .setEmission(floorColor)
+                   .setMaterial(floorMaterial)
+   );
+
+   // === Enhanced lighting for better reflections - MINIMAL LIGHTING ===
+
+   // Main soft spotlight - minimal
+   scene.light.add(
+           new SpotLight(
+                   new Color(3, 3, 2), // Very minimal
+                   new Point(-150, 150, -60),
+                   new Vector(1, -1, 0.5).normalize())
+                   .setKl(0.015).setKq(0.001) // Strong attenuation
+                   .setNarrowBeam(35)
+   );
+
+   // Secondary fill light - almost nothing
+   scene.light.add(
+           new SpotLight(
+                   new Color(1, 1, 1), // Almost nothing
+                   new Point(50, 100, -40),
+                   new Vector(-0.8, -0.6, 0.3).normalize())
+                   .setKl(0.02).setKq(0.002) // Extreme attenuation
+                   .setNarrowBeam(45)
+   );
+
+   // Directional light - minimal
+   scene.light.add(
+           new DirectionalLight(
+                   new Color(1, 1, 1), // Almost nothing
+                   new Vector(0.3, -0.7, -0.6))
+   );
+
+   // === Camera setup ===
+   Camera.getBuilder()
+           .setLocation(new Point(-600, 80, -720)) // Adjusted for better angle
+           .setDirection(new Point(-50, 60, 0), Vector.AXIS_Y) // Looking toward the stairs
+           .setVpDistance(1000)
+           .setVpSize(400, 400)
+           .setResolution(1000, 1000) // Higher resolution for better quality
+           .setMultithreading(8)
+           .setDebugPrint(5)
+           .setRayTracer(scene, RayTracerType.SIMPLE)
+           .build()
+           .renderImage()
+           .writeToImage("colorful_staircase_with_colorful_lights_moreDark");
 }
 
+   /**
+    * Helper method to add a base structure under the stairs,
+    * וגם צילינדר גדול בצד שמאל-למטה של התמונה, ליד המדרגות.
+    */
+   private void addBaseStructure1(Scene scene, double minX, double minY, double minZ,
+                                  double maxX, double maxY, double maxZ,
+                                  Color color, Material material) {
+      scene.geometries.add(
+              new Polygon(
+                      new Point(minX, minY, minZ),
+                      new Point(maxX, minY, minZ),
+                      new Point(maxX, maxY, minZ),
+                      new Point(minX, maxY, minZ))
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+      scene.geometries.add(
+              new Polygon(
+                      new Point(minX, minY, maxZ),
+                      new Point(maxX, minY, maxZ),
+                      new Point(maxX, maxY, maxZ),
+                      new Point(minX, maxY, maxZ))
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+      scene.geometries.add(
+              new Polygon(
+                      new Point(minX, minY, minZ),
+                      new Point(minX, minY, maxZ),
+                      new Point(minX, maxY, maxZ),
+                      new Point(minX, maxY, minZ))
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+      scene.geometries.add(
+              new Polygon(
+                      new Point(maxX, minY, minZ),
+                      new Point(maxX, minY, maxZ),
+                      new Point(maxX, maxY, maxZ),
+                      new Point(maxX, maxY, minZ))
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+      scene.geometries.add(
+              new Polygon(
+                      new Point(minX, minY, minZ),
+                      new Point(maxX, minY, minZ),
+                      new Point(maxX, minY, maxZ),
+                      new Point(minX, minY, maxZ))
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+      scene.geometries.add(
+              new Polygon(
+                      new Point(minX, maxY, minZ),
+                      new Point(maxX, maxY, minZ),
+                      new Point(maxX, maxY, maxZ),
+                      new Point(minX, maxY, maxZ))
+                      .setEmission(color)
+                      .setMaterial(material)
+      );
+      // צילינדר גדול בצד שמאל-למטה של התמונה, ליד המדרגות
+      scene.geometries.add(
+              new Cylinder(new Ray(new Point(60, -5, -55), new Vector(0, 1, 0)), 15d, 80d)
+                      .setEmission(new Color(2, 150, 160))
+                      .setMaterial(new Material()
+                              .setKD(0.2).setKS(0.8).setShininess(150)
+                              .setKR(0.7))
+      );
+   }
+}
 

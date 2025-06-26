@@ -47,6 +47,7 @@ public class PixelManager {
      */
     private int currentCol = -1;
 
+
     /**
      * Constructs a new PixelManager for thread-safe pixel allocation.
      *

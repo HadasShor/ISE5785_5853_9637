@@ -188,6 +188,8 @@ public class Cylinder extends Tube {
         this.topPlane = new Plane(axis.getPoint(height), axis.getDirection());
     }
 
+
+
     /**
      * Returns the normal vector to the cylinder at the given point.
      *
@@ -301,5 +303,8 @@ public class Cylinder extends Tube {
                 p.point.subtract(rayOrigin).dotProduct(ray.getDirection())));
 
         return intersections.isEmpty() ? null : intersections;
-    }
+
+         }
+
+
 }
