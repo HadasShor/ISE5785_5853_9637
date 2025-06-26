@@ -2695,10 +2695,10 @@ void minimalisticStaircaseWithSpotlightTest1() {
    addBaseStructure1(scene, -150, 0, -stepDepth/2, 150, -20, stepDepth/2, stairColor, stairMaterial);
 
    // --- פירמידה גדולה ליד הצילינדר בצד שמאל-למטה של התמונה, ליד המדרגות ---
-   Point pyramidBase1 = new Point(60, -20, -80);
-   Point pyramidBase2 = new Point(105, -20, -80);
-   Point pyramidBase3 = new Point(105, -20, -30);
-   Point pyramidBase4 = new Point(60, -20, -30);
+   Point pyramidBase1 = new Point(120, -100, -80);
+   Point pyramidBase2 = new Point(165, -100, -80);
+   Point pyramidBase3 = new Point(165, -100, -30);
+   Point pyramidBase4 = new Point(120, -100, -30);
    Point pyramidApex = new Point(42.5, 35, -55); // גבוה ומשמעותי
 
    Material pyramidMaterial = new Material()
@@ -2773,6 +2773,15 @@ void minimalisticStaircaseWithSpotlightTest1() {
                    .setEmission(stairColor)
                    .setMaterial(stairMaterial)
    );
+   scene.geometries.add(
+           new Polygon(
+                   new Point(-250, 250, -100),   // פינה שמאלית אחורית למעלה
+                   new Point(200, 250, -100),    // פינה ימנית אחורית למעלה
+                   new Point(200, 250, 100),     // פינה ימנית קדמית למעלה
+                   new Point(-250, 250, 100))    // פינה שמאלית קדמית למעלה
+                   .setEmission(wallColor)
+                   .setMaterial(wallMaterial)
+   );
 
    // --- Stairs ---
    for (int i = 0; i < 10; i++) {
@@ -2821,6 +2830,18 @@ void minimalisticStaircaseWithSpotlightTest1() {
                          .setEmission(stairColor)
                          .setMaterial(stairMaterial)
          );
+         //############################################
+         scene.geometries.add(
+                 new Polygon(
+                         new Point(200, -20, -100),   // פינה ימנית אחורית למטה
+                         new Point(200, -20, 100),    // פינה ימנית קדמית למטה
+                         new Point(200, 250, 100),    // פינה ימנית קדמית למעלה
+                         new Point(200, 250, -100)    // פינה ימנית אחורית למעלה
+                 )
+                         .setEmission(wallColor)
+                         .setMaterial(wallMaterial)
+         );
+         //#############################################333
       }
    }
 
@@ -3047,7 +3068,7 @@ void minimalisticStaircaseWithSpotlightTest1() {
       );
       // צילינדר גדול בצד שמאל-למטה של התמונה, ליד המדרגות
       scene.geometries.add(
-              new Cylinder(new Ray(new Point(60, -5, -55), new Vector(0, 1, 0)), 15d, 80d)
+              new Cylinder(new Ray(new Point(60, -30, -55), new Vector(0, 1, 0)), 15d, 80d)
                       .setEmission(new Color(2, 150, 160))
                       .setMaterial(new Material()
                               .setKD(0.2).setKS(0.8).setShininess(150)
