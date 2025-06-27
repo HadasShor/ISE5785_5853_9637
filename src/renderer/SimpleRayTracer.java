@@ -67,7 +67,7 @@ public class SimpleRayTracer extends RayTracerBase {
     @Override
     public Color traceRay(Ray ray) {
         /** List of intersection points between the ray and the scene geometries */
-        List<Intersection> intersections = scene.geometries.calculateIntersectionsHelper(ray);
+        List<Intersection> intersections = scene.geometries.calculateIntersections(ray);
 
         // If there are no intersections, return the background color
         if (intersections == null) {
@@ -217,7 +217,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
         double maxDistance = lightSource.getDistance(intersection.point);
 
-        List<Intersection> intersections = scene.geometries.calculateIntersectionsHelper(shadowRay);
+        List<Intersection> intersections = scene.geometries.calculateIntersections(shadowRay);
         if (intersections == null || intersections.isEmpty()) {
             return true; // No blocking
         }
@@ -269,7 +269,7 @@ public class SimpleRayTracer extends RayTracerBase {
         double lightDistance = lightSource.getDistance(intersection.point);
 
         // Calculate intersections of the shadow ray with the scene
-        List<Intersection> shadowIntersections = scene.geometries.calculateIntersectionsHelper(shadowRay);
+        List<Intersection> shadowIntersections = scene.geometries.calculateIntersections(shadowRay);
 
         // Accumulated transparency – starts as 1 (no blocking)
         Double3 ktr = Double3.ONE;

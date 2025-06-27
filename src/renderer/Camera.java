@@ -42,12 +42,12 @@ public class Camera implements Cloneable {
     /**
      * Flag to enable or disable anti-aliasing.
      */
-    private boolean AA_FLAG = false;
+    private boolean AA_FLAG = true;
 
     /**
      * Default grid size for anti-aliasing
      */
-    private int AA_GRID_SIZE = 2;
+    private int AA_GRID_SIZE = 9;
 
     /**
      * Flag to enable or disable adaptive anti-aliasing.

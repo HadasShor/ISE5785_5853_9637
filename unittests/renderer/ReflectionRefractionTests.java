@@ -481,6 +481,8 @@ class ReflectionRefractionTests {
                               .setKR(0.1)) // מינימום השתקפות
       );
 
+      scene.geometries.buildBVH();
+
       // === תאורה ===
 
       // תאורת סביבה עדינה
@@ -509,6 +511,7 @@ class ReflectionRefractionTests {
                       new Color(15, 20, 25),
                       new Vector(-0.2, -0.6, -1))
       );
+
 
       // === הגדרת המצלמה ===
       cameraBuilder
@@ -1955,6 +1958,7 @@ class ReflectionRefractionTests {
                               .setKD(0.5).setKS(0.5).setShininess(80)
                               .setKR(0.4))
       );
+      scene.geometries.buildBVH();
 
       // === יצירת פירמידות ברקע ===
       createBackgroundPyramids(scene);
@@ -2022,7 +2026,7 @@ class ReflectionRefractionTests {
               .setDirection(new Point(0, 0, -100), Vector.AXIS_Y)
               .setVpDistance(1200)
               .setVpSize(300, 200)  // שדה ראייה רחב יותר
-              .setResolution(800, 800)  // רזולוציה גבוהה יותר
+              .setResolution(1600, 1600)  // רזולוציה גבוהה יותר
               .setRayTracer(scene, RayTracerType.SIMPLE)
               .setMultithreading(7)
               .setDebugPrint(3)
@@ -2280,43 +2284,34 @@ class ReflectionRefractionTests {
 ///
 ///
 ///
-///
-///
-///
-///
-///
-///
-///
-///qqqqqqqqqqqqqqqqqqqqqqqqq
 
 
-//
+
 //@Test
-//void minimalisticStaircaseWithSpotlightTest() {
-//   // === Set scene background and ambient light ===
-//   // Dark blue-gray background for a moody, dramatic effect
-//   scene.setBackground(new Color(5, 5, 5)); // Dark blue-gray like in the image
-//
-//   // Very soft ambient light for subtle detail visibility
-//   scene.setAmbientLight(new AmbientLight(new Color(0.15, 0.15, 0.18)));
+//void minimalisticStaircaseWithSpotlightTest1() {
+//   // === Set scene background and ambient light - MUCH DARKER ===
+//   scene.setBackground(new Color(1, 1, 1)); // Very dark background
 //
 //   // === Create materials ===
+//   // MATTE stairs material - not shiny
 //   Material stairMaterial = new Material()
-//           .setKD(0.4).setKS(0.6).setShininess(80)   // מטאלי עדין
-//           .setKT(0).setKR(0.4);
+//           .setKD(0.9)     // High diffuse = matte
+//           .setKS(0.05)    // Low specular = no shine
+//           .setShininess(1) // Very low shininess = rough surface
+//           .setKR(0.0);    // No reflection = not shiny
 //
 //   Material wallMaterial = new Material()
 //           .setKD(0.8).setKS(0.2).setShininess(30)
 //           .setKT(0.4).setKR(0.05);
 //
 //   Material floorMaterial = new Material()
-//           .setKD(0.1).setKS(0.2).setShininess(300)
-//           .setKT(0).setKR(0.8);
+//           .setKD(0.6).setKS(0.4).setShininess(80)
+//           .setKT(0.5).setKR(0.2);
 //
-//   // Sphere materials - balanced for soft lighting
+//   // Sphere materials - HIGHLY REFLECTIVE like mirrors
 //   Material sphereMaterial = new Material()
-//           .setKD(0.4).setKS(0.6).setShininess(80)
-//           .setKT(0).setKR(0.4);
+//           .setKD(0.1).setKS(0.2).setShininess(500)
+//           .setKR(0.95);  // Very high reflection like the example
 //
 //   double stepWidth = 30;
 //   double stepHeight = 15;
@@ -2324,10 +2319,52 @@ class ReflectionRefractionTests {
 //
 //   Color stairColor = new Color(140, 130, 110); // Lighter, more neutral stairs
 //   Color wallColor = new Color(40, 45, 55); // Dark blue-gray for walls
-//   Color floorColor = new Color(20, 25, 30);
+//   Color floorColor = new Color(35, 40, 50); // Dark blue-gray floor
 //
 //   // --- Base structure under the stairs ---
-//   addBaseStructure(scene, -150, 0, -stepDepth/2, 150, -20, stepDepth/2, stairColor, stairMaterial);
+//   addBaseStructure1(scene, -150, 0, -stepDepth/2, 150, -20, stepDepth/2, stairColor, stairMaterial);
+//
+//   // --- פירמידה גדולה ליד הצילינדר בצד שמאל-למטה של התמונה, ליד המדרגות ---
+//   Point pyramidBase1 = new Point(120, -100, -80);
+//   Point pyramidBase2 = new Point(165, -100, -80);
+//   Point pyramidBase3 = new Point(165, -100, -30);
+//   Point pyramidBase4 = new Point(120, -100, -30);
+//   Point pyramidApex = new Point(42.5, 35, -55); // גבוה ומשמעותי
+//
+//   Material pyramidMaterial = new Material()
+//           .setKD(0.2).setKS(0.8).setShininess(130)
+//           .setKT(0.5).setKR(0.4);
+//
+//   Color pyramidColor = new Color(7, 2, 6);
+//
+//   // בסיס הפירמידה (ריבוע)
+//   scene.geometries.add(
+//           new Polygon(pyramidBase1, pyramidBase2, pyramidBase3, pyramidBase4)
+//                   .setEmission(pyramidColor.scale(0.8))
+//                   .setMaterial(pyramidMaterial)
+//   );
+//
+//   // פאות הפירמידה (ארבעה משולשים)
+//   scene.geometries.add(
+//           new Triangle(pyramidBase1, pyramidBase2, pyramidApex)
+//                   .setEmission(pyramidColor)
+//                   .setMaterial(pyramidMaterial)
+//   );
+//   scene.geometries.add(
+//           new Triangle(pyramidBase2, pyramidBase3, pyramidApex)
+//                   .setEmission(pyramidColor.scale(1.1))
+//                   .setMaterial(pyramidMaterial)
+//   );
+//   scene.geometries.add(
+//           new Triangle(pyramidBase3, pyramidBase4, pyramidApex)
+//                   .setEmission(pyramidColor)
+//                   .setMaterial(pyramidMaterial)
+//   );
+//   scene.geometries.add(
+//           new Triangle(pyramidBase4, pyramidBase1, pyramidApex)
+//                   .setEmission(pyramidColor.scale(0.9))
+//                   .setMaterial(pyramidMaterial)
+//   );
 //
 //   // --- Side and back walls of staircase structure ---
 //   scene.geometries.add(
@@ -2365,6 +2402,15 @@ class ReflectionRefractionTests {
 //                   new Point(-150, 0, -stepDepth/2))
 //                   .setEmission(stairColor)
 //                   .setMaterial(stairMaterial)
+//   );
+//   scene.geometries.add(
+//           new Polygon(
+//                   new Point(-250, 250, -100),   // פינה שמאלית אחורית למעלה
+//                   new Point(200, 250, -100),    // פינה ימנית אחורית למעלה
+//                   new Point(200, 250, 100),     // פינה ימנית קדמית למעלה
+//                   new Point(-250, 250, 100))    // פינה שמאלית קדמית למעלה
+//                   .setEmission(wallColor)
+//                   .setMaterial(wallMaterial)
 //   );
 //
 //   // --- Stairs ---
@@ -2414,26 +2460,52 @@ class ReflectionRefractionTests {
 //                         .setEmission(stairColor)
 //                         .setMaterial(stairMaterial)
 //         );
+//         //############################################
+//         scene.geometries.add(
+//                 new Polygon(
+//                         new Point(200, -20, -100),   // פינה ימנית אחורית למטה
+//                         new Point(200, -20, 100),    // פינה ימנית קדמית למטה
+//                         new Point(200, 250, 100),    // פינה ימנית קדמית למעלה
+//                         new Point(200, 250, -100)    // פינה ימנית אחורית למעלה
+//                 )
+//                         .setEmission(wallColor)
+//                         .setMaterial(wallMaterial)
+//         );
+//         //#############################################333
 //      }
 //   }
 //
-//   // === Add colorful spheres - with softer, more natural colors ===
+//   // === For VIBRANT colorful spheres ===
 //   Color[] sphereColors = {
-//           new Color(150, 45, 45),   // Soft Red
-//           new Color(45, 45, 150),   // Soft Blue
-//           new Color(150, 100, 45),  // Soft Orange
-//           new Color(100, 45, 150),  // Soft Purple
-//           new Color(45, 150, 100),  // Soft Green
-//           new Color(150, 150, 45),  // Soft Yellow
-//           new Color(150, 80, 100),  // Soft Pink
-//           new Color(45, 120, 150),  // Soft Cyan
-//           new Color(120, 150, 45),  // Soft Lime
-//           new Color(150, 60, 90)    // Soft Magenta
+//           new Color(50, 50, 120),     // Very vibrant blue
+//           new Color(100, 100, 70),    // Very bright gold
+//           new Color(90, 30, 150),     // Very rich purple
+//           new Color(50, 120, 50),     // Very bright green
+//           new Color(150, 90, 30),     // Very vibrant orange
+//           new Color(120, 120, 30),    // Very bright yellow
+//           new Color(150, 30, 90),     // Very vibrant magenta
+//           new Color(30, 90, 150),     // Very bright cyan
+//           new Color(90, 150, 30),     // Very vibrant lime
+//           new Color(120, 60, 90)      // Very bright pink
+//   };
+//
+//   // Colorful light colors - REDUCED for darker scene
+//   Color[] lightColors = {
+//           new Color(20, 20, 35),    // Blue light - reduced
+//           new Color(90, 90, 60),    // Metallic light - reduced
+//           new Color(75, 25, 100),   // Purple light - reduced
+//           new Color(40, 75, 40),    // Green light - reduced
+//           new Color(100, 60, 25),   // Bronze/orange light - reduced
+//           new Color(100, 100, 40),  // Yellow light - reduced
+//           new Color(100, 25, 60),   // Magenta light - reduced
+//           new Color(25, 60, 100),   // Cyan light - reduced
+//           new Color(60, 100, 25),   // Lime light - reduced
+//           new Color(90, 40, 60)     // Pink light - reduced
 //   };
 //
 //   double sphereRadius = 8;
 //
-//   // Add spheres on each step - with random positioning
+//   // Add spheres on each step WITH colorful lights nearby
 //   Random random = new Random(42); // fixed seed for consistent results
 //   for (int i = 0; i < 10; i++) {
 //      double baseX = -150 + i * stepWidth;
@@ -2443,80 +2515,55 @@ class ReflectionRefractionTests {
 //      double x = baseX + stepWidth * (0.2 + random.nextDouble() * 0.6); // 20%-80% of step width
 //      double z = (random.nextDouble() - 0.5) * stepDepth * 0.6; // random depth within step
 //
+//      // Add the sphere
 //      scene.geometries.add(
 //              new Sphere(sphereRadius, new Point(x, y, z))
 //                      .setEmission(sphereColors[i])
-//                      .setMaterial(sphereMaterial)
+//                      .setMaterial(sphereMaterial)  // Using the highly reflective material
+//      );
+//
+//      // Add colorful point light near each sphere - WITH MORE ATTENUATION
+//      scene.light.add(
+//              new PointLight(
+//                      lightColors[i], // Matching colorful light
+//                      new Point(x - 15, y + 25, z + 10)) // Positioned above and to the side of sphere
+//                      .setKl(0.008).setKq(0.0008) // Increased attenuation
+//      );
+//
+//      // Add secondary smaller light for extra color effect - WITH MORE ATTENUATION
+//      scene.light.add(
+//              new PointLight(
+//                      lightColors[i].scale(0.6), // Dimmer version of the same color
+//                      new Point(x + 10, y + 15, z - 8)) // Different angle
+//                      .setKl(0.012).setKq(0.0012) // Increased attenuation
 //      );
 //   }
 //
-//   // Add a couple of spheres on the floor (like in the image)
+//   // Add a couple of spheres on the floor WITH their colorful lights
 //   scene.geometries.add(
 //           new Sphere(12, new Point(-180, -8, -15))
-//                   .setEmission(new Color(150, 45, 45))
-//                   .setMaterial(sphereMaterial)
+//                   .setEmission(new Color(25, 5, 5))  // Dark red
+//                   .setMaterial(sphereMaterial)       // Highly reflective
+//   );
+//   // Red light for floor sphere
+//   scene.light.add(
+//           new PointLight(
+//                   new Color(100, 25, 25), // Reduced red light
+//                   new Point(-165, 15, -5)) // Above the red sphere
+//                   .setKl(0.004).setKq(0.0002)
 //   );
 //
 //   scene.geometries.add(
 //           new Sphere(10, new Point(-200, -10, 10))
-//                   .setEmission(new Color(45, 45, 130))
-//                   .setMaterial(sphereMaterial)
+//                   .setEmission(new Color(5, 5, 25))  // Dark blue
+//                   .setMaterial(sphereMaterial)       // Highly reflective
 //   );
-//
-//   // === הוספת פירמידה מלאה לפני המדרגות במקום משולש ===
-//   // נקודות הבסיס של הפירמידה (ריבוע)
-//// נקודות הבסיס של הפירמידה (ריבוע) - מעבירים קרוב למצלמה
-//   Point pyramidBase1 = new Point(-180, -20, -15);
-//   Point pyramidBase2 = new Point(-130, -20, -15);
-//   Point pyramidBase3 = new Point(-130, -20, 15);
-//   Point pyramidBase4 = new Point(-180, -20, 15);
-//   Point pyramidApex = new Point(-155, 25, 0);
-//
-//   Material pyramidMaterial = new Material()
-//           .setKD(0.2).setKS(0.8).setShininess(130)
-//           .setKT(0.5).setKR(0.4);
-//
-//   Color pyramidColor = new Color(7, 2, 6);
-//
-//   // בסיס הפירמידה
-//   scene.geometries.add(
-//           new Polygon(pyramidBase1, pyramidBase2, pyramidBase3, pyramidBase4)
-//                   .setEmission(pyramidColor.scale(0.8))
-//                   .setMaterial(pyramidMaterial)
-//   );
-//
-//   // פאות הפירמידה
-//   scene.geometries.add(
-//           new Triangle(pyramidBase1, pyramidBase2, pyramidApex)
-//                   .setEmission(pyramidColor)
-//                   .setMaterial(pyramidMaterial)
-//   );
-//
-//   scene.geometries.add(
-//           new Triangle(pyramidBase2, pyramidBase3, pyramidApex)
-//                   .setEmission(pyramidColor.scale(1.1))
-//                   .setMaterial(pyramidMaterial)
-//   );
-//
-//   scene.geometries.add(
-//           new Triangle(pyramidBase3, pyramidBase4, pyramidApex)
-//                   .setEmission(pyramidColor)
-//                   .setMaterial(pyramidMaterial)
-//   );
-//
-//   scene.geometries.add(
-//           new Triangle(pyramidBase4, pyramidBase1, pyramidApex)
-//                   .setEmission(pyramidColor.scale(0.9))
-//                   .setMaterial(pyramidMaterial)
-//   );
-//
-//   // === הוספת צילינדר בצבע תכלת מטאלי לפני המדרגות ===
-//   scene.geometries.add(
-//           new Cylinder(new Ray(new Point(-110, -20, 0), new Vector(0, 1, 0)), 18d, 45d)
-//                   .setEmission(new Color(2, 150, 160))
-//                   .setMaterial(new Material()
-//                           .setKD(0.2).setKS(0.8).setShininess(150)
-//                           .setKR(0.7))
+//   // Blue light for floor sphere
+//   scene.light.add(
+//           new PointLight(
+//                   new Color(25, 25, 100), // Reduced blue light
+//                   new Point(-185, 12, 20)) // Above the blue sphere
+//                   .setKl(0.004).setKq(0.0002)
 //   );
 //
 //   // --- Room walls (dark to not distract from stairs) ---
@@ -2544,46 +2591,39 @@ class ReflectionRefractionTests {
 //                   .setMaterial(floorMaterial)
 //   );
 //
-//   // === Soft, balanced lighting setup like in the image ===
+//   // === Enhanced lighting for better reflections - MINIMAL LIGHTING ===
 //
-//   // Main soft spotlight - רך ומאוזן
+//   // Main soft spotlight - minimal
 //   scene.light.add(
 //           new SpotLight(
-//                   new Color(300, 280, 250), // Soft warm light
+//                   new Color(3, 3, 2), // Very minimal
 //                   new Point(-150, 150, -60),
 //                   new Vector(1, -1, 0.5).normalize())
-//                   .setKl(0.0005).setKq(0.00001)
+//                   .setKl(0.015).setKq(0.001) // Strong attenuation
 //                   .setNarrowBeam(35)
 //   );
 //
-//   // Secondary fill light - אור מילוי עדין
+//   // Secondary fill light - almost nothing
 //   scene.light.add(
 //           new SpotLight(
-//                   new Color(180, 160, 140), // Softer fill
+//                   new Color(1, 1, 1), // Almost nothing
 //                   new Point(50, 100, -40),
 //                   new Vector(-0.8, -0.6, 0.3).normalize())
-//                   .setKl(0.001).setKq(0.00002)
+//                   .setKl(0.02).setKq(0.002) // Extreme attenuation
 //                   .setNarrowBeam(45)
 //   );
 //
-//   // Directional light for even softer shadows - אור כיווני עדין
+//   // Directional light - minimal
 //   scene.light.add(
 //           new DirectionalLight(
-//                   new Color(40, 45, 50), // Very soft blue-gray
+//                   new Color(1, 1, 1), // Almost nothing
 //                   new Vector(0.3, -0.7, -0.6))
 //   );
-//
-//   // Point light for sphere highlighting - נקודת אור לכדורים
-//   scene.light.add(
-//           new PointLight(
-//                   new Color(120, 110, 100), // Gentle point light
-//                   new Point(-100, 80, 20))
-//                   .setKl(0.002).setKq(0.0001)
-//   );
+//   scene.geometries.buildBVH();
 //
 //   // === Camera setup ===
 //   Camera.getBuilder()
-//           .setLocation(new Point(-400, 80, -700)) // Adjusted for better angle
+//           .setLocation(new Point(-600, 80, -720)) // Adjusted for better angle
 //           .setDirection(new Point(-50, 60, 0), Vector.AXIS_Y) // Looking toward the stairs
 //           .setVpDistance(1000)
 //           .setVpSize(400, 400)
@@ -2593,15 +2633,16 @@ class ReflectionRefractionTests {
 //           .setRayTracer(scene, RayTracerType.SIMPLE)
 //           .build()
 //           .renderImage()
-//           .writeToImage("pyramid_and_turquoise_cylinder_staircase");
+//           .writeToImage("colorful_staircase_with_colorful_lights_moreDark");
 //}
 //
 //   /**
-//    * Helper method to add a base structure under the stairs
+//    * Helper method to add a base structure under the stairs,
+//    * וגם צילינדר גדול בצד שמאל-למטה של התמונה, ליד המדרגות.
 //    */
-//   private void addBaseStructure(Scene scene, double minX, double minY, double minZ,
-//                                 double maxX, double maxY, double maxZ,
-//                                 Color color, Material material) {
+//   private void addBaseStructure1(Scene scene, double minX, double minY, double minZ,
+//                                  double maxX, double maxY, double maxZ,
+//                                  Color color, Material material) {
 //      scene.geometries.add(
 //              new Polygon(
 //                      new Point(minX, minY, minZ),
@@ -2656,358 +2697,609 @@ class ReflectionRefractionTests {
 //                      .setEmission(color)
 //                      .setMaterial(material)
 //      );
+//      // צילינדר גדול בצד שמאל-למטה של התמונה, ליד המדרגות
+//      scene.geometries.add(
+//              new Cylinder(new Ray(new Point(60, -30, -55), new Vector(0, 1, 0)), 15d, 80d)
+//                      .setEmission(new Color(2, 150, 160))
+//                      .setMaterial(new Material()
+//                              .setKD(0.2).setKS(0.8).setShininess(150)
+//                              .setKR(0.7))
+//      );
 //   }
-@Test
-void minimalisticStaircaseWithSpotlightTest1() {
-   // === Set scene background and ambient light - MUCH DARKER ===
-   scene.setBackground(new Color(1, 1, 1)); // Very dark background
+   //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+   @Test
+   void minimalisticStaircaseWithSpotlightTest1() {
+      // === Set scene background and ambient light - MUCH DARKER ===
+      // Much darker background for dramatic effect
+      scene.setBackground(new Color(1, 1, 1)); // Very dark background
 
-   // === Create materials ===
-   // MATTE stairs material - not shiny
-   Material stairMaterial = new Material()
-           .setKD(0.9)     // High diffuse = matte
-           .setKS(0.05)    // Low specular = no shine
-           .setShininess(1) // Very low shininess = rough surface
-           .setKR(0.0);    // No reflection = not shiny
+      // Very minimal ambient light
+      scene.setAmbientLight(new AmbientLight(new Color(0.005, 0.005, 0.008)));
 
-   Material wallMaterial = new Material()
-           .setKD(0.8).setKS(0.2).setShininess(30)
-           .setKT(0.4).setKR(0.05);
+      // === Create materials ===
+      // MATTE stairs material - not shiny
+      Material stairMaterial = new Material()
+              .setKD(0.9)     // High diffuse = matte
+              .setKS(0.05)    // Low specular = no shine
+              .setShininess(1) // Very low shininess = rough surface
+              .setKR(0.0);    // No reflection = not shiny
 
-   Material floorMaterial = new Material()
-           .setKD(0.6).setKS(0.4).setShininess(80)
-           .setKT(0.5).setKR(0.2);
+      Material wallMaterial = new Material()
+              .setKD(0.8).setKS(0.2).setShininess(30)
+              .setKT(0.4).setKR(0.05);
 
-   // Sphere materials - HIGHLY REFLECTIVE like mirrors
-   Material sphereMaterial = new Material()
-           .setKD(0.1).setKS(0.2).setShininess(500)
-           .setKR(0.95);  // Very high reflection like the example
+      Material floorMaterial = new Material()
+              .setKD(0.6).setKS(0.4).setShininess(80)
+              .setKT(0.5).setKR(0.2);
 
-   double stepWidth = 30;
-   double stepHeight = 15;
-   double stepDepth = 45;
+      // Sphere materials - HIGHLY REFLECTIVE like mirrors
+      Material sphereMaterial = new Material()
+              .setKD(0.1).setKS(0.2).setShininess(500)
+              .setKR(0.95);  // Very high reflection like the example
 
-   Color stairColor = new Color(140, 130, 110); // Lighter, more neutral stairs
-   Color wallColor = new Color(40, 45, 55); // Dark blue-gray for walls
-   Color floorColor = new Color(35, 40, 50); // Dark blue-gray floor
+      /////////////////////////////
 
-   // --- Base structure under the stairs ---
-   addBaseStructure1(scene, -150, 0, -stepDepth/2, 150, -20, stepDepth/2, stairColor, stairMaterial);
 
-   // --- פירמידה גדולה ליד הצילינדר בצד שמאל-למטה של התמונה, ליד המדרגות ---
-   Point pyramidBase1 = new Point(120, -100, -80);
-   Point pyramidBase2 = new Point(165, -100, -80);
-   Point pyramidBase3 = new Point(165, -100, -30);
-   Point pyramidBase4 = new Point(120, -100, -30);
-   Point pyramidApex = new Point(42.5, 35, -55); // גבוה ומשמעותי
+      double stepWidth = 30;
+      double stepHeight = 15;
+      double stepDepth = 45;
 
-   Material pyramidMaterial = new Material()
-           .setKD(0.2).setKS(0.8).setShininess(130)
-           .setKT(0.5).setKR(0.4);
+      Color stairColor = new Color(140, 130, 110); // Lighter, more neutral stairs
+      Color wallColor = new Color(40, 45, 55); // Dark blue-gray for walls
+      Color floorColor = new Color(35, 40, 50); // Dark blue-gray floor
 
-   Color pyramidColor = new Color(7, 2, 6);
+      // --- Base structure under the stairs ---
+      addBaseStructure1(scene, -150, 0, -stepDepth/2, 150, -20, stepDepth/2, stairColor, stairMaterial);
 
-   // בסיס הפירמידה (ריבוע)
-   scene.geometries.add(
-           new Polygon(pyramidBase1, pyramidBase2, pyramidBase3, pyramidBase4)
-                   .setEmission(pyramidColor.scale(0.8))
-                   .setMaterial(pyramidMaterial)
-   );
 
-   // פאות הפירמידה (ארבעה משולשים)
-   scene.geometries.add(
-           new Triangle(pyramidBase1, pyramidBase2, pyramidApex)
-                   .setEmission(pyramidColor)
-                   .setMaterial(pyramidMaterial)
-   );
-   scene.geometries.add(
-           new Triangle(pyramidBase2, pyramidBase3, pyramidApex)
-                   .setEmission(pyramidColor.scale(1.1))
-                   .setMaterial(pyramidMaterial)
-   );
-   scene.geometries.add(
-           new Triangle(pyramidBase3, pyramidBase4, pyramidApex)
-                   .setEmission(pyramidColor)
-                   .setMaterial(pyramidMaterial)
-   );
-   scene.geometries.add(
-           new Triangle(pyramidBase4, pyramidBase1, pyramidApex)
-                   .setEmission(pyramidColor.scale(0.9))
-                   .setMaterial(pyramidMaterial)
-   );
-
-   // --- Side and back walls of staircase structure ---
-   scene.geometries.add(
-           new Polygon(
-                   new Point(-150, -20, -stepDepth/2),
-                   new Point(-150, -20, stepDepth/2),
-                   new Point(-150, 10*stepHeight, stepDepth/2),
-                   new Point(-150, 10*stepHeight, -stepDepth/2))
-                   .setEmission(stairColor)
-                   .setMaterial(stairMaterial)
-   );
-   scene.geometries.add(
-           new Polygon(
-                   new Point(150, -20, -stepDepth/2),
-                   new Point(150, -20, stepDepth/2),
-                   new Point(150, 10*stepHeight, stepDepth/2),
-                   new Point(150, 10*stepHeight, -stepDepth/2))
-                   .setEmission(stairColor)
-                   .setMaterial(stairMaterial)
-   );
-   scene.geometries.add(
-           new Polygon(
-                   new Point(-150, -20, stepDepth/2),
-                   new Point(150, -20, stepDepth/2),
-                   new Point(150, 10*stepHeight, stepDepth/2),
-                   new Point(-150, 10*stepHeight, stepDepth/2))
-                   .setEmission(stairColor)
-                   .setMaterial(stairMaterial)
-   );
-   scene.geometries.add(
-           new Polygon(
-                   new Point(-150, -20, -stepDepth/2),
-                   new Point(150, -20, -stepDepth/2),
-                   new Point(150, 0, -stepDepth/2),
-                   new Point(-150, 0, -stepDepth/2))
-                   .setEmission(stairColor)
-                   .setMaterial(stairMaterial)
-   );
-   scene.geometries.add(
-           new Polygon(
-                   new Point(-250, 250, -100),   // פינה שמאלית אחורית למעלה
-                   new Point(200, 250, -100),    // פינה ימנית אחורית למעלה
-                   new Point(200, 250, 100),     // פינה ימנית קדמית למעלה
-                   new Point(-250, 250, 100))    // פינה שמאלית קדמית למעלה
-                   .setEmission(wallColor)
-                   .setMaterial(wallMaterial)
-   );
-
-   // --- Stairs ---
-   for (int i = 0; i < 10; i++) {
-      double x = -150 + i * stepWidth;
-      double y = i * stepHeight;
-
-      // Horizontal step
       scene.geometries.add(
               new Polygon(
-                      new Point(x, y, -stepDepth/2),
-                      new Point(x + stepWidth, y, -stepDepth/2),
-                      new Point(x + stepWidth, y, stepDepth/2),
-                      new Point(x, y, stepDepth/2))
+                      new Point(150, -20, -stepDepth/2),
+                      new Point(150, -20, stepDepth/2),
+                      new Point(150, 10*stepHeight, stepDepth/2),
+                      new Point(150, 10*stepHeight, -stepDepth/2))
                       .setEmission(stairColor)
                       .setMaterial(stairMaterial)
       );
-      // Vertical riser
-      if (i < 9) {
-         scene.geometries.add(
-                 new Polygon(
-                         new Point(x + stepWidth, y, -stepDepth/2),
-                         new Point(x + stepWidth, y + stepHeight, -stepDepth/2),
-                         new Point(x + stepWidth, y + stepHeight, stepDepth/2),
-                         new Point(x + stepWidth, y, stepDepth/2))
-                         .setEmission(stairColor)
-                         .setMaterial(stairMaterial)
-         );
-      }
-      // Side/back/under fills for full enclosure
-      if (i > 0) {
-         scene.geometries.add(
-                 new Polygon(
-                         new Point(x, y - stepHeight, stepDepth/2),
-                         new Point(x, y, stepDepth/2),
-                         new Point(x, y, -stepDepth/2),
-                         new Point(x, y - stepHeight, -stepDepth/2))
-                         .setEmission(stairColor)
-                         .setMaterial(stairMaterial)
-         );
-         scene.geometries.add(
-                 new Polygon(
-                         new Point(x, y - stepHeight, -stepDepth/2),
-                         new Point(x + stepWidth, y - stepHeight, -stepDepth/2),
-                         new Point(x + stepWidth, y - stepHeight, stepDepth/2),
-                         new Point(x, y - stepHeight, stepDepth/2))
-                         .setEmission(stairColor)
-                         .setMaterial(stairMaterial)
-         );
-         //############################################
-         scene.geometries.add(
-                 new Polygon(
-                         new Point(200, -20, -100),   // פינה ימנית אחורית למטה
-                         new Point(200, -20, 100),    // פינה ימנית קדמית למטה
-                         new Point(200, 250, 100),    // פינה ימנית קדמית למעלה
-                         new Point(200, 250, -100)    // פינה ימנית אחורית למעלה
-                 )
-                         .setEmission(wallColor)
-                         .setMaterial(wallMaterial)
-         );
-         //#############################################333
-      }
-   }
-
-   // === For VIBRANT colorful spheres ===
-   Color[] sphereColors = {
-           new Color(50, 50, 120),     // Very vibrant blue
-           new Color(100, 100, 70),    // Very bright gold
-           new Color(90, 30, 150),     // Very rich purple
-           new Color(50, 120, 50),     // Very bright green
-           new Color(150, 90, 30),     // Very vibrant orange
-           new Color(120, 120, 30),    // Very bright yellow
-           new Color(150, 30, 90),     // Very vibrant magenta
-           new Color(30, 90, 150),     // Very bright cyan
-           new Color(90, 150, 30),     // Very vibrant lime
-           new Color(120, 60, 90)      // Very bright pink
-   };
-
-   // Colorful light colors - REDUCED for darker scene
-   Color[] lightColors = {
-           new Color(20, 20, 35),    // Blue light - reduced
-           new Color(90, 90, 60),    // Metallic light - reduced
-           new Color(75, 25, 100),   // Purple light - reduced
-           new Color(40, 75, 40),    // Green light - reduced
-           new Color(100, 60, 25),   // Bronze/orange light - reduced
-           new Color(100, 100, 40),  // Yellow light - reduced
-           new Color(100, 25, 60),   // Magenta light - reduced
-           new Color(25, 60, 100),   // Cyan light - reduced
-           new Color(60, 100, 25),   // Lime light - reduced
-           new Color(90, 40, 60)     // Pink light - reduced
-   };
-
-   double sphereRadius = 8;
-
-   // Add spheres on each step WITH colorful lights nearby
-   Random random = new Random(42); // fixed seed for consistent results
-   for (int i = 0; i < 10; i++) {
-      double baseX = -150 + i * stepWidth;
-      double y = i * stepHeight + sphereRadius; // On top of step
-
-      // Random position within the step boundaries
-      double x = baseX + stepWidth * (0.2 + random.nextDouble() * 0.6); // 20%-80% of step width
-      double z = (random.nextDouble() - 0.5) * stepDepth * 0.6; // random depth within step
-
-      // Add the sphere
       scene.geometries.add(
-              new Sphere(sphereRadius, new Point(x, y, z))
-                      .setEmission(sphereColors[i])
-                      .setMaterial(sphereMaterial)  // Using the highly reflective material
+              new Polygon(
+                      new Point(-150, -20, stepDepth/2),
+                      new Point(150, -20, stepDepth/2),
+                      new Point(150, 10*stepHeight, stepDepth/2),
+                      new Point(-150, 10*stepHeight, stepDepth/2))
+                      .setEmission(stairColor)
+                      .setMaterial(stairMaterial)
+      );
+      scene.geometries.add(
+              new Polygon(
+                      new Point(-150, -20, -stepDepth/2),
+                      new Point(150, -20, -stepDepth/2),
+                      new Point(150, 0, -stepDepth/2),
+                      new Point(-150, 0, -stepDepth/2))
+                      .setEmission(stairColor)
+                      .setMaterial(stairMaterial)
       );
 
-      // Add colorful point light near each sphere - WITH MORE ATTENUATION
+      // --- Stairs ---
+      for (int i = 0; i < 10; i++) {
+         double x = -150 + i * stepWidth;
+         double y = i * stepHeight;
+
+         // Horizontal step
+         scene.geometries.add(
+                 new Polygon(
+                         new Point(x, y, -stepDepth/2),
+                         new Point(x + stepWidth, y, -stepDepth/2),
+                         new Point(x + stepWidth, y, stepDepth/2),
+                         new Point(x, y, stepDepth/2))
+                         .setEmission(stairColor)
+                         .setMaterial(stairMaterial)
+         );
+         // Vertical riser
+         if (i < 9) {
+            scene.geometries.add(
+                    new Polygon(
+                            new Point(x + stepWidth, y, -stepDepth/2),
+                            new Point(x + stepWidth, y + stepHeight, -stepDepth/2),
+                            new Point(x + stepWidth, y + stepHeight, stepDepth/2),
+                            new Point(x + stepWidth, y, stepDepth/2))
+                            .setEmission(stairColor)
+                            .setMaterial(stairMaterial)
+            );
+         }
+         // Side/back/under fills for full enclosure
+         if (i > 0) {
+            scene.geometries.add(
+                    new Polygon(
+                            new Point(x, y - stepHeight, stepDepth/2),
+                            new Point(x, y, stepDepth/2),
+                            new Point(x, y, -stepDepth/2),
+                            new Point(x, y - stepHeight, -stepDepth/2))
+                            .setEmission(stairColor)
+                            .setMaterial(stairMaterial)
+            );
+            // === Strong visible white light above the pink and purple spheres ===
+            scene.light.add(
+                    new SpotLight(
+                            new Color(200, 200, 180), // תאורה לבנה חזקה הרבה יותר
+                            new Point(-120, 45, 0), // קרוב יותר לכדורים - גובה 45 במקום 60
+                            new Vector(0, -1, 0).normalize()) // מכוון ישר למטה על הכדורים
+                            .setKl(0.002).setKq(0.0001) // דעיכה חלשה יותר = אור חזק יותר
+                            .setNarrowBeam(30) // קרן מתמקדת יותר
+            );
+         }
+      }
+
+      // === For VIBRANT colorful spheres ===
+      Color[] sphereColors = {
+              new Color(50, 50, 120),     // Very vibrant blue
+              new Color(100, 100, 70),    // Very bright gold
+              new Color(90, 30, 150),     // Very rich purple
+              new Color(50, 120, 50),     // Very bright green
+              new Color(150, 90, 30),     // Very vibrant orange
+              new Color(120, 120, 30),    // Very bright yellow
+              new Color(150, 30, 90),     // Very vibrant magenta
+              new Color(30, 90, 150),     // Very bright cyan
+              new Color(90, 150, 30),     // Very vibrant lime
+              new Color(120, 60, 90)      // Very bright pink
+      };
+
+      // Colorful light colors - REDUCED for darker scene
+      Color[] lightColors = {
+              new Color(20, 20, 35),    // Blue light - reduced
+              new Color(90, 90, 60),    // Metallic light - reduced
+              new Color(75, 25, 100),   // Purple light - reduced
+              new Color(40, 75, 40),    // Green light - reduced
+              new Color(100, 60, 25),   // Bronze/orange light - reduced
+              new Color(100, 100, 40),  // Yellow light - reduced
+              new Color(100, 25, 60),   // Magenta light - reduced
+              new Color(25, 60, 100),   // Cyan light - reduced
+              new Color(60, 100, 25),   // Lime light - reduced
+              new Color(90, 40, 60)     // Pink light - reduced
+      };
+
+      double sphereRadius = 8;
+
+      // Add spheres on each step WITH colorful lights nearby
+      Random random = new Random(42); // fixed seed for consistent results
+      for (int i = 0; i < 10; i++) {
+         double baseX = -150 + i * stepWidth;
+         double y = i * stepHeight + sphereRadius; // On top of step
+
+         // Random position within the step boundaries
+         double x = baseX + stepWidth * (0.2 + random.nextDouble() * 0.6); // 20%-80% of step width
+         double z = (random.nextDouble() - 0.5) * stepDepth * 0.6; // random depth within step
+
+         // Add the sphere
+         scene.geometries.add(
+                 new Sphere(sphereRadius, new Point(x, y, z))
+                         .setEmission(sphereColors[i])
+                         .setMaterial(sphereMaterial)  // Using the highly reflective material
+         );
+
+         // Add colorful point light near each sphere - WITH MORE ATTENUATION
+         scene.light.add(
+                 new PointLight(
+                         lightColors[i], // Matching colorful light
+                         new Point(x - 15, y + 25, z + 10)) // Positioned above and to the side of sphere
+                         .setKl(0.008).setKq(0.0008) // Increased attenuation
+         );
+
+         // Add secondary smaller light for extra color effect - WITH MORE ATTENUATION
+         scene.light.add(
+                 new PointLight(
+                         lightColors[i].scale(0.6), // Dimmer version of the same color
+                         new Point(x + 10, y + 15, z - 8)) // Different angle
+                         .setKl(0.012).setKq(0.0012) // Increased attenuation
+         );
+      }
+
+      // Add a couple of spheres on the floor WITH their colorful lights
+      scene.geometries.add(
+              new Sphere(12, new Point(-180, -8, -15))
+                      .setEmission(new Color(25, 5, 5))  // Dark red
+                      .setMaterial(sphereMaterial)       // Highly reflective
+      );
+      // Red light for floor sphere
       scene.light.add(
               new PointLight(
-                      lightColors[i], // Matching colorful light
-                      new Point(x - 15, y + 25, z + 10)) // Positioned above and to the side of sphere
-                      .setKl(0.008).setKq(0.0008) // Increased attenuation
+                      new Color(100, 25, 25), // Reduced red light
+                      new Point(-165, 15, -5)) // Above the red sphere
+                      .setKl(0.004).setKq(0.0002)
       );
 
-      // Add secondary smaller light for extra color effect - WITH MORE ATTENUATION
+      scene.geometries.add(
+              new Sphere(10, new Point(-200, -10, 10))
+                      .setEmission(new Color(5, 5, 25))  // Dark blue
+                      .setMaterial(sphereMaterial)       // Highly reflective
+      );
+
+      /// //////////////////////////////////////////////////////////////////////
+//   Material pyramidMaterial = new Material()
+//           .setKD(0.2).setKS(0.8).setShininess(130)
+//           .setKT(0.5).setKR(0.4);
+//
+//   Color pyramidColor = new Color(7, 2, 6);
+
+
+      scene.geometries.add(
+              new Cylinder(new Ray(new Point(-190, -8, -250), new Vector(0, 1, 0)), 10d, 50d)
+                      .setEmission(new Color(40, 5, 5))  // Dark red
+                      .setMaterial(sphereMaterial)
+      );
+//   scene.geometries.add(
+//           new Cylinder(new Ray(new Point(25/מרחק/, -20/גובה/, -120), new Vector(0, 1, 0)), 14d, 60d)
+//                   .setEmission(new Color(40, 5, 5))  // Dark red - זה הכדור האדום הגדול
+//                   .setMaterial(sphereMaterial)
+////                   .setMaterial(new Material()
+////                           .setKD(0.2).setKS(0.8).setShininess(150)
+////                           .setKR(0.7))
+//   );
+
+      Material pyramidMaterial = sphereMaterial;
+      Color pyramidColor = new Color(5, 5, 25);
+
+// --- פירמידה בקו ישר מהמדרגות על הרצפה ---
+//   Point pyramidBase1 = new Point(120, -20, -15);    // מרחק קטן מהצילינדר
+//   Point pyramidBase2 = new Point(135, -20, -10);    //
+//   Point pyramidBase3 = new Point(130, -20, 5);      //
+//   Point pyramidBase4 = new Point(115, -20, 0);      //
+//   Point pyramidApex = new Point(125, 25, -5);       // מעל מרכז הבסיס
+// --- פירמידה קרובה יותר לצילינדר ויותר קדימה ---
+// --- פירמידה בצד ימין של הצילינדר ---
+      Point pyramidBase1 = new Point(-170, -20, -220);    // צד ימין של הצילינדר
+      Point pyramidBase2 = new Point(-160, -20, -215);    //
+      Point pyramidBase3 = new Point(-165, -20, -205);    //
+      Point pyramidBase4 = new Point(-175, -20, -210);    //
+      Point pyramidApex = new Point(-167, 25, -212);      // מעל מרכז הבסיס
+// בסיס הפירמידה (ריבוע)
+      scene.geometries.add(
+              new Polygon(pyramidBase1, pyramidBase2, pyramidBase3, pyramidBase4)
+                      .setEmission(pyramidColor.scale(0.8))
+                      .setMaterial(pyramidMaterial)
+      );
+
+// פאות הפירמידה (ארבעה משולשים)
+      scene.geometries.add(
+              new Triangle(pyramidBase1, pyramidBase2, pyramidApex)
+                      .setEmission(pyramidColor)
+                      .setMaterial(pyramidMaterial)
+      );
+      scene.geometries.add(
+              new Triangle(pyramidBase2, pyramidBase3, pyramidApex)
+                      .setEmission(pyramidColor.scale(1.1))
+                      .setMaterial(pyramidMaterial)
+      );
+      scene.geometries.add(
+              new Triangle(pyramidBase3, pyramidBase4, pyramidApex)
+                      .setEmission(pyramidColor)
+                      .setMaterial(pyramidMaterial)
+      );
+      scene.geometries.add(
+              new Triangle(pyramidBase4, pyramidBase1, pyramidApex)
+                      .setEmission(pyramidColor.scale(0.9))
+                      .setMaterial(pyramidMaterial)
+      );
+//   Material pyramidMaterial = sphereMaterial;
+//
+//   Color pyramidColor = new Color(5, 5, 25);
+//
+////// --- פירמידה גדולה ליד הצילינדר ---
+//   Point pyramidBase1 = new Point(10, -20, -120);    // קרוב לצילינדר
+//   Point pyramidBase2 = new Point(25, -20, -115);    // מסובב קלות
+//   Point pyramidBase3 = new Point(20, -20, -85);     // צורה מסובבת
+//   Point pyramidBase4 = new Point(5, -20, -90);      // השלמת הריבוע המסובב
+//   Point pyramidApex = new Point(15, 30, -100);      // ממוקם מעל מרכז הבסיס
+//
+//// בסיס הפירמידה (ריבוע)
+//   scene.geometries.add(
+//           new Polygon(pyramidBase1, pyramidBase2, pyramidBase3, pyramidBase4)
+//                   .setEmission(pyramidColor.scale(0.8))
+//                   .setMaterial(pyramidMaterial)
+//   );
+//
+//// פאות הפירמידה (ארבעה משולשים)
+//   scene.geometries.add(
+//           new Triangle(pyramidBase1, pyramidBase2, pyramidApex)
+//                   .setEmission(pyramidColor)
+//                   .setMaterial(pyramidMaterial)
+//   );
+//   scene.geometries.add(
+//           new Triangle(pyramidBase2, pyramidBase3, pyramidApex)
+//                   .setEmission(pyramidColor.scale(1.1))
+//                   .setMaterial(pyramidMaterial)
+//   );
+//   scene.geometries.add(
+//           new Triangle(pyramidBase3, pyramidBase4, pyramidApex)
+//                   .setEmission(pyramidColor)
+//                   .setMaterial(pyramidMaterial)
+//   );
+//   scene.geometries.add(
+//           new Triangle(pyramidBase4, pyramidBase1, pyramidApex)
+//                   .setEmission(pyramidColor.scale(0.9))
+//                   .setMaterial(pyramidMaterial)
+//   );
+      ///   ///////////////////////////////////////////
+
+      // Blue light for floor sphere
       scene.light.add(
               new PointLight(
-                      lightColors[i].scale(0.6), // Dimmer version of the same color
-                      new Point(x + 10, y + 15, z - 8)) // Different angle
-                      .setKl(0.012).setKq(0.0012) // Increased attenuation
+                      new Color(25, 25, 100), // Reduced blue light
+                      new Point(-185, 12, 20)) // Above the blue sphere
+                      .setKl(0.004).setKq(0.0002)
       );
+
+      // --- Room walls (dark to not distract from stairs) ---
+      scene.geometries.add(
+              new Polygon(
+                      new Point(-400, -20, -100),
+                      new Point(-400, -20, 100),
+                      new Point(-400, 250, 100),
+                      new Point(-400, 250, -100))
+                      .setEmission(wallColor)
+                      .setMaterial(wallMaterial)
+      );
+      scene.geometries.add(
+              new Polygon(
+                      new Point(-250, -20, 100),
+                      new Point(200, -20, 100),
+                      new Point(200, 250, 100),
+                      new Point(-250, 250, 100))
+                      .setEmission(wallColor)
+                      .setMaterial(wallMaterial)
+      );
+      scene.geometries.add(
+              new Plane(new Point(0, -20, 0), new Vector(0, 1, 0))
+                      .setEmission(floorColor)
+                      .setMaterial(floorMaterial)
+      );
+        scene.geometries.buildBVH();
+
+      // === Enhanced lighting for better reflections - MINIMAL LIGHTING ===
+
+      // Main soft spotlight - minimal
+      scene.light.add(
+              new SpotLight(
+                      new Color(3, 3, 2), // Very minimal
+                      new Point(-150, 150, -60),
+                      new Vector(1, -1, 0.5).normalize())
+                      .setKl(0.015).setKq(0.001) // Strong attenuation
+                      .setNarrowBeam(35)
+      );
+
+      // Secondary fill light - almost nothing
+      scene.light.add(
+              new SpotLight(
+                      new Color(1, 1, 1), // Almost nothing
+                      new Point(50, 100, -40),
+                      new Vector(-0.8, -0.6, 0.3).normalize())
+                      .setKl(0.02).setKq(0.002) // Extreme attenuation
+                      .setNarrowBeam(45)
+      );
+
+      // Directional light - minimal
+      scene.light.add(
+              new DirectionalLight(
+                      new Color(1, 1, 1), // Almost nothing
+                      new Vector(0.3, -0.7, -0.6))
+      );
+
+
+      // === Light directed STRONGLY to the right ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(200, 200, 180), // תאורה לבנה חזקה
+                      new Point(-120, 45, 0), // מעל הכדורים
+                      new Vector(1.5, -0.2, 0).normalize()) // מכוון חזק לצד ימין
+                      .setKl(0.002).setKq(0.0001)
+                      .setNarrowBeam(25)
+      );
+
+
+      // === Light at X=-190, Y=50, Z=-15 pointing toward X=-210 ===
+      // === Light focused ONLY on the two spheres at bottom ===
+      scene.light.add(
+              new SpotLight(//-200, -10, 10))
+                      new Color(220, 220, 200), // Strong white light
+                      new Point(-210, 30, -2), // Positioned between the two spheres, above them
+                      new Vector(0, -3, 0).normalize()) // Pointing straight down
+                      .setKl(0.001).setKq(0.00005) // Less attenuation for stronger light
+                      .setNarrowBeam(20) // Very narrow beam to focus only on these spheres
+      );
+
+      scene.light.add(
+              new SpotLight(//(-180, -8, -15))
+                      new Color(220, 220, 200), // Strong white light
+                      new Point(-190, 28, -23), // Positioned between the two spheres, above them
+                      new Vector(0, -3, 0).normalize()) // Pointing straight down
+                      .setKl(0.001).setKq(0.00005) // Less attenuation for stronger light
+                      .setNarrowBeam(25) // Very narrow beam to focus only on these spheres
+      );
+
+      scene.light.add(
+              new SpotLight(//(-190/מרחק/, -3/גובה/, -250), new Vector(0, 1, 0)), 10d, 50d
+                      new Color(220, 225, 200), // Strong white light
+                      new Point(-270, 140, -205), // Positioned between the two spheres, above them
+                      new Vector(0, 3, 0).normalize()) // Pointing straight down
+                      .setKl(0.001).setKq(0.00005) // Less attenuation for stronger light
+                      .setNarrowBeam(40) // Very narrow beam to focus only on these spheres
+      );
+// === תאורה חזקה מאוד לצילינדר ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(400, 400, 380), // תאורה חזקה מאוד
+                      new Point(-100, 50, -250), // מקדימה לצילינדר
+                      new Vector(-1, -0.3, 0).normalize()) // מכוון לצילינדר
+                      .setKl(0.0005).setKq(0.00001) // דעיכה חלשה = אור חזק
+                      .setNarrowBeam(25) // קרן מרוכזת
+      );
+
+// === תאורה נוספת מלמעלה ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(350, 350, 320), // תאורה חזקה
+                      new Point(-190, 100, -250), // מלמעלה ישר על הצילינדר
+                      new Vector(0, -1, 0).normalize()) // מכוון למטה
+                      .setKl(0.0005).setKq(0.00001)
+                      .setNarrowBeam(20)
+      );
+
+// === תאורה מהצד השני ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(300, 300, 280), // תאורה חזקה
+                      new Point(-250, 40, -220), // מהצד השני
+                      new Vector(0.8, -0.2, -0.5).normalize()) // מכוון לצילינדר
+                      .setKl(0.001).setKq(0.00002)
+                      .setNarrowBeam(30)
+      );
+//   // === תאורה מעל הצילינדר ===
+//   scene.light.add(
+//           new SpotLight(
+//                   new Color(220, 220, 200), // Strong white light
+//                   new Point(-190, 80, -250), // מעל הצילינדר בדיוק
+//                   new Vector(0, -1, 0).normalize()) // מכוון ישר למטה על הצילינדר
+//                   .setKl(0.001).setKq(0.00005)
+//                   .setNarrowBeam(30)
+//   );
+
+// === תאורה מקדימה לצילינדר - מכיוון המצלמה ===
+//   scene.light.add(
+//           new SpotLight(
+//                   new Color(250, 250, 220), // Strong white light
+//                   new Point(-120, 30, -250), // מקדימה לצילינדר (X גדול יותר)
+//                   new Vector(-1, 0, 0).normalize()) // מכוון ישר לצילינדר מקדימה
+//                   .setKl(0.001).setKq(0.00005)
+//                   .setNarrowBeam(35)
+//   );
+
+// === תאורה נוספת מקדימה מלמעלה ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(200, 200, 180), // תאורה רכה יותר
+                      new Point(-130, 60, -240), // מקדימה ומלמעלה
+                      new Vector(-0.8, -0.6, -0.2).normalize()) // מכוון לצילינדר
+                      .setKl(0.002).setKq(0.0001)
+                      .setNarrowBeam(40)
+      );
+      // === תאורה מהצד לפירמידה וצילינדר - מדגישה את שניהם ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(450, 420, 380), // תאורה חזקה מאוד עם גוון חם
+                      new Point(-120, 60, -180), // מהצד של הפירמידה והצילינדר
+                      new Vector(-0.7, -0.5, -0.5).normalize()) // מכוון לשני האובייקטים
+                      .setKl(0.0003).setKq(0.000005) // דעיכה חלשה מאוד
+                      .setNarrowBeam(45) // קרן רחבה יותר כדי לכסות את שניהם
+      );
+
+// === תאורה נוספת מהצד השני לפירמידה ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(380, 350, 320), // תאורה חזקה לפירמידה
+                      new Point(-200, 50, -180), // מהצד השמאלי של הפירמידה
+                      new Vector(0.3, -0.4, -0.3).normalize()) // מכוון לפירמידה
+                      .setKl(0.0005).setKq(0.00001)
+                      .setNarrowBeam(35)
+      );
+
+// === תאורה צדדית נוספת לצילינדר ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(400, 380, 360), // תאורה חזקה לצילינדר
+                      new Point(-150, 40, -280), // מהצד הימני של הצילינדר
+                      new Vector(-0.5, -0.2, 0.3).normalize()) // מכוון לצילינדר
+                      .setKl(0.0004).setKq(0.000008)
+                      .setNarrowBeam(30)
+      );
+      // === תאורה מהצד לפירמידה וצילינדר - מדגישה את שניהם ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(450, 420, 380), // תאורה חזקה מאוד עם גוון חם
+                      new Point(-120, 60, -180), // מהצד של הפירמידה והצילינדר
+                      new Vector(-0.7, -0.5, -0.5).normalize()) // מכוון לשני האובייקטים
+                      .setKl(0.0003).setKq(0.000005) // דעיכה חלשה מאוד
+                      .setNarrowBeam(45) // קרן רחבה יותר כדי לכסות את שניהם
+      );
+
+// === תאורה נוספת מהצד השני לפירמידה ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(380, 350, 320), // תאורה חזקה לפירמידה
+                      new Point(-200, 50, -180), // מהצד השמאלי של הפירמידה
+                      new Vector(0.3, -0.4, -0.3).normalize()) // מכוון לפירמידה
+                      .setKl(0.0005).setKq(0.00001)
+                      .setNarrowBeam(35)
+      );
+
+// === תאורה צדדית נוספת לצילינדר ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(400, 380, 360), // תאורה חזקה לצילינדר
+                      new Point(-150, 40, -280), // מהצד הימני של הצילינדר
+                      new Vector(-0.5, -0.2, 0.3).normalize()) // מכוון לצילינדר
+                      .setKl(0.0004).setKq(0.000008)
+                      .setNarrowBeam(30)
+      );
+
+      // === תאורה מאחורי הצילינדר והפירמידה ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(350, 330, 300), // תאורה חזקה מאחור
+                      new Point(-250, 70, -300), // מאחורי שני האובייקטים
+                      new Vector(0.6, -0.4, 0.7).normalize()) // מכוון לעברם מאחור
+                      .setKl(0.0004).setKq(0.000008)
+                      .setNarrowBeam(50) // קרן רחבה לכיסוי שניהם
+      );
+
+// === תאורה מאחורי הפירמידה בלבד ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(320, 300, 280), // תאורה חמה מאחור
+                      new Point(-200, 50, -280), // מאחורי הפירמידה
+                      new Vector(0.3, -0.3, 0.6).normalize()) // מכוון לפירמידה מאחור
+                      .setKl(0.0005).setKq(0.00001)
+                      .setNarrowBeam(35)
+      );
+
+// === תאורה מאחורי הצילינדר בלבד ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(380, 360, 340), // תאורה חזקה מאחור
+                      new Point(-230, 60, -320), // מאחורי הצילינדר
+                      new Vector(0.4, -0.5, 0.7).normalize()) // מכוון לצילינדר מאחור
+                      .setKl(0.0003).setKq(0.000005)
+                      .setNarrowBeam(25)
+      );
+
+// === תאורה מאחור מלמעלה - אפקט רים לייט ===
+      scene.light.add(
+              new SpotLight(
+                      new Color(280, 260, 240), // תאורה עדינה יותר מלמעלה מאחור
+                      new Point(-180, 120, -320), // גבוה מאחור
+                      new Vector(-0.1, -0.8, 0.6).normalize()) // מכוון למטה לעבר האובייקטים
+                      .setKl(0.0006).setKq(0.00002)
+                      .setNarrowBeam(60)
+      );
+      // === Camera setup ===
+      Camera.getBuilder()
+              .setLocation(new Point(-700, 80, -650)) // Adjusted for better angle
+              .setDirection(new Point(-50, 60, 0), Vector.AXIS_Y) // Looking toward the stairs
+              .setVpDistance(1000)
+              .setVpSize(400, 400)
+              .setResolution(1000, 1000) // Higher resolution for better quality
+              .setMultithreading(4)
+              .setDebugPrint(5)
+              .setRayTracer(scene, RayTracerType.SIMPLE)
+              .setAdaptiveAntiAliasing(true)
+              .setAdaptiveAntiAliasingDepth(3)
+              .setAdaptiveAntiAliasingThreshold(0.01)
+              .build()
+              .renderImage()
+              .writeToImage("colorful_staircase_light");
    }
-
-   // Add a couple of spheres on the floor WITH their colorful lights
-   scene.geometries.add(
-           new Sphere(12, new Point(-180, -8, -15))
-                   .setEmission(new Color(25, 5, 5))  // Dark red
-                   .setMaterial(sphereMaterial)       // Highly reflective
-   );
-   // Red light for floor sphere
-   scene.light.add(
-           new PointLight(
-                   new Color(100, 25, 25), // Reduced red light
-                   new Point(-165, 15, -5)) // Above the red sphere
-                   .setKl(0.004).setKq(0.0002)
-   );
-
-   scene.geometries.add(
-           new Sphere(10, new Point(-200, -10, 10))
-                   .setEmission(new Color(5, 5, 25))  // Dark blue
-                   .setMaterial(sphereMaterial)       // Highly reflective
-   );
-   // Blue light for floor sphere
-   scene.light.add(
-           new PointLight(
-                   new Color(25, 25, 100), // Reduced blue light
-                   new Point(-185, 12, 20)) // Above the blue sphere
-                   .setKl(0.004).setKq(0.0002)
-   );
-
-   // --- Room walls (dark to not distract from stairs) ---
-   scene.geometries.add(
-           new Polygon(
-                   new Point(-250, -20, -100),
-                   new Point(-250, -20, 100),
-                   new Point(-250, 250, 100),
-                   new Point(-250, 250, -100))
-                   .setEmission(wallColor)
-                   .setMaterial(wallMaterial)
-   );
-   scene.geometries.add(
-           new Polygon(
-                   new Point(-250, -20, 100),
-                   new Point(200, -20, 100),
-                   new Point(200, 250, 100),
-                   new Point(-250, 250, 100))
-                   .setEmission(wallColor)
-                   .setMaterial(wallMaterial)
-   );
-   scene.geometries.add(
-           new Plane(new Point(0, -20, 0), new Vector(0, 1, 0))
-                   .setEmission(floorColor)
-                   .setMaterial(floorMaterial)
-   );
-
-   // === Enhanced lighting for better reflections - MINIMAL LIGHTING ===
-
-   // Main soft spotlight - minimal
-   scene.light.add(
-           new SpotLight(
-                   new Color(3, 3, 2), // Very minimal
-                   new Point(-150, 150, -60),
-                   new Vector(1, -1, 0.5).normalize())
-                   .setKl(0.015).setKq(0.001) // Strong attenuation
-                   .setNarrowBeam(35)
-   );
-
-   // Secondary fill light - almost nothing
-   scene.light.add(
-           new SpotLight(
-                   new Color(1, 1, 1), // Almost nothing
-                   new Point(50, 100, -40),
-                   new Vector(-0.8, -0.6, 0.3).normalize())
-                   .setKl(0.02).setKq(0.002) // Extreme attenuation
-                   .setNarrowBeam(45)
-   );
-
-   // Directional light - minimal
-   scene.light.add(
-           new DirectionalLight(
-                   new Color(1, 1, 1), // Almost nothing
-                   new Vector(0.3, -0.7, -0.6))
-   );
-
-   // === Camera setup ===
-   Camera.getBuilder()
-           .setLocation(new Point(-600, 80, -720)) // Adjusted for better angle
-           .setDirection(new Point(-50, 60, 0), Vector.AXIS_Y) // Looking toward the stairs
-           .setVpDistance(1000)
-           .setVpSize(400, 400)
-           .setResolution(1000, 1000) // Higher resolution for better quality
-           .setMultithreading(8)
-           .setDebugPrint(5)
-           .setRayTracer(scene, RayTracerType.SIMPLE)
-           .build()
-           .renderImage()
-           .writeToImage("colorful_staircase_with_colorful_lights_moreDark");
-}
 
    /**
-    * Helper method to add a base structure under the stairs,
-    * וגם צילינדר גדול בצד שמאל-למטה של התמונה, ליד המדרגות.
+    * Helper method to add a base structure under the stairs
     */
    private void addBaseStructure1(Scene scene, double minX, double minY, double minZ,
                                   double maxX, double maxY, double maxZ,
@@ -3065,14 +3357,6 @@ void minimalisticStaircaseWithSpotlightTest1() {
                       new Point(minX, maxY, maxZ))
                       .setEmission(color)
                       .setMaterial(material)
-      );
-      // צילינדר גדול בצד שמאל-למטה של התמונה, ליד המדרגות
-      scene.geometries.add(
-              new Cylinder(new Ray(new Point(60, -30, -55), new Vector(0, 1, 0)), 15d, 80d)
-                      .setEmission(new Color(2, 150, 160))
-                      .setMaterial(new Material()
-                              .setKD(0.2).setKS(0.8).setShininess(150)
-                              .setKR(0.7))
       );
    }
 }

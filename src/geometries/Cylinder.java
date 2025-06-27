@@ -306,5 +306,48 @@ public class Cylinder extends Tube {
 
          }
 
+    @Override
+    public void setBoundingBox() {
+        Point base = axis.getHead();
+        Vector dir = axis.getDirection();
+        Point top = base.add(dir.scale(height));
+
+        Vector u = dir.findAnyOrthogonal().normalize();
+        Vector v = dir.crossProduct(u).normalize();
+
+        Point[] points = new Point[]{
+                base.add(u.scale(radius)).add(v.scale(radius)),
+                base.add(u.scale(radius)).add(v.scale(-radius)),
+                base.add(u.scale(-radius)).add(v.scale(radius)),
+                base.add(u.scale(-radius)).add(v.scale(-radius)),
+                top.add(u.scale(radius)).add(v.scale(radius)),
+                top.add(u.scale(radius)).add(v.scale(-radius)),
+                top.add(u.scale(-radius)).add(v.scale(radius)),
+                top.add(u.scale(-radius)).add(v.scale(-radius))
+        };
+
+        double minX = Double.POSITIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double minZ = Double.POSITIVE_INFINITY;
+        double maxX = Double.NEGATIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
+        double maxZ = Double.NEGATIVE_INFINITY;
+
+        for (Point p : points) {
+            double x = p.getX(), y = p.getY(), z = p.getZ();
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+            if (z < minZ) minZ = z;
+            if (z > maxZ) maxZ = z;
+        }
+
+        this.box = new AABB(
+                new Point(minX, minY, minZ),
+                new Point(maxX, maxY, maxZ)
+        );
+    }
+
 
 }
