@@ -1,5 +1,7 @@
 package primitives;
 
+import static primitives.Util.isZero;
+
 /**
  * The `Vector` class represents a vector in 3D space.
  * It extends the `Point` class and provides additional methods for vector operations.
@@ -147,4 +149,17 @@ public class Vector extends Point {
         return new Vector(xyz.scale(scalar));
     }
 
+    /**
+     * Returns any vector orthogonal to this one.
+     * The result is normalized.
+     *
+     * @return a normalized orthogonal vector
+     */
+    public Vector findAnyOrthogonal() {
+        double x = this.xyz.d1();
+        double y = this.xyz.d2();
+
+        return !isZero(x) || !isZero(y) ? new Vector(-y, x, 0) :
+                new Vector(0, -this.xyz.d3(), y);
+    }
 }

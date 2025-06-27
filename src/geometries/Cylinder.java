@@ -188,6 +188,8 @@ public class Cylinder extends Tube {
         this.topPlane = new Plane(axis.getPoint(height), axis.getDirection());
     }
 
+
+
     /**
      * Returns the normal vector to the cylinder at the given point.
      *
@@ -224,58 +226,42 @@ public class Cylinder extends Tube {
         return super.getNormal(p0);
     }
 
-    //    @Override
-//    protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
-//        final List<Intersection> intersections = new LinkedList<>();
-//        final Vector axisDir = axis.getDirection();
-//        final Point baseCenter = axis.getHead();
-//        final Point topCenter = axis.getPoint(height);
-//        final Point rayOrigin = ray.getHead();
-//
-//        // 1. Tube intersections
-//        List<Intersection> tubeIntersections = super.calculateIntersectionsHelper(ray);
-//        if (tubeIntersections != null) {
-//            for (Intersection p : tubeIntersections) {
-//                double axisProjection = axisDir.dotProduct(p.point.subtract(baseCenter));
-//                if (alignZero(axisProjection) >= 0 && alignZero(axisProjection - height) <= 0) {
-//                    intersections.add(new Intersection(this, p.point));
-//                }
-//            }
-//        }
-//
-//        // 2. Bottom cap
-//        List<Point> bottom = bottomPlane.findIntersections(ray);
-//        if (bottom != null) {
-//            Point p = bottom.getFirst();
-//            if (alignZero(p.distanceSquared(baseCenter) - radius*radius) < 0) {
-//                intersections.add(new Intersection(this, p));
-//            }
-//        }
-//
-//        // 3. Top cap
-//        List<Point> top = topPlane.findIntersections(ray);
-//        if (top != null) {
-//            Point p = top.getFirst();
-//            if (alignZero(p.distanceSquared(topCenter) - radius*radius) < 0) {
-//                intersections.add(new Intersection(this, p));
-//            }
-//        }
-//
-//        // 4. Sort by distance
-//        intersections.sort(Comparator.comparingDouble(p ->
-//                p.point.subtract(rayOrigin).dotProduct(ray.getDirection())));
-//
-//        return intersections.isEmpty() ? null : intersections;
-//    }
+    /**
+     * Calculates the intersections of the cylinder with a given ray.
+     */
     double radiusSquared= radius * radius;
+
+    /**
+     *
+     * Calculates the intersections of the cylinder with a given ray.
+     * @param ray The ray to intersect with.
+     * @return
+     */
     @Override
     protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
+        /**
+         * Calculates the intersections of the cylinder with a given ray.
+         */
         final List<Intersection> intersections = new LinkedList<>();
+        /**
+         * The direction vector of the cylinder's axis.
+         */
         final Vector axisDir = axis.getDirection();
+        /**
+         * The center point of the base of the cylinder.
+         */
         final Point baseCenter = axis.getHead();
+        /**
+         * The center point of the top of the cylinder.
+         */
         final Point topCenter = axis.getPoint(height);
+        /**
+         * The origin point of the ray.
+         */
         final Point rayOrigin = ray.getHead();
-
+        /**
+         * Calculates the intersections of the cylinder with a given ray.
+         */
         // 1. Tube intersections
         List<Intersection> tubeIntersections = super.calculateIntersectionsHelper(ray);
         if (tubeIntersections != null) {
@@ -287,7 +273,9 @@ public class Cylinder extends Tube {
             }
         }
 
-
+        /**
+         * Calculates the intersections of the cylinder with a given ray.
+         */
         // 2. Bottom cap
         List<Point> bottom = bottomPlane.findIntersections(ray);
         if (bottom != null) {
@@ -296,7 +284,9 @@ public class Cylinder extends Tube {
                 intersections.add(new Intersection(this, p));
             }
         }
-//
+        /**
+         * Calculates the intersections of the cylinder with a given ray.
+         */
         // 3. Top cap
         List<Point> top = topPlane.findIntersections(ray);
         if (top != null) {
@@ -305,11 +295,59 @@ public class Cylinder extends Tube {
                 intersections.add(new Intersection(this, p));
             }
         }
-
+/**
+ * Calculates the intersections of the cylinder with a given ray.
+ */
         // 4. Sort by distance
         intersections.sort(Comparator.comparingDouble(p ->
                 p.point.subtract(rayOrigin).dotProduct(ray.getDirection())));
 
         return intersections.isEmpty() ? null : intersections;
+
+         }
+
+    @Override
+    public void setBoundingBox() {
+        Point base = axis.getHead();
+        Vector dir = axis.getDirection();
+        Point top = base.add(dir.scale(height));
+
+        Vector u = dir.findAnyOrthogonal().normalize();
+        Vector v = dir.crossProduct(u).normalize();
+
+        Point[] points = new Point[]{
+                base.add(u.scale(radius)).add(v.scale(radius)),
+                base.add(u.scale(radius)).add(v.scale(-radius)),
+                base.add(u.scale(-radius)).add(v.scale(radius)),
+                base.add(u.scale(-radius)).add(v.scale(-radius)),
+                top.add(u.scale(radius)).add(v.scale(radius)),
+                top.add(u.scale(radius)).add(v.scale(-radius)),
+                top.add(u.scale(-radius)).add(v.scale(radius)),
+                top.add(u.scale(-radius)).add(v.scale(-radius))
+        };
+
+        double minX = Double.POSITIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double minZ = Double.POSITIVE_INFINITY;
+        double maxX = Double.NEGATIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
+        double maxZ = Double.NEGATIVE_INFINITY;
+
+        for (Point p : points) {
+            double x = p.getX(), y = p.getY(), z = p.getZ();
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+            if (z < minZ) minZ = z;
+            if (z > maxZ) maxZ = z;
+        }
+
+        this.box = new AABB(
+                new Point(minX, minY, minZ),
+                new Point(maxX, maxY, maxZ)
+        );
     }
+
+
 }

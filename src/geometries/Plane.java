@@ -135,4 +135,11 @@ public class Plane extends Geometry {
         // Return the intersection point
         return List.of(new Intersection(this,ray.getPoint(t)));
     }
+
+    @Override
+    public void setBoundingBox()
+    {
+        this.box = null;
+    }
+
 }

@@ -70,4 +70,10 @@ public class Sphere extends RadialGeometry {
         return null;
 
     }
+    @Override
+    public void setBoundingBox() {
+        Point min = center.subtract(new Vector(radius, radius, radius));
+        Point max = center.add(new Vector(radius, radius, radius));
+        this.box = new AABB(min, max);
+    }
 }

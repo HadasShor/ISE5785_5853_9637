@@ -174,4 +174,53 @@ public class Polygon extends Geometry {
         }
         return result;
     }
+
+    @Override
+    public void setBoundingBox() {
+        double minX = Double.POSITIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double minZ = Double.POSITIVE_INFINITY;
+
+        double maxX = Double.NEGATIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
+        double maxZ = Double.NEGATIVE_INFINITY;
+
+        for (Point p : vertices) {
+            double x = p.getX();
+            double y = p.getY();
+            double z = p.getZ();
+
+            if (x < minX) minX = x;
+            if (y < minY) minY = y;
+            if (z < minZ) minZ = z;
+
+            if (x > maxX) maxX = x;
+            if (y > maxY) maxY = y;
+            if (z > maxZ) maxZ = z;
+        }
+
+        // Add epsilon padding to avoid zero-thickness boxes
+        final double EPSILON = 1e-10;
+
+        if (maxX - minX < EPSILON) {
+            double center = (maxX + minX) / 2;
+            minX = center - EPSILON / 2;
+            maxX = center + EPSILON / 2;
+        }
+        if (maxY - minY < EPSILON) {
+            double center = (maxY + minY) / 2;
+            minY = center - EPSILON / 2;
+            maxY = center + EPSILON / 2;
+        }
+        if (maxZ - minZ < EPSILON) {
+            double center = (maxZ + minZ) / 2;
+            minZ = center - EPSILON / 2;
+            maxZ = center + EPSILON / 2;
+        }
+
+        this.box = new AABB(
+                new Point(minX, minY, minZ),
+                new Point(maxX, maxY, maxZ)
+        );
+    }
 }

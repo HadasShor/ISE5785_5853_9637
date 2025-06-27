@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
 /**
  * Integration tests for verifying the number of intersection points between
  * rays constructed by the {@link Camera} and different {@link Geometry} types.

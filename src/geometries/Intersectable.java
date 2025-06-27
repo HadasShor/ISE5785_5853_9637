@@ -14,6 +14,7 @@ import java.util.List;
  */
 public abstract class Intersectable {
 
+    public AABB box;
     /**
      * Finds the intersection points of the object with the specified ray.
      * This method delegates to {@link #calculateIntersections(Ray)} and extracts only the point component of the intersections.
@@ -47,6 +48,8 @@ public abstract class Intersectable {
      * or {@code null} if no intersections are found.
      */
     public final List<Intersection> calculateIntersections(Ray ray) {
+        if (box != null && !box.intersect(ray)) return null;
+
         return calculateIntersectionsHelper(ray);
     }
 
@@ -126,4 +129,15 @@ public abstract class Intersectable {
                     '}';
         }
     }
+    /**
+     * Returns the axis-aligned bounding box (AABB) of the intersectable object.
+     * This method is used for spatial partitioning and optimization in intersection tests.
+     *
+     * @return The AABB of the intersectable object.
+     */
+    public AABB getBoundingBox() {
+        return box;
+    }
+
+    abstract public void setBoundingBox();
 }

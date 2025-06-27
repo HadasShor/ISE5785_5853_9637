@@ -25,8 +25,20 @@ public class Geometries extends Intersectable {
      * This list holds all the {@link Intersectable} objects that are part of this collection.
      * </p>
      */
-    private final List<Intersectable> geometries = new LinkedList<>();
+    // private final List<Intersectable> geometries = new LinkedList<>();
 
+    /**
+     * The infinite geometries witch has not had bounding box.
+     */
+    private final List<Intersectable> infinite = new ArrayList<>();
+    /**
+     * The bounding box of the geometries.
+     */
+    private Intersectable accelerationStructure = null;
+    /**
+     * List of intersectable geometries.
+     */
+    private List<Intersectable> geometries = new ArrayList<Intersectable>();
     /**
      * Constructs an empty {@code Geometries} object.
      * <p>
@@ -75,19 +87,101 @@ public class Geometries extends Intersectable {
      * @param ray the {@link Ray} to find intersections with.
      * @return a list of intersection points, or {@code null} if no intersections are found.
      */
+//    @Override
+//    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
+//        List<Intersection> intersections = null;
+//        for (Intersectable geometry : geometries) {
+//            List<Intersection> geoIntersections = geometry.calculateIntersectionsHelper(ray);
+//            if (geoIntersections != null) {
+//                if (intersections == null) {
+//                    intersections = new LinkedList<>();
+//                }
+//                intersections.addAll(geoIntersections);
+//            }
+//        }
+//        return intersections;
+//    }
+
     @Override
-    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
-        List<Intersection> intersections = null;
-        for (Intersectable geometry : geometries) {
-            List<Intersection> geoIntersections = geometry.calculateIntersectionsHelper(ray);
-            if (geoIntersections != null) {
-                if (intersections == null) {
-                    intersections = new LinkedList<>();
+    protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
+        List<Intersection> list = null;
+        if (accelerationStructure != null) {
+            for (Intersectable item : infinite) {
+                List<Intersection> tmp = item.calculateIntersections(ray);
+                if (tmp != null) {
+                    if (list == null)
+                        list = new ArrayList<>(tmp);
+                    else
+                        list.addAll(tmp);
                 }
-                intersections.addAll(geoIntersections);
+            }
+            List<Intersection> listBVH = accelerationStructure.calculateIntersections(ray);
+
+            if (listBVH == null)
+                return list;
+
+            if (list == null)
+                return listBVH;
+
+            list.addAll(listBVH);
+            return list;
+        }
+
+        // if (accelerationStructure != null) return accelerationStructure.calculateIntersections(ray, maxDistance);
+
+        //List<Intersection> list = null;
+        for (Intersectable item : geometries) {
+            List<Intersection> found = item.calculateIntersections(ray);
+            if (found != null) {
+                if (list == null)
+                    list = new LinkedList<>(found);
+                else
+                    list.addAll(found);
             }
         }
-        return intersections;
+        return list;
+    }
+
+    @Override
+    public void setBoundingBox() {
+        if (geometries.isEmpty()) {
+            this.box = null;
+            return;
+        }
+
+        double minX = Double.POSITIVE_INFINITY, minY = Double.POSITIVE_INFINITY, minZ = Double.POSITIVE_INFINITY;
+        double maxX = Double.NEGATIVE_INFINITY, maxY = Double.NEGATIVE_INFINITY, maxZ = Double.NEGATIVE_INFINITY;
+
+        for (Intersectable geo : geometries) {
+            geo.setBoundingBox();
+            AABB b = geo.getBoundingBox();
+            if (b == null) continue;
+
+            Point min = b.getMin(), max = b.getMax();
+            if (min.getX() < minX) minX = min.getX();
+            if (min.getY() < minY) minY = min.getY();
+            if (min.getZ() < minZ) minZ = min.getZ();
+
+            if (max.getX() > maxX) maxX = max.getX();
+            if (max.getY() > maxY) maxY = max.getY();
+            if (max.getZ() > maxZ) maxZ = max.getZ();
+        }
+
+        this.box = new AABB(new Point(minX, minY, minZ), new Point(maxX, maxY, maxZ));
+    }
+
+    /**
+     * Builds a BVH acceleration structure over the current geometries.
+     */
+    public void buildBVH() {
+        setBoundingBox();
+        for (Intersectable g : geometries) {
+            if (g.getBoundingBox() == null)
+                infinite.add(g);
+        }
+        this.accelerationStructure = BVHNode.buildFrom(geometries);
+        this.box = AABB.createInfiniteBoundingBox();
+        geometries.clear(); // optional, to free memory or mark as transferred
     }
 
 }

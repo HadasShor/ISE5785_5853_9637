@@ -103,14 +103,6 @@ public class Point {
      * @return the squared distance to the point
      * //
      */
-//    public double distanceSquared(Point point) {
-//        double x2x1 = point.xyz.d1() - xyz.d1();
-//        double y2y1 = point.xyz.d2() - xyz.d2();
-//        double z2z1 = point.xyz.d3() - xyz.d3();
-//
-//        return x2x1 * x2x1 + y2y1 * y2y1 + z2z1 * z2z1;
-//
-//    }
     public double distanceSquared(Point point) {
         double x2x1 = point.xyz.d1() - xyz.d1();
         double y2y1 = point.xyz.d2() - xyz.d2();
@@ -126,5 +118,30 @@ public class Point {
      */
     public double distance(Point point) {
         return Math.sqrt(distanceSquared(point));
+    }
+
+
+    public double getX() {
+        return xyz.d1();
+    }
+    public double getY() {
+        return xyz.d2();
+    }
+    public double getZ() {
+        return xyz.d3();
+    }
+
+    public double get(int  index) {
+        switch (index)
+        {
+            case 0:
+                return xyz.d1();
+            case 1:
+                return xyz.d2();
+            case 2:
+                return xyz.d3();
+            default:
+                throw new IndexOutOfBoundsException("Index must be 0, 1, or 2");
+        }
     }
 }
