@@ -13,7 +13,7 @@ import static primitives.Util.isZero;
  * @author Hadas_Shor, Nurit_Ezra
  */
 public class Camera implements Cloneable {
-
+   private  static final Random random = new Random();
     /**
      * Number of threads for rendering the image.
      */
@@ -47,12 +47,12 @@ public class Camera implements Cloneable {
     /**
      * Default grid size for anti-aliasing
      */
-    private int AA_GRID_SIZE = 9;
+    private int AA_GRID_SIZE =4 ;
 
     /**
      * Flag to enable or disable adaptive anti-aliasing.
      */
-    private boolean ADAPTIVE_AA_FLAG = false;
+    private boolean ADAPTIVE_AA_FLAG = true;
 
     /**
      * Maximum recursion depth for adaptive antialiasing.
@@ -282,7 +282,7 @@ public class Camera implements Cloneable {
     public List<Ray> constructRaysJ(int nX, int nY, int j, int i) {
 
         List<Ray> rays = new ArrayList<>();
-        Random random = new Random();
+
         double Ry = height / nY;
         double Rx = width / nX;
         double stepY = Ry / AA_GRID_SIZE;
@@ -295,11 +295,14 @@ public class Camera implements Cloneable {
 
                 double offsetI = (subI + jitterY) * stepY;
                 double offsetJ = (subJ + jitterX) * stepX;
+                // Calculate the pixel center coordinates
                 double Yi = -(i - (nY - 1) / 2d) * Ry + offsetI;
                 double Xj = (j - (nX - 1) / 2d) * Rx + offsetJ;
+
                 Point pIJ = p0;
                 if (!isZero(Xj)) pIJ = pIJ.add(vRight.scale(Xj));
                 if (!isZero(Yi)) pIJ = pIJ.add(vUp.scale(Yi));
+                // Calculate the center of the pixel in the view plane
                 pIJ = pIJ.add(vTo.scale(distance)); // pIJ is the center of the pixel in the view plane
 
                 Ray ray = new Ray(p0, pIJ.subtract(p0).normalize());
@@ -313,7 +316,7 @@ public class Camera implements Cloneable {
      * Casts rays for a specific pixel in the image and writes the resulting color.
      *
      * This method handles the ray casting process for an individual pixel (j,i) in the image:
-     * 1. Constructs multiple rays for the pixel (for anti-aliasing or supersampling)
+     * 1. Constructs multiple rays for the pixel ( supersampling)
      * 2. Traces each ray to determine its color contribution
      * 3. Averages all color contributions from the rays
      * 4. Writes the final color to the output image
